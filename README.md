@@ -39,6 +39,12 @@ This repository is a project to show how to build an observable distributed syst
     helm version
     ```
 
+- **Update** local helm repo to be up-to-date to the latest chart versions.
+
+    ```bash
+    helm repo update
+    ```
+
 - To **remove** `tiller` from server
 
     ```bash
@@ -54,9 +60,9 @@ This repository is a project to show how to build an observable distributed syst
 - Install `traefik` for ingress controller using helm
 
     ```bash
-    helm install --name traefik-ingress --namespace kube-system --set dashboard.enabled=true,metrics.prometheus.enabled=true,rbac.enabled=true stable/traefik
+    helm install --name traefik-ingress --namespace kube-system --set dashboard.enabled=true,metrics.prometheus.enabled=true,rbac.enabled=true,dashboard.domain=traefik.management.com,dashboard.ingress.annotations."kubernetes\.io/ingress\.class"=traefik stable/traefik
 
-    # Configured to use with Promtheues 
+    # Configured to use with Prometheus annotations.
     helm install --name traefik-ingress --namespace kube-system --set dashboard.enabled=true,metrics.prometheus.enabled=true,rbac.enabled=true,dashboard.domain=traefik.management.com,dashboard.service.annotations."prometheus\.io/scrape"=true,dashboard.service.annotations."prometheus\.io/port"=8080,dashboard.ingress.annotations."kubernetes\.io/ingress\.class"=traefik stable/traefik
     ```
 
@@ -140,6 +146,7 @@ This repository is a project to show how to build an observable distributed syst
   - K8s Cluster Summary (by Node and Namespaces): 8685
   - Kubernetes App Metrics: 1471 (cpu, memory compared to limits, etc..)
   - Kubernetes Cluster (workload): 7249 (Good summary, split by namespace, deployment, pods, etc..)
+  - Traefik dashborad: 4475
 
 - Add `traefik` extra metrics and dashboard (grafana dashboard: 4475)
 
@@ -148,7 +155,6 @@ This repository is a project to show how to build an observable distributed syst
     kubectl get -n kube-system service traefik-ingress-dashboard -o yaml > traefik-service.yaml
 
     # Open and add modify following information
-    # Change - type: ClusterIP to type: NodePort
     # Add    - annotations:
     #             prometheus.io/scrape: "true"
     #             prometheus.io/port: '8080'
@@ -156,8 +162,8 @@ This repository is a project to show how to build an observable distributed syst
     kubectl delete -f traefik-service.yaml
     kubectl apply -f traefik-service.yaml
 
-    # Get the NodePort assigned and http://localhost:nodeport, use /dashboard or /metrics
-    kubectl get service -n kube-system traefik-ingress-dashboard
+    # Use /dashboard or /metrics. Also check the dashboard 4475 in grafana to view metrics
+    kubectl get service -n kube-systeme traefik-ingress-dashboard
     ```
 
 - **Uninstall** helm packages
@@ -168,8 +174,104 @@ This repository is a project to show how to build an observable distributed syst
 
 ### Logging
 
+In this section it will be explained how-to deploy EFK stack into kubernetes cluster.
+
+#### Elasticsearch
+
+[Stable helm Chart](https://hub.kubeapps.com/charts/stable/elasticsearch)
+
+Install **Elastic Search** cluster, with only 1 client/data replicas and 2 masters (quorum).
+
+```bash
+helm install --name elasticsearch --namespace logging --set client.ingress.enabled=true,client.ingress.annotations."kubernetes\.io/ingress\.class"=traefik,client.ingress.hosts={elasticsearch.logging.com},client.replicas=1,master.replicas=2,data.replicas=1,cluster.env.MINIMUM_MASTER_NODES=2 stable/elasticsearch
+```
+
+Output, after installing the chart.
+
+```bash
+NOTES:
+The elasticsearch cluster has been installed.
+
+Elasticsearch can be accessed:
+
+  * Within your cluster, at the following DNS name at port 9200:
+
+    elasticsearch-client.logging.svc
+
+  * From outside the cluster, run these commands in the same shell:
+
+    export POD_NAME=$(kubectl get pods --namespace logging -l "app=elasticsearch,component=client,release=elasticsearch" -o jsonpath="{.items[0].metadata.name}")
+    echo "Visit http://127.0.0.1:9200 to use Elasticsearch"
+    kubectl port-forward --namespace logging $POD_NAME 9200:9200
+```
+
+Verify the current client can be accessed from ingress http://elasticsearch.logging.com/ and http://elasticsearch.logging.com/_count?pretty
+
+#### Kibana
+
+[Stable helm Chart](https://hub.kubeapps.com/charts/stable/kibana)
+
+Install **kibana** helm chart
+
+```bash
+helm install --name kibana --namespace logging --set ingress.enabled=true,ingress.annotations."kubernetes\.io/ingress\.class"=traefik,ingress.hosts={kibana.logging.com},env.ELASTICSEARCH_HOSTS=http://elasticsearch-client:9200,service.externalPort=80 stable/kibana
+```
+
+Output, after installing the chart.
+
+```bash
+NOTES:
+To verify that kibana has started, run:
+
+  kubectl --namespace=logging get pods -l "app=kibana"
+
+Kibana can be accessed:
+
+  * From outside the cluster, run these commands in the same shell:
+
+    export NODE_PORT=$(kubectl get --namespace logging -o jsonpath="{.spec.ports[0].nodePort}" services kibana)
+    export NODE_IP=$(kubectl get nodes --namespace logging -o jsonpath="{.items[0].status.addresses[0].address}")
+    echo http://$NODE_IP:$NODE_PORT
+```
+
+#### Fluent Bit (daemonset)
+
+[Stable helm Chart](https://hub.kubeapps.com/charts/stable/fluent-bit)
+
+Install **Fluent Bit** helm chart
+
+```bash
+helm install --name fluentbit --namespace logging --set backend.type=es,backend.es.host=elasticsearch-client,service.logLevel=info,filter.mergeJSONLog=false stable/fluent-bit
+
+helm install --name fluentbit --namespace logging --set backend.type=es,backend.es.host=elasticsearch-client,service.logLevel=info,filter.mergeJSONLog=true,backend.es.time_key=@timestamp_es stable/fluent-bit
+```
+
+Output, after installing the chart.
+
+```bash
+NOTES:
+fluent-bit is now running.
+
+It will forward all container logs to the svc named elasticsearch-client on port: 9200
+
+```
+
+> To verify the installation, check if the pods are connected to the backend (elasticsearch) via logs. `kubectl logs -n logging pods/fluentbit-fluent-bit-wjhsr`
+
+#### EFK
+
+- Test that all the pods, services, etc are running
+
+```bash
+kubectl get all -n logging
+```
+
+- 
+
 ### Tracing
 
+
+## Prometheus and Kubernetes
 
 ### Prometheus Scrape in kubernetes
 
