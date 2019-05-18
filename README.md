@@ -226,10 +226,15 @@ Dashboard and metrics that help us to get this information are:
 - `container_spec_memory_limit_bytes` vs `container_memory_usage_bytes`
 - `container_spec_memory_reservation_limit_bytes`
 - `container_cpu_usage_seconds_total` vs `container_spec_cpu_quota` vs `container_spec_cpu_period`
+- `kube_pod_container_resource_requests`
+- `kube_pod_container_resource_requests_memory_bytes`
+- `kube_pod_container_resource_requests_cpu_cores`
+- `kube_pod_container_resource_limits`
+- `kube_pod_container_resource_limits_memory_bytes`
 
 #### MY-SQL
 
-Resources configured by default (`request`) are:
+Resources configured by default for `requests` resources:
 
 ```yaml
 ## Configure resource requests and limits
@@ -241,21 +246,61 @@ resources:
     cpu: 100m
 ```
 
-- Create the my-sql using helm:
+- Create the `my-sql` using helm:
 
     ```bash
     helm install --name mysql-release --namespace storage --set mysqlRootPassword=secretpassword,mysqlUser=my-user,mysqlPassword=my-password,mysqlDatabase=my-database stable/mysql
     ```
 
-- Check the current status
-
-    ```bash
-    kubectl get all -n storage
-    ```
-
-- Query example:
+- Following are some query examples.
 
     ```json
     container_spec_memory_reservation_limit_bytes{container_name="mysql-release"}
     container_spec_memory_limit_bytes{container_name="mysql-release"}
     ```
+
+- Get all the resources *requested* by the container `mysql-release`
+
+    ```json
+    kube_pod_container_resource_requests{container="mysql-release"}
+    ```
+
+    ```json
+    kube_pod_container_resource_requests{app="prometheus",chart="prometheus-8.9.2",component="kube-state-metrics",container="mysql-release",heritage="Tiller",instance="10.1.4.81:8080",job="kubernetes-service-endpoints",kubernetes_name="prometheus-kube-state-metrics",kubernetes_namespace="monitoring",kubernetes_node="docker-for-desktop",namespace="storage",node="docker-for-desktop",pod="mysql-release-5ffb44984c-cjnhl",release="prometheus",resource="cpu",unit="core"}
+
+    0.1
+
+    kube_pod_container_resource_requests{app="prometheus",chart="prometheus-8.9.2",component="kube-state-metrics",container="mysql-release",heritage="Tiller",instance="10.1.4.81:8080",job="kubernetes-service-endpoints",kubernetes_name="prometheus-kube-state-metrics",kubernetes_namespace="monitoring",kubernetes_node="docker-for-desktop",namespace="storage",node="docker-for-desktop",pod="mysql-release-5ffb44984c-cjnhl",release="prometheus",resource="memory",unit="byte"} 
+
+    268435456
+    ```
+
+- Get the memory (bytes) resources *requested* by the container `mysql-release`
+
+    ```json
+    kube_pod_container_resource_requests_memory_bytes{container="mysql-release"}
+    ```
+
+    ```json
+    kube_pod_container_resource_requests_memory_bytes{app="prometheus",chart="prometheus-8.9.2",component="kube-state-metrics",container="mysql-release",heritage="Tiller",instance="10.1.4.81:8080",job="kubernetes-service-endpoints",kubernetes_name="prometheus-kube-state-metrics",kubernetes_namespace="monitoring",kubernetes_node="docker-for-desktop",namespace="storage",node="docker-for-desktop",pod="mysql-release-5ffb44984c-cjnhl",release="prometheus"}
+
+    268435456
+    ```json
+
+#### Kubernetes - Horizontal Pod Autoscaler
+
+> Be careful, this installation will **break** traefik-controller. It must be change the type from `ClusterIP` to `NodePort` inside `prometheus-server` service.
+
+- Create `nginx-controller` using hpa kind.
+
+    ```bash
+    helm install --name nginx-release --namespace nginx --set controller.autoscaling.enabled=true,controller.autoscaling.minReplicas=3,resources.limits.cpu=100m,resources.limits.memory=64Mi,resources.requests.cpu=100m,resources.requests.memory=64Mi stable/nginx-ingress
+    ```
+
+- From `kube-state-metrics` can e extracted som useful information regarding **initial** configuration and **current** status.
+
+- `kube_hpa_labels`
+- `kube_hpa_metadata_generation`
+- `kube_hpa_spec_max_replicas` vs `kube_hpa_spec_min_replicas`
+- `kube_hpa_status_condition` (AbleToScale, ScalingActive, ..)
+- `kube_hpa_status_current_replicas` vs `kube_hpa_status_desired_replicas`
