@@ -406,9 +406,9 @@ kubectl get all -n logging
 ### Tracing
 
 
-## Prometheus and Kubernetes
+## Prometheus
 
-### Prometheus Scrape in kubernetes
+### Kubernetes - Configuration
 
 There are multiple ways to configure `targets` using **Prometheus**. Those targets are scraped (via **pull** method) in order to collect their metrics. The traditional approach is by using **static** configuration, using a configuration file. On the other hand, the **dynamic** approach uses *service discovery* methods to get the online targets. Since the beginning of kubernetes, new ways have appeared to configure endpoints, one of them is by using the `Prometheus Operator` and the other is using `Annotations`, the last one using k8s DSL and service definitions.
 
@@ -453,7 +453,7 @@ spec:
   type: ClusterIP
 ```
 
-### Kubernetes Limits
+### Kubernetes - Pod-Container Limits
 
 Resource **Limits** (*cpu* and *memory*) per deployment are exposed via metrics. Those metrics related to the API configuration are collected by `kube-state-metrics`. This eXporter collects the limits configured by a deployment; also it collects many other metrics HPA, status, etc... This is not a daemoner, since all the metrics are the same and it is not needed HA. 
 
@@ -524,7 +524,7 @@ resources:
     268435456
     ```json
 
-#### Kubernetes - Horizontal Pod Autoscaler
+### Kubernetes - Horizontal Pod Autoscaler (HPA)
 
 > Be careful, this installation will **break** traefik-controller. It must be change the type from `ClusterIP` to `NodePort` inside `prometheus-server` service.
 
@@ -541,6 +541,51 @@ resources:
 - `kube_hpa_spec_max_replicas` vs `kube_hpa_spec_min_replicas`
 - `kube_hpa_status_condition` (AbleToScale, ScalingActive, ..)
 - `kube_hpa_status_current_replicas` vs `kube_hpa_status_desired_replicas`
+
+### Prometheus at Scale (HA)
+
+The **Prometheus** website provides some basic details and instruction on how do HA. For most people already operating in the Kubernetes world, the typical way of getting Prometheus to be HA is simply to use Kubernetes itself – i.e to have multiple instances of Prometheus and to deploy it into Kubernetes, so that Kubernetes can manage the temporary loss of infrastructure.
+
+This approach however still leaves some problems unsolved namely:
+
+- **Data Retention**: Prometheus will still only keep a small window of data – if you want to review historical data to see what the system was doing last week/month/etc, you can’t.
+- **Data Inconsistency**: Just putting a load balancer in front of multiple Prometheus assumes that all of them were up and able to scrape the same metrics – a new instance starting up will have no historical data.
+- **Hidden Outages**: If Prometheus is supposed to be monitoring Kubernetes, then there is the potential problem of an **outage** on Kubernetes not being reported because Prometheus wasn’t up to notice it
+
+The third problem can be solved using autoscaling type functionality. For example in AWS with autoscaling groups, the configuration for Prometheus could live in either the user data attached to the autoscaling group, or an S3 bucket, but this still leaves the other problems.
+
+In this section we discuss the options more active and trying to deal with this issue: **Thanos** and **Cortex**
+
+#### Thanos
+
+![logo](images/Thanos-logo_fullmedium.png)
+
+**Thanos** is a set of components that can be composed into a highly available metric system with unlimited storage capacity, which can be added seamlessly on top of existing Prometheus deployments.
+
+**Thanos** leverages the Prometheus 2.0 storage format to cost-efficiently store historical metric data in any object storage while retaining fast query latencies. Additionally, it provides a global query view across all Prometheus installations and can merge data from Prometheus HA pairs on the fly.
+
+Concretely the aims of the project are:
+
+- Global query view of metrics (PromQL).
+- Unlimited retention of metrics (google objet storate, s3, etc..).
+- High availability of components, including Prometheus.
+
+![Thanos architecture](images/arch-thanos.jpg)
+
+#### Cortex
+
+![logo](images/logo-cortex.png)
+
+**Cortex** is a  horizontally scalable, highly available, multi-tenant, long term storage for Prometheus.
+
+- **Horizontally scalable**: Cortex can run across multiple machines in a cluster, exceeding the throughput and storage of a single machine. This enables you to send the metrics from multiple Prometheus servers to a single Cortex cluster and run "globally aggregated" queries across all data in a single place.
+- **Highly available**: When run in a cluster, Cortex can replicate data between machines. This allows you to survive machine failure without gaps in your graphs.
+- **Multi-tenant**: Cortex can isolate data and queries from multiple different independent Prometheus sources in a single cluster, allowing untrusted parties to share the same cluster.
+- **Long term storage**: Cortex supports Amazon DynamoDB, Google Bigtable, Cassandra, S3 and GCS for long term storage of metric data. This allows you to durably store data for longer than the lifetime of any single machine, and use this data for long term capacity planning.
+
+Cortex is a **CNCF** sandbox project used in several production systems including Weave Cloud and GrafanaCloud. Cortex is a primarily used as a remote write destination for Prometheus, with a Prometheus-compatible query API.
+
+![Cortex architecture](images/cortex-scalable.png)
 
 ## Configuration
 
