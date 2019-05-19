@@ -60,6 +60,7 @@ This repository is a project to show how to build an observable distributed syst
 - Install `traefik` for ingress controller using helm
 
     ```bash
+    # Install this one, to demonstrate later the prometheus annotations.
     helm install --name traefik-ingress --namespace kube-system --set dashboard.enabled=true,metrics.prometheus.enabled=true,rbac.enabled=true,dashboard.domain=traefik.management.com,dashboard.ingress.annotations."kubernetes\.io/ingress\.class"=traefik stable/traefik
 
     # Configured to use with Prometheus annotations.
@@ -141,14 +142,8 @@ This repository is a project to show how to build an observable distributed syst
   - Node eXporter: 405
   - Cadvisor: 893
   - Kubernetes cluster monitoring: 1621
-  - Kubernetes Cluster (Prometheus): 6417
-  - Kubernetes cluster monitoring (via Prometheus): 315
-  - Analysis by Pod: 6879
-  - Cluster cost & utilization metrics: 8670
-  - K8s Cluster Summary (by Node and Namespaces): 8685
-  - Kubernetes App Metrics: 1471 (cpu, memory compared to limits, etc..)
-  - Kubernetes Cluster (workload): 7249 (Good summary, split by namespace, deployment, pods, etc..)
   - Traefik dashborad: 4475
+  - K8/Openshift Projects: 8184
 
 - Add `traefik` extra metrics and dashboard (grafana dashboard: 4475)
 
@@ -601,3 +596,20 @@ Edit your `/etc/hosts` file with this configuration bellow.
 127.0.0.1   elasticsearch.logging.com
 127.0.0.1   kibana.logging.com
 ```
+
+### Grafana dashboards
+
+Some pre-made dashboards for grafana:
+
+- Node eXporter: 405
+- Cadvisor: 893
+- Kubernetes cluster monitoring: 1621 (315 preferred)
+- Traefik dashborad: 4475
+- Kubernetes Cluster (Prometheus): 6417 (8685 preferred)
+- Kubernetes cluster monitoring (via Prometheus): 
+- Analysis by Pod: 6879
+- Cluster cost & utilization metrics: 8670
+- K8s Cluster Summary : 8685 (by Node, Deployments, namespaces, Pods and containers)
+- Kubernetes App Metrics: 1471 (cpu, memory compared to limits, etc..)
+- Kubernetes Cluster (workload): 7249 (Good summary, however it must be split by namespace, deployment, pods, etc..)
+- K8/Openshift Projects: 8184 (Good summary by namespace)
