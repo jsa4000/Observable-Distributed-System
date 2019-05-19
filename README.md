@@ -51,7 +51,7 @@ This repository is a project to show how to build an observable distributed syst
     helm reset --force
     ```
 
-### Traefik Ingress
+### Traefik Ingress (Ingress-controller)
 
 **Traefik** is a modern HTTP reverse proxy and load balancer that makes deploying microservices easy. Traefik integrates with your existing infrastructure components (Docker, Swarm mode, Kubernetes, Marathon, Consul, Etcd, Rancher, Amazon ECS, ...) and configures itself automatically and dynamically. Pointing Traefik at your orchestrator should be the only configuration step you need.
 
@@ -94,6 +94,8 @@ This repository is a project to show how to build an observable distributed syst
         kubectl describe svc traefik-ingress --namespace kube-system
         kubectl get pod,svc --all-namespaces
     ```
+
+- Access to [traefik dashbard](http://traefik.management.com)
 
 ### Prometheus and Grafana
 
@@ -205,7 +207,28 @@ Elasticsearch can be accessed:
     kubectl port-forward --namespace logging $POD_NAME 9200:9200
 ```
 
-Verify the current client can be accessed from ingress http://elasticsearch.logging.com/ and http://elasticsearch.logging.com/_count?pretty
+**Wait** until all the pods still pending:
+
+```bash
+kubectl get pods -n logging -w
+```
+
+**Verify** the current es client can be accessed from ingress:
+
+- http://elasticsearch.logging.com/
+- http://elasticsearch.logging.com/_count?pretty (if `port-forward` use http://localhost:9200 )
+
+  ```json
+  {
+    "count" : 0,
+    "_shards" : {
+      "total" : 0,
+      "successful" : 0,
+      "skipped" : 0,
+      "failed" : 0
+    }
+  }
+  ```
 
 #### Kibana
 
@@ -216,6 +239,8 @@ Install **kibana** helm chart
 ```bash
 helm install --name kibana --namespace logging --set ingress.enabled=true,ingress.annotations."kubernetes\.io/ingress\.class"=traefik,ingress.hosts={kibana.logging.com},env.ELASTICSEARCH_HOSTS=http://elasticsearch-client:9200,service.externalPort=80 stable/kibana
 ```
+
+> **NOTE:** Be care, from `kibana v6.6.x`, it has been changed the env variables. In this case `ELASTICSEARCH_URL` is no longer valid and it has been replaced by `ELASTICSEARCH_HOSTS`.
 
 Output, after installing the chart.
 
@@ -243,8 +268,13 @@ Install **Fluent Bit** helm chart
 ```bash
 helm install --name fluentbit --namespace logging --set backend.type=es,backend.es.host=elasticsearch-client,service.logLevel=info,filter.mergeJSONLog=false stable/fluent-bit
 
+# With mergeJSONLog, useful to merge JSON, from original app logs.
+# Use `@timestamp_es` as an indexr in kibana
 helm install --name fluentbit --namespace logging --set backend.type=es,backend.es.host=elasticsearch-client,service.logLevel=info,filter.mergeJSONLog=true,backend.es.time_key=@timestamp_es stable/fluent-bit
+
 ```
+
+> NOTE: `input.systemd.enabled=true` is important to capture also logs from kubelet (i.e. `ImagePullBackOff`). However this is not working actually.
 
 Output, after installing the chart.
 
@@ -255,18 +285,123 @@ fluent-bit is now running.
 It will forward all container logs to the svc named elasticsearch-client on port: 9200
 
 ```
-
 > To verify the installation, check if the pods are connected to the backend (elasticsearch) via logs. `kubectl logs -n logging pods/fluentbit-fluent-bit-wjhsr`
 
 #### EFK
 
-- Test that all the pods, services, etc are running
+Now, lets configure it and get more deep into the efk stack.
+
+- First, check if all the pods, services, etc are running
 
 ```bash
 kubectl get all -n logging
 ```
 
-- 
+- After the installation, check again http://elasticsearch.logging.com/_count?pretty or http://localhost:9200/_count?pretty
+
+  ```json
+  {
+    "count" : 1648,
+    "_shards" : {
+      "total" : 6,
+      "successful" : 6,
+      "skipped" : 0,
+      "failed" : 0
+    }
+  }
+  ```
+
+- Enter into [kibana dashboard](http://kibana.logging.com) for the initialization
+  - Create an **index**, using `kubernetes_cluster-*` or simply `*`.
+  - Use `@timestamp` or `@timestamp_es` (+ json merged) as a time filter for all the  traced logs.
+
+  > `@timestamp_es` needs to be configured as a key inside `fluentbit` so it won´t conflict with the default `@timestamp` added by default for the traces.
+
+- From this point, all the **logs** traced by the appilcations inside the cluster and namespaces are centralized using *EFK*.
+
+  - kube-apiserver
+  - tiller
+  - kube-controller-manager
+  - etcd
+  - traefik-ingres
+  - etc..
+
+- As an example, run the following command to test correct and failure logs.
+
+  ```bash
+  kubectl run nginx --image=nginx --replicas=1
+
+  # Since the image version does not exist, it throws a 'ImagePullBackOff' status error
+  kubectl run nginx --image=nginx:4321 --replicas=1
+  ```
+
+  ```txt
+  ...
+  kubernetes.container_name: kube-controller-manager
+  kubernetes.namespace_name: kube-system
+  ...
+  log: I0519 07:22:38.320591       1 event.go:218] Event(v1.ObjectReference{Kind:"ReplicaSet", Namespace:"default", Name:"nginx-756ff8975b", UID:"e17df8e0-7a06-11e9-96c2-025000000001", APIVersion:"extensions", ResourceVersion:"2804", FieldPath:""}): type: 'Normal' reason: 'SuccessfulCreate' Created pod: nginx-756ff8975b-td6w2
+  ...
+  ```
+
+- Create  a filter or DSL query using `log:*nginx*` and `ImagePullBackOff`
+
+- Information prompted deploying My-SQL helm chart (`I0519`).
+
+  ```json
+  I0519 09:23:17.353146       1 event.go:218] Event(v1.ObjectReference{Kind:"PersistentVolumeClaim", Namespace:"storage", Name:"mysql-release", UID:"b8bc13ee-7a17-11e9-a4a1-025000000001", APIVersion:"v1", ResourceVersion:"1514", FieldPath:""}): type: 'Normal' reason: 'ExternalProvisioning' waiting for a volume to be created, either by external provisioner "docker.io/hostpath" or manually created by system administrator
+  ```
+
+- Error Prompted from helm (`E0519`).
+
+  ```json
+  {
+    "_index": "kubernetes_cluster-2019.05.19",
+    "_type": "flb_type",
+    "_id": "4jZnz2oBKte1OHWKC7hz",
+    "_version": 1,
+    "_score": null,
+    "_source": {
+      "@timestamp_es": "2019-05-19T09:23:17.372Z",
+      "log": "E0519 09:23:17.372584       1 pv_protection_controller.go:116] PV pvc-b8bc13ee-7a17-11e9-a4a1-025000000001 failed with : Operation cannot be fulfilled on persistentvolumes \"pvc-b8bc13ee-7a17-11e9-a4a1-025000000001\": the object has been modified; please apply your changes to the latest version and try again\n",
+      "stream": "stderr",
+      "time": "2019-05-19T09:23:17.3729255Z",
+      "kubernetes": {
+        "pod_name": "kube-controller-manager-docker-for-desktop",
+        "namespace_name": "kube-system",
+        "pod_id": "52d5d585-7a16-11e9-a4a1-025000000001",
+        "labels": {
+          "component": "kube-controller-manager",
+          "tier": "control-plane"
+        },
+        "annotations": {
+          "kubernetes_io/config_hash": "7c34d027d0fbe6a010a0e1180164e72d",
+          "kubernetes_io/config_mirror": "7c34d027d0fbe6a010a0e1180164e72d",
+          "kubernetes_io/config_seen": "2019-05-19T09:12:03.944251Z",
+          "kubernetes_io/config_source": "file",
+          "scheduler_alpha_kubernetes_io/critical-pod": ""
+        },
+        "host": "docker-for-desktop",
+        "container_name": "kube-controller-manager",
+        "docker_id": "472f17eaf65e3191a90d0dbb542a6fd267b6e14922f500a0a5b7405e82044134"
+      }
+    },
+    "fields": {
+      "@timestamp_es": [
+        "2019-05-19T09:23:17.372Z"
+      ],
+      "kubernetes.annotations.kubernetes_io/config_seen": [
+        "2019-05-19T09:12:03.944Z"
+      ],
+      "time": [
+        "2019-05-19T09:23:17.372Z"
+      ]
+    },
+    "sort": [
+      1558257797372
+    ]
+  }
+  ```
 
 ### Tracing
 
@@ -406,3 +541,18 @@ resources:
 - `kube_hpa_spec_max_replicas` vs `kube_hpa_spec_min_replicas`
 - `kube_hpa_status_condition` (AbleToScale, ScalingActive, ..)
 - `kube_hpa_status_current_replicas` vs `kube_hpa_status_desired_replicas`
+
+## Configuration
+
+### DNS
+
+Edit your `/etc/hosts` file with this configuration bellow.
+
+```txt
+127.0.0.1   traefik.management.com
+127.0.0.1   grafana.monitoring.com
+127.0.0.1   prometheus.monitoring.com
+127.0.0.1   alertmanager.monitoring.com
+127.0.0.1   elasticsearch.logging.com
+127.0.0.1   kibana.logging.com
+```
