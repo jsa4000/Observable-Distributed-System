@@ -1,0 +1,10 @@
+version: '2'
+services:
+    orderstore-postgresql:
+        image: postgres:10.4
+        environment:
+            - POSTGRES_DB=catalog
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=password
+        ports:
+            - 5432:5432

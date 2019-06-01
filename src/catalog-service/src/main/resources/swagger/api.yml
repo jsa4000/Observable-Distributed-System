@@ -1,0 +1,194 @@
+openapi: "3.0.0"
+info:
+  version: 0.1.0
+  title: Product Rest API
+  description: Api to manage the products reported to the system
+  termsOfService: http://ares.ecommerce.com/terms
+  contact:
+    name: Ecommerce - Application
+    email: ecommerce.contact@group.com
+    url: http://ecommerce.shop.com/
+servers:
+  - url: /api/v1
+tags:
+  - name: products
+    description: Everything about Products
+paths:
+  /products:
+    get:
+      description: |
+        Returns all products from the system that the user has access to
+      operationId: findProducts
+      tags:
+        - products
+      parameters:
+        - name: pageNumber
+          in: query
+          description: current page to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: pageSize
+          in: query
+          description: maximum number of results to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: products paged response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageProducts'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: Creates a new products. Duplicates are allowed
+      operationId: addProduct
+      tags:
+        - products
+      requestBody:
+        description: Product to add to the system
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProduct'
+      responses:
+        '201':
+          description: product response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/{id}:
+    get:
+      description: Returns a product based on id
+      operationId: find product by id
+      tags:
+        - products
+      parameters:
+        - name: id
+          in: path
+          description: ID of product to fetch
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: product response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      description: deletes a single product based on the ID supplied
+      operationId: deleteProduct
+      tags:
+        - products
+      parameters:
+        - name: id
+          in: path
+          description: ID of product to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: product deleted
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    jwt:
+      type: http
+      description: JWT Authentication
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Product:
+      allOf:
+        - $ref: '#/components/schemas/CreateProduct'
+        - required:
+            - id
+          properties:
+            id:
+              type: integer
+              format: int64
+    CreateProduct:
+      required:
+        - name
+        - entryDate
+        - provider
+      properties:
+        name:
+          type: string
+          maxLength: 256
+        description:
+          type: string
+          maxLength: 512
+        entryDate:
+          type: string
+          format: date-time
+        price:
+          type: number
+          format: double
+          minimum: 0
+        provider:
+          type: string
+          maxLength: 256
+    PageProducts:
+      required:
+        - name
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+security:
+  - jwt: []

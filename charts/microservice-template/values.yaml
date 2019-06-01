@@ -1,0 +1,143 @@
+## Microservice image
+## ref:
+##
+image:
+  ## Microservice repository info
+  ## ref:
+  ##
+  registry: docker.io
+  repository: hello-world
+  tag: latest
+  ## Specify a imagePullPolicy
+  ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  imagePullPolicy: IfNotPresent
+
+## Microservice replicas for deployment
+## ref:
+##
+replicas: 1
+
+## Service configuration options
+##
+service:
+  type: ClusterIP
+  externalPort: 8080
+  # nodePort: 31412
+  annotations: {}
+    # prometheus.io/scrape: "true"
+    # prometheus.io/port: '8080'
+    # prometheus.io/path: /management/metrics
+
+## Ingress configuration options
+##
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  labels: {}
+  path: /
+  hosts:
+    - microservice.cluster.local
+  tls: []
+  #  - secretName: microservice-cluster-tls
+  #    hosts:
+  #      - microservice.cluster.local
+
+# Configure the probes for liveness and readiness
+probes:
+  ## liveness probe endpoint
+  livenessPath: /management/health
+  livenessPort: http
+  ## readiness probe endpoint
+  readinessPath: /management/health
+  readinessPort: http
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources: {}
+#  limits:
+#    cpu: 1.0
+#    memory: 2048Mi
+#  requests:
+#    cpu: 0.5
+#    memory: 640Mi
+
+## Datasource parameters, default 'postgresql' database
+#
+datasource:
+  type: postgresql
+  database: micro
+  ## Database Hostname
+  ## if empty, the database points to the local database installed with the chart
+  #
+  host:
+  port: 5432
+  username: postgres
+  password: password
+  driverClassName: org.postgresql.Driver
+
+## Postgres chart parameters
+postgresql:
+
+  ## Create Postresql deployment
+  ##
+  enabled: false
+
+  ## Bitnami PostgreSQL image version
+  ## ref: https://hub.docker.com/r/bitnami/postgresql/tags/
+  ##
+  image:
+    registry: docker.io
+    repository: bitnami/postgresql
+    tag: 10.7.0
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: Always
+
+  ## Bitnami PostgreSQL replication
+  ## ref: https://hub.docker.com/r/bitnami/postgresql/tags/
+  ##
+  replication:
+    enabled: false
+
+  ## PostgreSQL admin user
+  ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
+  postgresqlUsername: postgres
+
+  ## PostgreSQL password
+  ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
+  ##
+  postgresqlPassword: password
+
+  ## PostgreSQL data dir
+  ## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md
+  ##
+  postgresqlDataDir: /bitnami/postgresql
+
+  ## PostgreSQL service configuration
+  service:
+    type: ClusterIP
+    port: 5432
+    # nodePort: 31312
+
+  ## PostgreSQL persistence configuration
+  persistence:
+    enabled: true
+    mountPath: /bitnami/postgresql
+    ## The subdirectory of the volume to mount to, useful in dev environments
+    ## and one PV for multiple services.
+    ##
+    subPath: ""
+
+    # storageClass: "-"
+    accessModes:
+      - ReadWriteOnce
+    size: 8Gi
+    annotations: {}
+

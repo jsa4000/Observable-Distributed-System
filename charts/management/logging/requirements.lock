@@ -1,0 +1,12 @@
+dependencies:
+- name: elasticsearch
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 1.27.2
+- name: fluent-bit
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 2.0.2
+- name: kibana
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 3.0.0
+digest: sha256:616ae3b090c84cde57908e6bb08fd59ea6ce9d42b19a8ce561a5791d17d738ea
+generated: 2019-05-29T11:37:46.417366+02:00
