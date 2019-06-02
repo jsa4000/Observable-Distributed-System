@@ -68,6 +68,10 @@ spec:
               key: database-password
         - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
           value: {{ .Values.datasource.driverClassName }}
+        {{- range $key, $value := .Values.env }}
+        - name: "{{ $key }}"
+          value: "{{ $value }}"
+        {{- end }}
       initContainers:
       - name: init-db-wait
         image: busybox

@@ -16,11 +16,14 @@
     <version>0.0.1-SNAPSHOT</version>
 
 	<modules>
-        <module>order-service</module>
+        <module>ordering-service</module>
         <module>catalog-service</module>
     </modules>
 
     <properties>
+        <docker-registry>registry.hub.docker.com/jsa4000/</docker-registry>
+        <docker-prefix>ecommerce-</docker-prefix>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <maven-resources-plugin>3.1.0</maven-resources-plugin>
@@ -53,9 +56,6 @@
         <liquibase-password></liquibase-password>
         <liquibase-driver>org.h2.Driver</liquibase-driver>
         <liquibase-dialect>org.hibernate.dialect.H2Dialect</liquibase-dialect>
-
-        <docker-registry>registry.hub.docker.com/jsa4000/</docker-registry>
-        <docker-prefix>ecommerce-project-</docker-prefix>
     </properties>
 
     <dependencies>

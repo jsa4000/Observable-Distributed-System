@@ -287,7 +287,7 @@ fluent-bit:
       tls_debug: 1
       shared_key:
     es:
-      host: elasticsearch-client
+      host: logging-elasticsearch-client
       port: 9200
       # Elastic Index Name
       index: kubernetes_cluster
@@ -518,7 +518,7 @@ kibana:
     ## To adjust a config option to an env var uppercase + replace `.` with `_`
     ## Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
     ## For kibana < 6.6, use ELASTICSEARCH_URL instead
-    ELASTICSEARCH_HOSTS: http://elasticsearch-client:9200
+    ELASTICSEARCH_HOSTS: http://logging-elasticsearch-client:9200
     # SERVER_PORT: 5601
     # LOGGING_VERBOSE: "true"
   # SERVER_DEFAULTROUTE: "/app/kibana"

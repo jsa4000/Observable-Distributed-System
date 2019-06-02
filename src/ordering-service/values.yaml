@@ -6,7 +6,7 @@ image:
   ## ref:
   ##
   registry: registry.hub.docker.com
-  repository: jsa4000/ecommerce-catalog-service
+  repository: jsa4000/ecommerce-ordering-service
   tag: 0.0.1-SNAPSHOT
   ## Specify a imagePullPolicy
   ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -14,9 +14,12 @@ image:
   ##
   imagePullPolicy: IfNotPresent
 
-env: {}
+env:
   ## All environment variables extra
   # SPRING_PROFILES_ACTIVE: docker
+
+  SERVICES_CATALOG_ENDPOINT: http://catalog-service-micro:8080/api/v1
+
 
 ## Microservice replicas for deployment
 ## ref:
@@ -29,7 +32,7 @@ service:
   #type: ClusterIP
   type: NodePort
   externalPort: 8080
-  nodePort: 31412
+  nodePort: 31413
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: '8080'
@@ -75,7 +78,7 @@ resources: {}
 #
 datasource:
   type: postgresql
-  database: catalog
+  database: ordering
   ## Database Hostname
   ## if empty, the database points to the local database installed with the chart
   #
@@ -129,7 +132,7 @@ postgresql:
   service:
     type: NodePort
     port: 5432
-    nodePort: 31312
+    nodePort: 31313
 
   ## PostgreSQL persistence configuration
   persistence:
