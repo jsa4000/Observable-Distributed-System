@@ -1,0 +1,15 @@
+version: '3.5'
+
+services:
+  postgres:
+    image: postgres:10.7-alpine
+    restart: always
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: ordering,catalog
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
+    volumes:
+      - ${PWD}/files:/docker-entrypoint-initdb.d
+

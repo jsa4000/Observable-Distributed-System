@@ -192,6 +192,9 @@ components:
         - provider
         - clientId
       properties:
+        productId:
+          type: integer
+          format: int64
         invoiceId:
           type: integer
           format: int64

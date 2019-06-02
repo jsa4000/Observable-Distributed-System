@@ -15,6 +15,7 @@
 ```json
 {
   "invoiceId": 12,
+  "productId": 1,
   "orderDate": "2019-05-24T13:59:07.903Z",
   "totalCost": 10.3,
   "totalCostWithoutVap": 9.78,

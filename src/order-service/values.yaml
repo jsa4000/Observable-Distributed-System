@@ -71,7 +71,7 @@ resources: {}
 #
 datasource:
   type: postgresql
-  database: order
+  database: ordering
   ## Database Hostname
   ## if empty, the database points to the local database installed with the chart
   #

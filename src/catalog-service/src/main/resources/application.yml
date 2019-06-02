@@ -51,12 +51,15 @@ spring:
       hibernate.cache.use_second_level_cache: false
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: true
+
+server:
+  port: 8081
 ---
 spring:
   profiles: docker
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://dockerhost:5432/catalog
+    url: jdbc:postgresql://postgres:5432/catalog
     driverClassName: org.postgresql.Driver
     username: postgres
     password: password

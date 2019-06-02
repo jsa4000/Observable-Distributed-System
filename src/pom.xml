@@ -195,6 +195,7 @@
                     <version>${openapi-generator-maven-plugin.version}</version>
                     <executions>
                         <execution>
+                            <id>generate-api</id>
                             <goals>
                                 <goal>generate</goal>
                             </goals>
@@ -387,6 +388,11 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>docker/*.*</exclude>
+                    <exclude>mustache/*.*</exclude>
+                    <exclude>swagger/*.*</exclude>
+                </excludes>
             </resource>
             <resource>
                 <directory>${project.basedir}/target/extra-resources</directory>

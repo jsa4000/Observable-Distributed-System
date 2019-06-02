@@ -3,7 +3,7 @@ services:
     orderstore-postgresql:
         image: postgres:10.4
         environment:
-            - POSTGRES_DB=order
+            - POSTGRES_DB=ordering
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=password
         ports:

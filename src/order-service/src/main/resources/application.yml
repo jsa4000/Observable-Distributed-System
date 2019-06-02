@@ -39,7 +39,7 @@ spring:
   profiles: local
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://dockerhost:5432/order
+    url: jdbc:postgresql://dockerhost:5432/ordering
     driverClassName: org.postgresql.Driver
     username: postgres
     password: password
@@ -51,12 +51,16 @@ spring:
       hibernate.cache.use_second_level_cache: false
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: true
+
+services:
+  catalog:
+    endpoint: http://localhost:8081/api/v1
 ---
 spring:
   profiles: docker
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://dockerhost:5432/order
+    url: jdbc:postgresql://postgres:5432/ordering
     driverClassName: org.postgresql.Driver
     username: postgres
     password: password
@@ -68,3 +72,7 @@ spring:
       hibernate.cache.use_second_level_cache: false
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: true
+
+services:
+  catalog:
+    endpoint: http://catalog-service:8080/api/v1

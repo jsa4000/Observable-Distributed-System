@@ -2,12 +2,14 @@ package com.group.ecommerce.order.service;
 
 import com.group.ecommerce.order.domain.OrderInfo;
 import com.group.ecommerce.order.exception.OrderNotFoundException;
+import com.group.ecommerce.order.exception.ProductNotFoundException;
 import com.group.ecommerce.order.mapper.OrderInfoMapper;
 import com.group.ecommerce.order.repository.OrderInfoRepository;
 import com.group.ecommerce.order.web.api.OrdersApiDelegate;
 import com.group.ecommerce.order.web.api.model.CreateOrderDto;
 import com.group.ecommerce.order.web.api.model.OrderDto;
 import com.group.ecommerce.order.web.api.model.PageOrdersDto;
+import com.group.ecommerce.order.web.catalog.model.ProductDto;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,16 +30,27 @@ public class OrderService implements OrdersApiDelegate{
 
     private final OrderInfoRepository orderRepository;
 
+    private final CatalogService catalogService;
+
     private final OrderInfoMapper orderInfoMapper;
 
-    public OrderService(OrderInfoRepository orderRepository, OrderInfoMapper orderInfoMapper) {
+    public OrderService(OrderInfoRepository orderRepository,
+                        OrderInfoMapper orderInfoMapper,
+                        CatalogService catalogService) {
         this.orderRepository = orderRepository;
         this.orderInfoMapper = orderInfoMapper;
+        this.catalogService = catalogService;
     }
 
     @Override
     @Timed(value = "group.ecommerce.order.service")
     public ResponseEntity<OrderDto> addOrder(CreateOrderDto newOrder) {
+        Optional<ProductDto> product = catalogService.findProductById(newOrder.getProductId());
+        if (!product.isPresent()) {
+            throw new ProductNotFoundException(String.format("Product with id %s could not be found",
+                    newOrder.getProductId()));
+        }
+
         OrderInfo order = orderRepository.save(orderInfoMapper.toDomain(newOrder));
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(orderInfoMapper.fromDomain(order));

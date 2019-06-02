@@ -35,6 +35,10 @@ public class OrderInfo implements Serializable {
     private Long invoiceId;
 
     @NotNull
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
+
+    @NotNull
     @Column(name = "order_date", nullable = false)
     @Convert(converter = OffsetDateTimeConverter.class)
     private OffsetDateTime orderDate;
