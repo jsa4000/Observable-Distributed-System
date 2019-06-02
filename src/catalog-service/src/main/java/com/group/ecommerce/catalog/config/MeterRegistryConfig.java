@@ -12,7 +12,7 @@ public class MeterRegistryConfig {
 
     @Bean
     public MeterRegistryCustomizer<MeterRegistry> metricsCommonTags(@Value("${spring.application.name:}") String appName) {
-        return registry -> registry.config().commonTags("app.name", appName);
+        return registry -> registry.config().commonTags("application", appName);
     }
 
     @Bean

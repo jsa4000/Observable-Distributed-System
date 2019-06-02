@@ -64,3 +64,23 @@ For more information, refer to the [Code quality page][].
   # Remove all the charts
   helm delete $(helm list -q) --purge
   ```
+
+### Grafana Dashboards
+  
+- JVM (Micrometer): 4701
+- Spring Boot Statistics: 6756 (https://grafana.com/dashboards/6756)
+
+> Note: it is needed to add a custom tag called `application` with tne name of the application. It is explained [here](http://micrometer.io/docs/registry/prometheus#_installing)
+
+```java
+@Configuration
+public class MeterRegistryConfig {
+
+    @Bean
+    public MeterRegistryCustomizer<MeterRegistry> metricsCommonTags(@Value("${spring.application.name:}") String appName) {
+        return registry -> registry.config().commonTags("application", appName);
+    }
+
+}
+
+```

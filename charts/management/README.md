@@ -19,9 +19,6 @@ helm init --service-account tiller
 Installation of Ingress-controller will install a traefik ingress.
 
 ```bash
-#Update Helm dependencies
-helm dependency update
-
 # Install current chart
 helm install --dep-up --name traefik-ingress --namespace kube-system ingress-controller
 
