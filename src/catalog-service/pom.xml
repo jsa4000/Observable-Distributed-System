@@ -17,8 +17,6 @@
 	<properties>
 		<liquibase.version>3.6.3</liquibase.version>
 		<postgresql.version>42.2.5</postgresql.version>
-		<swagger-ui.disabled>false</swagger-ui.disabled>
-		<spring-core-metrics.version>0.0.1-SNAPSHOT</spring-core-metrics.version>
 
 		<!--liquibase-url>jdbc:postgresql://dockerhost:5432/catalog</liquibase-url>
 		<liquibase-username>postgres</liquibase-username>
@@ -35,7 +33,6 @@
 		<dependency>
 			<groupId>com.spring.core</groupId>
 			<artifactId>spring-core-starter-metrics</artifactId>
-			<version>${spring-core-metrics.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.liquibase</groupId>
@@ -51,7 +48,6 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>${h2.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -66,6 +62,24 @@
 				<groupId>org.liquibase</groupId>
 				<artifactId>liquibase-maven-plugin</artifactId>
 			</plugin>
+			<!--plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-remote-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>fetch-openapi-resources</id>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-swagger-ui-resources</id>
+					</execution>
+				</executions>
+			</plugin-->
 		</plugins>
 	</build>
 

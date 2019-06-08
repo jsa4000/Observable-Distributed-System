@@ -18,7 +18,6 @@
 		<liquibase.version>3.6.3</liquibase.version>
 		<postgresql.version>42.2.5</postgresql.version>
 		<swagger-ui.disabled>false</swagger-ui.disabled>
-		<spring-core-metrics.version>0.0.1-SNAPSHOT</spring-core-metrics.version>
 
 		<!--liquibase-url>jdbc:postgresql://dockerhost:5432/ordering</liquibase-url>
 		<liquibase-username>postgres</liquibase-username>
@@ -35,7 +34,6 @@
 		<dependency>
 			<groupId>com.spring.core</groupId>
 			<artifactId>spring-core-starter-metrics</artifactId>
-			<version>${spring-core-metrics.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.liquibase</groupId>

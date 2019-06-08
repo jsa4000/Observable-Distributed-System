@@ -18,16 +18,13 @@
         <docker-prefix>spring-boot-</docker-prefix>
 
         <jib-maven-plugin.version>1.2.0</jib-maven-plugin.version>
-        <opentracing.version>0.3.1</opentracing.version>
         <spring.version>5.1.6.RELEASE</spring.version>
         <spring-boot.version>2.1.5.RELEASE</spring-boot.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
         <liquibase-hibernate5.version>3.6</liquibase-hibernate5.version>
         <liquibase-maven-plugin.version>3.6.3</liquibase-maven-plugin.version>
-        <h2.version>1.4.199</h2.version>
 
         <openapi-generator-template>${project.basedir}/target/extra-resources/mustache</openapi-generator-template>
-
         <liquibase-url>jdbc:h2:file:${project.build.directory}/h2db/db/product</liquibase-url>
         <liquibase-username>sa</liquibase-username>
         <liquibase-password></liquibase-password>
@@ -145,6 +142,24 @@
                                 <file>sonar.properties</file>
                             </files>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>fetch-openapi-resources</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-swagger-ui-resources</id>
                     </execution>
                 </executions>
             </plugin>
@@ -336,17 +351,17 @@
                     <version>${sonar-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${maven-resources-plugin.version}</version>
                     <executions>
                         <execution>
-                            <id>copy-swagger-resources</id>
+                            <id>copy-swagger-ui-resources</id>
                             <phase>generate-resources</phase>
                             <goals>
                                 <goal>copy-resources</goal>
                             </goals>
                             <configuration>
-                                <skip>${swagger-ui.disabled}</skip>
                                 <outputDirectory>${project.basedir}/target/extra-resources/public/swagger-ui</outputDirectory>
                                 <resources>
                                     <resource>
@@ -371,7 +386,7 @@
                     <artifactId>maven-remote-resources-plugin</artifactId>
                     <executions>
                         <execution>
-                            <id>fetch-remote-resources</id>
+                            <id>fetch-openapi-resources</id>
                             <phase>initialize</phase>
                             <goals>
                                 <goal>process</goal>
