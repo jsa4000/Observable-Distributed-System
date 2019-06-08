@@ -1,4 +1,4 @@
-package com.group.ecommerce.ordering.aop;
+package com.spring.core.logging.aop;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -40,9 +40,9 @@ public class LoggingAspect {
     /**
      * Pointcut that matches all Spring beans in the application's main packages.
      */
-    @Pointcut("within(com.group.ecommerce.*.repository..*)"+
-        " || within(com.group.ecommerce.*.service..*)"+
-        " || within(com.group.ecommerce.*.web.rest..*)")
+    @Pointcut("within(*..*.repository..*)"+
+        " || within(*..*.service..*)"+
+        " || within(*..*.web.rest..*)")
     public void applicationPackagePointcut() {
         // Method is empty as this is just a Pointcut, the implementations are in the advices.
     }

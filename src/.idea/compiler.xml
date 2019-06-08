@@ -22,10 +22,11 @@
           <entry name="$MAVEN_REPOSITORY$/joda-time/joda-time/2.9/joda-time-2.9.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.8/lombok-1.18.8.jar" />
         </processorPath>
-        <module name="spring-core-starter-openapi" />
         <module name="ordering-service" />
-        <module name="catalog-service" />
+        <module name="spring-core-starter-openapi" />
+        <module name="spring-core-starter-logging" />
         <module name="spring-starter-metrics" />
+        <module name="catalog-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -37,6 +38,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="catalog-service" options="-parameters" />
       <module name="ordering-service" options="-parameters" />
+      <module name="spring-core-starter-logging" options="-parameters" />
       <module name="spring-core-starter-openapi" options="-parameters" />
       <module name="spring-starter-metrics" options="-parameters" />
     </option>

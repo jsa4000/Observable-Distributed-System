@@ -8,7 +8,6 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../spring-core-dependencies</relativePath>
 	</parent>
-	<groupId>com.spring.core</groupId>
 	<artifactId>spring-core-starter-openapi</artifactId>
 	<name>spring-core-starter-openapi</name>
 	<version>0.0.1-SNAPSHOT</version>

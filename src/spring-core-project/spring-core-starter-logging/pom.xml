@@ -8,18 +8,14 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../spring-core-dependencies</relativePath>
 	</parent>
-	<artifactId>spring-core-starter-metrics</artifactId>
-	<name>spring-core-starter-metrics</name>
+	<artifactId>spring-core-starter-logging</artifactId>
+	<name>spring-core-starter-logging</name>
 	<version>0.0.1-SNAPSHOT</version>
 	<description>Project to manage the metrics</description>
 	<dependencies>
 		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-registry-prometheus</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

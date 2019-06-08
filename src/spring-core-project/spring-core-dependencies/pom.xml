@@ -72,6 +72,11 @@
             </dependency>
             <dependency>
                 <groupId>com.spring.core</groupId>
+                <artifactId>spring-core-starter-logging</artifactId>
+                <version>${spring-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.spring.core</groupId>
                 <artifactId>spring-core-starter-openapi</artifactId>
                 <version>${spring-core.version}</version>
             </dependency>
