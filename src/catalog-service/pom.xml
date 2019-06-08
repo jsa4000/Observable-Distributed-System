@@ -3,10 +3,10 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.group.ecommerce</groupId>
-		<artifactId>parent</artifactId>
+		<groupId>com.spring.core</groupId>
+		<artifactId>spring-core-microservice-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
+		<relativePath>../spring-core-project/spring-core-microservice-parent</relativePath>
 	</parent>
 	<groupId>com.group.ecommerce</groupId>
 	<artifactId>catalog-service</artifactId>
@@ -18,6 +18,7 @@
 		<liquibase.version>3.6.3</liquibase.version>
 		<postgresql.version>42.2.5</postgresql.version>
 		<swagger-ui.disabled>false</swagger-ui.disabled>
+		<starter-metrics.version>0.0.1-SNAPSHOT</starter-metrics.version>
 
 		<!--liquibase-url>jdbc:postgresql://dockerhost:5432/catalog</liquibase-url>
 		<liquibase-username>postgres</liquibase-username>
@@ -32,8 +33,9 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-registry-prometheus</artifactId>
+			<groupId>com.spring.core</groupId>
+			<artifactId>spring-core-starter-metrics</artifactId>
+			<version>${starter-metrics.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.liquibase</groupId>
