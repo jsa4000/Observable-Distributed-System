@@ -26,6 +26,8 @@
         <liquibase-maven-plugin.version>3.6.3</liquibase-maven-plugin.version>
         <h2.version>1.4.199</h2.version>
 
+        <openapi-generator-template>${project.basedir}/target/extra-resources/mustache</openapi-generator-template>
+
         <liquibase-url>jdbc:h2:file:${project.build.directory}/h2db/db/product</liquibase-url>
         <liquibase-username>sa</liquibase-username>
         <liquibase-password></liquibase-password>
@@ -50,20 +52,16 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.spring.core</groupId>
+            <artifactId>spring-core-starter-openapi</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-sleuth</artifactId>
         </dependency>
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.openapitools</groupId>
-            <artifactId>jackson-databind-nullable</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -185,7 +183,7 @@
                             <configuration>
                                 <inputSpec>${project.basedir}/src/main/resources/swagger/api.yml</inputSpec>
                                 <generatorName>spring</generatorName>
-                                <templateDirectory>${project.basedir}/src/main/resources/mustache</templateDirectory>
+                                <templateDirectory>${openapi-generator-template}</templateDirectory>
                                 <apiPackage>${project.groupId}.${project.name}.web.api</apiPackage>
                                 <modelPackage>${project.groupId}.${project.name}.web.api.model</modelPackage>
                                 <modelNameSuffix>Dto</modelNameSuffix>
@@ -340,21 +338,19 @@
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${maven-resources-plugin.version}</version>
-                    <configuration>
-                        <skip>${swagger-ui.disabled}</skip>
-                    </configuration>
                     <executions>
                         <execution>
-                            <id>copy-resources</id>
+                            <id>copy-swagger-resources</id>
                             <phase>generate-resources</phase>
                             <goals>
                                 <goal>copy-resources</goal>
                             </goals>
                             <configuration>
+                                <skip>${swagger-ui.disabled}</skip>
                                 <outputDirectory>${project.basedir}/target/extra-resources/public/swagger-ui</outputDirectory>
                                 <resources>
                                     <resource>
-                                        <directory>src/swagger-ui</directory>
+                                        <directory>target/extra-resources/swagger-ui</directory>
                                         <filtering>true</filtering>
                                     </resource>
                                     <resource>
@@ -369,6 +365,25 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-remote-resources-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>fetch-remote-resources</id>
+                            <phase>initialize</phase>
+                            <goals>
+                                <goal>process</goal>
+                            </goals>
+                            <configuration>
+                                <resourceBundles>
+                                    <resourceBundle>com.spring.core:spring-core-starter-openapi:${spring-core.version}</resourceBundle>
+                                </resourceBundles>
+                                <outputDirectory>${project.basedir}/target/extra-resources</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

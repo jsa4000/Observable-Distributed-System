@@ -22,5 +22,6 @@
         <module>spring-core-dependencies</module>
         <module>spring-core-microservice-parent</module>
         <module>spring-core-starter-metrics</module>
+        <module>spring-core-starter-openapi</module>
     </modules>
 </project>
