@@ -128,6 +128,12 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
+# Maven
+.flattened-pom.xml
+**/target
+**/.flattened-pom.xml
+**/*.versionsBackup
+
 ### Node ###
 # Logs
 logs

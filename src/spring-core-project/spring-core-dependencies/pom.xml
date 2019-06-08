@@ -24,6 +24,8 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <flatten-maven-plugin.version>1.1.0</flatten-maven-plugin.version>
+        <xml-maven-plugin.version>1.0.2</xml-maven-plugin.version>
         <spring-boot-maven-plugin.version>2.1.5.RELEASE</spring-boot-maven-plugin.version>
 
         <java.version>1.8</java.version>
@@ -161,7 +163,7 @@
                         </execution>
                     </executions>
                 </plugin>
-                <!--plugin>
+                <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>3.0.2</version>
                     <configuration>
@@ -172,8 +174,8 @@
                             </manifestEntries>
                         </archive>
                     </configuration>
-                </plugin-->
-                <!--plugin>
+                </plugin>
+                <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
                     <version>1.0.0</version>
@@ -196,13 +198,14 @@
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
-                </plugin-->
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
-            <!--plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
+                <version>${flatten-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>flatten-effective-pom</id>
@@ -251,6 +254,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>xml-maven-plugin</artifactId>
+                <version>${xml-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>post-process-effective-pom</id>
@@ -299,7 +303,7 @@
                     </execution>
                 </executions>
                 <inherited>false</inherited>
-            </plugin-->
+            </plugin>
         </plugins>
     </build>
 </project>
