@@ -259,8 +259,10 @@
                     </dependencies>
                     <configuration>
                         <propertyFileWillOverride>true</propertyFileWillOverride>
+                        <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
                         <propertyFile>liquibase.properties</propertyFile>
-                        <changeLogFile>${project.basedir}/src/main/resources/liquibase/master.xml</changeLogFile>
+                        <!--changeLogFile>${project.basedir}/src/main/resources/liquibase/master.xml</changeLogFile-->
+                        <changeLogFile>liquibase/master.xml</changeLogFile>
                         <diffChangeLogFile>${project.basedir}/src/main/resources/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
                         <driver>${liquibase-driver}</driver>
                         <url>${liquibase-url}</url>

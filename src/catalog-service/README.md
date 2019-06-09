@@ -21,3 +21,23 @@
   "provider": "Microsoft"
 }
 ```
+
+## Liquibasae
+
+### Update
+
+        mvn liquibase:update
+
+### Rollout
+
+There are two ways to do roll-out using liquibase, **manual** and **automatic**. 
+
+- Manual: those changes must be implicitly added into the changelog.
+- Automatic: inferred automatically by changelogs.
+
+Also, there are three ways to get to a previous state.
+
+- By Count
+
+        # Rollout 1 step back 
+        mvn liquibase:rollback -Dliquibase.rollbackCount=1
