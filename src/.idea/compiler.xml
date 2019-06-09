@@ -28,13 +28,18 @@
         <module name="spring-core-starter-logging" />
         <module name="spring-core-starter-metrics" />
         <module name="catalog-service" />
+        <module name="spring-core-starter-jpa" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="spring-core-microservice-parent" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="catalog-service" options="-parameters" />
       <module name="ordering-service" options="-parameters" />
+      <module name="spring-core-starter-jpa" options="-parameters" />
       <module name="spring-core-starter-logging" options="-parameters" />
       <module name="spring-core-starter-metrics" options="-parameters" />
       <module name="spring-core-starter-openapi" options="-parameters" />

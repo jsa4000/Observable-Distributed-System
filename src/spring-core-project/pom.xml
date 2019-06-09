@@ -20,9 +20,10 @@
     </properties>
     <modules>
         <module>spring-core-dependencies</module>
-        <module>spring-core-microservice-parent</module>
+        <module>spring-core-parent</module>
         <module>spring-core-starter-metrics</module>
         <module>spring-core-starter-logging</module>
         <module>spring-core-starter-openapi</module>
+        <module>spring-core-starter-jpa</module>
     </modules>
 </project>

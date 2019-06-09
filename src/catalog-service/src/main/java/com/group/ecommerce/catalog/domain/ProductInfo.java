@@ -1,6 +1,6 @@
 package com.group.ecommerce.catalog.domain;
 
-import com.group.ecommerce.catalog.converter.OffsetDateTimeConverter;
+import com.spring.core.jpa.converter.OffsetDateTimeConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

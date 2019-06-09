@@ -1,4 +1,4 @@
-package com.group.ecommerce.catalog.converter;
+package com.spring.core.jpa.converter;
 
 import javax.persistence.AttributeConverter;
 import java.sql.Timestamp;
