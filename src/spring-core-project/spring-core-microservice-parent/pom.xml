@@ -54,6 +54,10 @@
         </dependency>
         <dependency>
             <groupId>com.spring.core</groupId>
+            <artifactId>spring-core-starter-metrics</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.spring.core</groupId>
             <artifactId>spring-core-starter-logging</artifactId>
         </dependency>
         <dependency>
@@ -94,8 +98,8 @@
                 <artifactId>jib-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${maven.failsafe.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -362,12 +366,8 @@
                                 <goal>copy-resources</goal>
                             </goals>
                             <configuration>
-                                <outputDirectory>${project.basedir}/target/extra-resources/public/swagger-ui</outputDirectory>
+                                <outputDirectory>${project.basedir}/target/extra-resources/public</outputDirectory>
                                 <resources>
-                                    <resource>
-                                        <directory>target/extra-resources/swagger-ui</directory>
-                                        <filtering>true</filtering>
-                                    </resource>
                                     <resource>
                                         <directory>src/main/resources/swagger</directory>
                                         <filtering>true</filtering>

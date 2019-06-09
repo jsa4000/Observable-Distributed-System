@@ -17,8 +17,7 @@
 	<properties>
 		<liquibase.version>3.6.3</liquibase.version>
 		<postgresql.version>42.2.5</postgresql.version>
-		<swagger-ui.disabled>false</swagger-ui.disabled>
-
+		<docker-prefix>ecommerce-</docker-prefix>
 		<!--liquibase-url>jdbc:postgresql://dockerhost:5432/ordering</liquibase-url>
 		<liquibase-username>postgres</liquibase-username>
 		<liquibase-password>password</liquibase-password>
@@ -30,10 +29,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.spring.core</groupId>
-			<artifactId>spring-core-starter-metrics</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.liquibase</groupId>
