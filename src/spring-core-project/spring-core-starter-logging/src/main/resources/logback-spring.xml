@@ -88,16 +88,14 @@
         </encoder>
     </appender>
 
-    <springProfile name="local">
-        <root>
-            <level value="${loggingLevelRoot}"/>
+    <springProfile name="!jsonlog">
+        <root level="${loggingLevelRoot}">
             <appender-ref ref="STDOUT" />
         </root>
     </springProfile>
 
-    <springProfile name="docker">
-        <root>
-            <level value="${loggingLevelRoot}"/>
+    <springProfile name="jsonlog">
+        <root level="${loggingLevelRoot}">
             <appender-ref ref="STDOUT_JSON" />
         </root>
     </springProfile>

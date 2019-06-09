@@ -24,6 +24,7 @@
         <liquibase-maven-plugin.version>3.6.3</liquibase-maven-plugin.version>
 
         <openapi-generator-template>${project.basedir}/target/extra-resources/mustache</openapi-generator-template>
+
         <liquibase-url>jdbc:h2:file:${project.build.directory}/h2db/db/product</liquibase-url>
         <liquibase-username>sa</liquibase-username>
         <liquibase-password></liquibase-password>
@@ -33,20 +34,16 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <!--dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.spring.core</groupId>
             <artifactId>spring-core-starter-openapi</artifactId>
@@ -126,45 +123,16 @@
                 <inherited>true</inherited>
             </plugin>
             <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>${properties-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <quiet>true</quiet>
-                            <files>
-                                <file>sonar.properties</file>
-                            </files>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-remote-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>fetch-openapi-resources</id>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-swagger-ui-resources</id>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
         <pluginManagement>
@@ -187,6 +155,25 @@
                             <include>**/*ITCase.java</include>
                         </includes>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>properties-maven-plugin</artifactId>
+                    <version>${properties-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>initialize</phase>
+                            <goals>
+                                <goal>read-project-properties</goal>
+                            </goals>
+                            <configuration>
+                                <quiet>true</quiet>
+                                <files>
+                                    <file>sonar.properties</file>
+                                </files>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.openapitools</groupId>
@@ -335,6 +322,8 @@
                         </dependency>
                     </dependencies>
                     <configuration>
+                        <propertyFileWillOverride>true</propertyFileWillOverride>
+                        <propertyFile>liquibase.properties</propertyFile>
                         <changeLogFile>${project.basedir}/src/main/resources/liquibase/master.xml</changeLogFile>
                         <diffChangeLogFile>${project.basedir}/src/main/resources/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
                         <driver>${liquibase-driver}</driver>
