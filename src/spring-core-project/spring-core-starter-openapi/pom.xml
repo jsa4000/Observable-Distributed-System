@@ -37,8 +37,8 @@
 				<configuration>
 					<includes>
 						<include>mustache/**</include>
-						<include>static/**</include>
-						<include>public/**</include>
+						<!--include>static/**</include>
+						<include>public/**</include-->
 					</includes>
 				</configuration>
 			</plugin>
