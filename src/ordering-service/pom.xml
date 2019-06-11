@@ -131,6 +131,7 @@
 							<id>generate-api</id>
 						</execution>
 						<execution>
+							<id>generate-client</id>
 							<goals>
 								<goal>generate</goal>
 							</goals>
