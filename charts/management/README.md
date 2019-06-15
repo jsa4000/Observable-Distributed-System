@@ -26,6 +26,12 @@ helm install --dep-up --name traefik-ingress --namespace kube-system ingress-con
 helm install --dep-up --name traefik-ingress --namespace kube-system --set traefik.dashboard.domain=traefik.management.com .
 ```
 
+### Upgrade values to support tracing with jaeger
+
+```bash
+helm upgrade traefik-ingress --values ingress-controller/values-tracing.yaml ingress-controller
+```
+
 ## Logging
 
 - Installation of logging chart will install a `elastic-search`, `kibana` and `fluent-bit` ingress.
@@ -108,6 +114,27 @@ kubectl get pods -n logging -w
   - Kubernetes App Metrics: 1471 (cpu, memory compared to limits, etc..)
   - Kubernetes Cluster (workload): 7249 (Good summary, however it must be split by namespace, deployment, pods, etc..)
   - K8/Openshift Projects: 8184 (Good summary by namespace)
+
+## Tracing
+
+- Installation of tracing chart will install a jaeger operator and a jaeger instance.
+
+    ```bash
+    #Update Helm dependencies
+    helm dependency update
+
+    # Install current chart
+    helm install --dep-up --name tracing --namespace tracing tracing
+
+    # Create jaeger instance using elastic search
+    kubectl apply -n tracing -f tracing/jaeger-elasticsearch.yaml
+    ```
+
+- In order to connect through jeager ui and using port-forward
+
+    ```bash
+    kubectl port-forward svc/jaeger-query -n tracing 16686:16686
+    ```
 
 ## Local Host
 

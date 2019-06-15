@@ -17,6 +17,7 @@
 	<properties>
 		<liquibase.version>3.6.3</liquibase.version>
 		<postgresql.version>42.2.5</postgresql.version>
+		<docker-registry>registry-1.docker.io/jsa4000/</docker-registry>
 		<docker-prefix>ecommerce-</docker-prefix>
 	</properties>
 

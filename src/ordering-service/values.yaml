@@ -19,6 +19,7 @@ env:
   # SPRING_PROFILES_ACTIVE: docker
 
   SERVICES_CATALOG_ENDPOINT: http://catalog-service-micro:8080/api/v1
+  #SERVER_SERVLET_CONTEXT-PATH: /ordering
 
 
 ## Microservice replicas for deployment
@@ -41,14 +42,15 @@ service:
 ## Ingress configuration options
 ##
 ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
     # kubernetes.io/tls-acme: "true"
   labels: {}
-  path: /
+  path: /ordering
   hosts:
-    - microservice.cluster.local
+    - dev.api.com
   tls: []
   #  - secretName: microservice-cluster-tls
   #    hosts:

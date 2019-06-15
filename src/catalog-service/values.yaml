@@ -17,6 +17,7 @@ image:
 env: {}
   ## All environment variables extra
   # SPRING_PROFILES_ACTIVE: docker
+  # SERVER_SERVLET_CONTEXT-PATH: /catalog
 
 ## Microservice replicas for deployment
 ## ref:
@@ -38,14 +39,15 @@ service:
 ## Ingress configuration options
 ##
 ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
     # kubernetes.io/tls-acme: "true"
   labels: {}
-  path: /
+  path: /catalog
   hosts:
-    - microservice.cluster.local
+    - dev.api.com
   tls: []
   #  - secretName: microservice-cluster-tls
   #    hosts:
