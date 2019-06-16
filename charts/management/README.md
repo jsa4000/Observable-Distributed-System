@@ -127,7 +127,7 @@ kubectl get pods -n logging -w
     #Update Helm dependencies
     helm dependency update
 
-    # Install current chart
+    # Install current chart with the jaeger operator
     helm install --dep-up --name tracing --namespace tracing tracing
 
     # Create jaeger instance using elastic search

@@ -400,7 +400,7 @@ traefik:
   sendAnonymousUsage: false
   tracing:
     enabled: true
-    serviceName: traefik
+    serviceName: traefik-api-gateway
     backend: zipkin
     # jaeger:
     #   localAgentHostPort: "127.0.0.1:6831"
@@ -408,7 +408,7 @@ traefik:
     #   samplingType: const
     #   samplingParam: 1.0
     zipkin:
-      httpEndpoint: http://jaeger-collector.tracing.svc.cluster.local:9411/api/v2/spans
+      httpEndpoint: http://jaeger-collector.tracing.svc.cluster.local:9411/api/v1/spans
     #   debug: false
       sameSpan: false
       id128bit: true

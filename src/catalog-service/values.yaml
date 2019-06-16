@@ -17,7 +17,9 @@ image:
 env:
   ## All environment variables extra
   SPRING_PROFILES_ACTIVE: docker,jsonlog
+  # SPRING_PROFILES_ACTIVE: docker
   SPRING_ZIPKIN_BASEURL: http://jaeger-collector.tracing.svc.cluster.local:9411
+  SPRING_SLEUTH_TRACEID128: true
   # SERVER_SERVLET_CONTEXT-PATH: /catalog
 
 ## Microservice replicas for deployment
