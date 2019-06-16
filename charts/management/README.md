@@ -119,6 +119,9 @@ kubectl get pods -n logging -w
   - Kubernetes Cluster (workload): 7249 (Good summary, however it must be split by namespace, deployment, pods, etc..)
   - K8/Openshift Projects: 8184 (Good summary by namespace)
 
+  - JVM (Micrometer): 4701
+  - Spring Boot Statistics: 6756 (https://grafana.com/dashboards/6756)
+
 ## Tracing
 
 - Installation of tracing chart will install a jaeger operator and a jaeger instance.
