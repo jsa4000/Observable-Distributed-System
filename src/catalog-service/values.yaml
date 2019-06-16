@@ -14,9 +14,10 @@ image:
   ##
   imagePullPolicy: Always
 
-env: {}
+env:
   ## All environment variables extra
-  # SPRING_PROFILES_ACTIVE: docker
+  SPRING_PROFILES_ACTIVE: docker,jsonlog
+  SPRING_ZIPKIN_BASEURL: http://jaeger-collector.tracing.svc.cluster.local:9411
   # SERVER_SERVLET_CONTEXT-PATH: /catalog
 
 ## Microservice replicas for deployment

@@ -29,7 +29,11 @@ helm install --dep-up --name traefik-ingress --namespace kube-system --set traef
 ### Upgrade values to support tracing with jaeger
 
 ```bash
+# Upgrade from previous
 helm upgrade traefik-ingress --values ingress-controller/values-tracing.yaml ingress-controller
+
+# Install
+helm install --dep-up --name traefik-ingress --namespace kube-system --values ingress-controller/values-tracing.yaml ingress-controller
 ```
 
 ## Logging
@@ -130,7 +134,7 @@ kubectl get pods -n logging -w
     kubectl apply -n tracing -f tracing/jaeger-elasticsearch.yaml
     ```
 
-- In order to connect through jeager ui and using port-forward
+- In order to connect through jeager ui and using port-forward (via [localhost](http://localhost:16686/))
 
     ```bash
     kubectl port-forward svc/jaeger-query -n tracing 16686:16686
