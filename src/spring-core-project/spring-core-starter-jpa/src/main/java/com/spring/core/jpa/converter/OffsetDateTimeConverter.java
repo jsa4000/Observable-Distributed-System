@@ -16,8 +16,7 @@ public class OffsetDateTimeConverter implements AttributeConverter <OffsetDateTi
 
     @Override
     public OffsetDateTime convertToEntityAttribute(Timestamp dbData) {
-        return dbData != null ? OffsetDateTime.ofInstant(Instant
-                .ofEpochMilli(dbData.getTime()), ZoneOffset.UTC) : null;
+        return dbData != null ? OffsetDateTime.of(dbData.toLocalDateTime(), ZoneOffset.UTC) : null;
     }
 
 }
