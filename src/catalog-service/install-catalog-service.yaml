@@ -1,0 +1,342 @@
+# Source: microservice/charts/postgresql/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: catalog-service-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-3.16.1
+    release: "catalog-service"
+    heritage: "Tiller"
+type: Opaque
+data:
+  postgresql-password: "cGFzc3dvcmQ="
+---
+# Source: microservice/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: catalog-service-micro
+  labels:
+    app: microservice
+    chart: "microservice-0.1.0"
+    release: "catalog-service"
+    heritage: "Tiller"
+type: Opaque
+data:
+  database-username: "cG9zdGdyZXM="
+  database-password: "cGFzc3dvcmQ="
+---
+# Source: microservice/templates/config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalog-service-micro
+  labels:
+    app: microservice
+    component: server
+    chart: "microservice-0.1.0"
+    release: "catalog-service"
+    heritage: "Tiller"
+data:
+---
+# Source: microservice/charts/postgresql/templates/svc-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-service-postgresql-headless
+  labels:
+    app: postgresql
+    chart: postgresql-3.16.1
+    release: "catalog-service"
+    heritage: "Tiller"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: postgresql
+    port: 5432
+    targetPort: postgresql
+  selector:
+    app: postgresql
+    release: "catalog-service"
+---
+# Source: microservice/charts/postgresql/templates/svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-service-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-3.16.1
+    release: "catalog-service"
+    heritage: "Tiller"
+spec:
+  type: NodePort
+  ports:
+  - name: postgresql
+    port: 5432
+    targetPort: postgresql
+    nodePort: 31312
+  selector:
+    app: postgresql
+    release: "catalog-service"
+    role: master
+---
+# Source: microservice/templates/service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: catalog-service-micro
+  labels:
+    app: microservice
+    component: server
+    chart: "microservice-0.1.0"
+    release: "catalog-service"
+    heritage: "Tiller"
+  annotations:
+    prometheus.io/path: /management/metrics
+    prometheus.io/port: "8080"
+    prometheus.io/scrape: "true"
+    
+spec:
+  # If you are running k8s on a local dev box, you can use type NodePort instead
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 31412
+      name: service
+  selector:
+    app: microservice
+    component: server
+    release: catalog-service
+---
+# Source: microservice/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-service-micro
+  labels:
+    app: microservice
+    component: server
+    chart: "microservice-0.1.0"
+    release: "catalog-service"
+    heritage: "Tiller"
+spec:
+  selector:
+    matchLabels:
+      app: microservice
+      component: server
+      release: "catalog-service"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: microservice
+        component: server
+        release: "catalog-service"
+    spec:
+      containers:
+      - name: catalog-service-micro
+        image: jsa4000/ecommerce-catalog-service:0.0.1-SNAPSHOT
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          {}
+          
+        livenessProbe:
+          httpGet:
+            path: /management/health
+            port: http
+          initialDelaySeconds: 120
+          periodSeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /management/health
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 5
+        env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: "metadata.namespace"
+        - name: SERVER_PORT
+          value: '8080'
+        - name: SPRING_PROFILES_ACTIVE
+          value: docker
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:postgresql://catalog-service-postgresql:5432/catalog
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: catalog-service-micro
+              key: database-username
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: catalog-service-micro
+              key: database-password
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          value: org.postgresql.Driver
+        - name: "SPRING_PROFILES_ACTIVE"
+          value: "docker,jsonlog"
+        - name: "SPRING_SLEUTH_TRACEID128"
+          value: "true"
+        - name: "SPRING_ZIPKIN_BASEURL"
+          value: "http://jaeger-collector.tracing.svc.cluster.local:9411"
+      initContainers:
+      - name: init-db-wait
+        image: busybox
+        command: ['sh', '-c', 'until nc -w3 -z catalog-service-postgresql 5432; do echo waiting for database; sleep 3; done;']
+      - name: init-create-dataflow
+        image: postgres:10.7-alpine
+        command: ['sh', '-c',
+          'PGPASSWORD=password createuser -h catalog-service-postgresql -p 5432 -U postgres catalog;
+          PGPASSWORD=password createdb -h catalog-service-postgresql -p 5432 -O postgres -U postgres catalog;
+          echo 0']
+---
+# Source: microservice/charts/postgresql/templates/statefulset.yaml
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: catalog-service-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-3.16.1
+    release: "catalog-service"
+    heritage: "Tiller"
+spec:
+  serviceName: catalog-service-postgresql-headless
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: postgresql
+      release: "catalog-service"
+      role: master
+  template:
+    metadata:
+      name: catalog-service-postgresql
+      labels:
+        app: postgresql
+        chart: postgresql-3.16.1
+        release: "catalog-service"
+        heritage: "Tiller"
+        role: master
+    spec:      
+      securityContext:
+        fsGroup: 1001
+      initContainers:
+      - name: init-chmod-data
+        image: docker.io/bitnami/minideb:latest
+        imagePullPolicy: "Always"
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+          
+        command:
+          - sh
+          - -c
+          - |
+            chown -R 1001:1001 /bitnami
+            if [ -d /bitnami/postgresql/data ]; then
+              chmod  0700 /bitnami/postgresql/data;
+            fi
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/postgresql
+          subPath: 
+      containers:
+      - name: catalog-service-postgresql
+        image: docker.io/bitnami/postgresql:10.7.0
+        imagePullPolicy: "Always"
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+          
+        securityContext:
+          runAsUser: 1001
+        env:
+        - name: PGDATA
+          value: "/bitnami/postgresql"
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: catalog-service-postgresql
+              key: postgresql-password
+        ports:
+        - name: postgresql
+          containerPort: 5432
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready -U "postgres" -h localhost
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready -U "postgres" -h localhost
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/postgresql
+          subPath: 
+      volumes:
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "8Gi"
+---
+# Source: microservice/templates/ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: catalog-service-micro
+  labels:
+    app: microservice
+    component: server
+    chart: "microservice-0.1.0"
+    release: "catalog-service"
+    heritage: "Tiller"
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+    
+spec:
+  rules:
+    - host: dev.api.com
+      http:
+        paths:
+          - path: /catalog
+            backend:
+              serviceName: catalog-service-micro
+              servicePort: 8080

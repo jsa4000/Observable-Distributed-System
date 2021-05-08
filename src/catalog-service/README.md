@@ -4,7 +4,9 @@
 
 - Install the chart
 
-        helm install --name catalog-service --namespace dev-micro -f values.yaml ../charts/microservice-template
+        helm install --name catalog-service --namespace dev-micro -f values.yaml ../../charts/microservice-template
+
+        helm install --name catalog-service --namespace dev-micro -f values.yaml ../../charts/microservice-template --dry-run --debug
 
  - Remove the helm chart
  
