@@ -1,8 +1,6 @@
 # Elastic Cloud on Kubernetes (ECK)
 
-> https://github.com/elastic/cloud-on-k8s
-
-Elastic Cloud on Kubernetes automates the deployment, provisioning, management, and orchestration of Elasticsearch, Kibana, APM Server, Enterprise Search, and Beats on Kubernetes based on the operator pattern.
+[Elastic Cloud on Kubernetes](ttps://github.com/elastic/cloud-on-k8s) automates the deployment, provisioning, management, and orchestration of Elasticsearch, Kibana, APM Server, Enterprise Search, and Beats on Kubernetes based on the operator pattern.
 
 Current features:
 
@@ -43,6 +41,18 @@ Steps to install ECK Operator:
 3. Monitor the operator logs:
 
     `kubectl -n elastic-system logs elastic-operator-0 -f`
+
+## Create logging namespace
+
+It is always a good practice to create a custom namespace depending on the system, to maintain the cluster organized.
+
+1. Create the namespace
+
+    `kubectl create ns logging`
+
+1. Swith to `logging` namespace
+
+    `kubectl config set-context --current --namespace=logging`
 
 ## Deploy an Elasticsearch Cluster
 
