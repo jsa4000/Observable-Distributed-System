@@ -109,5 +109,5 @@ helm3 repo update
 
 ## Install `kube-prometheus-stack` Chart into `monitoring` namespace
 
-helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 15.4.4
+helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 15.4.4 --set prometheus-node-exporter.hostRootFsMount=false
 
