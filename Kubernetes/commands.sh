@@ -23,14 +23,12 @@ kubectl get pods -n elastic-system
 ## Check the logs the pod is generating
 kubectl -n elastic-system logs elastic-operator-0 -f
 
-# Create logging namespace
+# Create logging namespace and Switch to the current namespace 
 kubectl create ns logging
+kubectl config set-context --current --namespace=logging
 
 ## Check if the namespace has been created
 kubectl get namespace
-
-## Switch to the current namespace 
-kubectl config set-context --current --namespace=logging
 
 # Deploy Elastic Cloud Cluster
 
@@ -92,8 +90,24 @@ helm3 install logging-operator banzaicloud-stable/logging-operator --version 3.9
 
 ## Verify installation checking all the pods are running (Use -w to wait until all the posd are running)
 
-kubectl get pods
+kubectl get podss
 
-## Apply flow and output manifest to monitor kubernetes cluster entirely (Check manifest file)
+## Apply flow (ClusterFlow) and output (elasticsearch) manifests to monitor kubernetes cluster entirely (Check manifest yaml file)
 
 kubectl apply -f Kubernetes/files/logging.yaml
+
+####################
+# Monitoring
+####################
+
+# Install Kube Prometheus Stack
+
+## Add Git Repo to Helm
+
+helm3 repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm3 repo update
+
+## Install `kube-prometheus-stack` Chart into `monitoring` namespace
+
+helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 15.4.4
+
