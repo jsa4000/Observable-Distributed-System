@@ -87,4 +87,4 @@ Logging Operator is installed by using Helm charts, since has not been ported to
 
     `kubectl get secret elastic-cluster-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo`
 
-    > By default, the Logging operator sends the incoming log messages into an index called fluentd. Create an Index Pattern that includes this index (for example, `fluentd*`), then select Menu > Kibana > Discover. You should see the dashboard and some sample log messages from the demo application. As key use `time` (not `@timestamp` nor `timestamp`) in order to get all the pods running into the cluster.
+    > By default, the Logging operator sends the incoming log messages into an index called fluentd. Create an Index Pattern that includes this index (for example, `fluentd*`), then select Menu > Kibana > Discover. You should see the dashboard and some sample log messages from the demo application. Finally use `time` (not `@timestamp` nor `timestamp`) as the primary time field, in order to get all the pods running into the cluster.
