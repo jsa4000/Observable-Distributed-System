@@ -34,6 +34,12 @@ kubectl get namespace
 
 ## Deploy an Elasticsearch instance
 
+### It can be deployed by using a yaml file with all the manifests.
+
+kubectl apply -f Kubernetes/files/eck.yaml
+
+### or using bash commands to create the manifests
+
 cat <<EOF | kubectl apply -f -
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
@@ -90,11 +96,13 @@ helm3 install logging-operator banzaicloud-stable/logging-operator --version 3.9
 
 ## Verify installation checking all the pods are running (Use -w to wait until all the posd are running)
 
-kubectl get podss
+kubectl get pods
 
 ## Apply flow (ClusterFlow) and output (elasticsearch) manifests to monitor kubernetes cluster entirely (Check manifest yaml file)
 
 kubectl apply -f Kubernetes/files/logging.yaml
+
+## Create an index pattern using `fluentd*` and using `time` as the primary time field
 
 ####################
 # Monitoring

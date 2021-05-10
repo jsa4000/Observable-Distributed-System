@@ -81,8 +81,10 @@ Logging Operator is installed by using Helm charts, since has not been ported to
 
 5. Access to Kibana at https://localhost:5601
 
+    `kubectl port-forward service/kibana-cluster-kb-http 5601`
+
     Use the following command to get the password to login into Kibana with `elastic`default user
 
     `kubectl get secret elastic-cluster-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo`
 
-    > By default, the Logging operator sends the incoming log messages into an index called fluentd. Create an Index Pattern that includes this index (for example, `fluentd*`), then select Menu > Kibana > Discover. You should see the dashboard and some sample log messages from the demo application.
+    > By default, the Logging operator sends the incoming log messages into an index called fluentd. Create an Index Pattern that includes this index (for example, `fluentd*`), then select Menu > Kibana > Discover. You should see the dashboard and some sample log messages from the demo application. As key use `time` (not `@timestamp` nor `timestamp`) in order to get all the pods running into the cluster.

@@ -71,6 +71,8 @@ In order to install kube Prometheus Stack:
 
     `kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090:9090`
 
+    > Note: There are several errors in targets: `kube-controller-manager`, `kube-proxy`, `kube-etcd` and `kube-scheduler`. Please follow this issue for more information: https://stackoverflow.com/questions/65901186/kube-prometheus-stack-issue-scraping-metrics
+
 ## Grafana Dashboards
 
 1. Create a Port forward to access Grafana Dashboard.
@@ -78,3 +80,42 @@ In order to install kube Prometheus Stack:
     `kubectl port-forward -n monitoring svc/prometheus-grafana 8080:80`
 
 2. Access to Grafana using http://localhost:8080 (`admin/prom-operator`)
+
+## Thanos
+
+[Thanos](https://github.com/thanos-io/thanos) is a set of components that can be composed into a highly available metric system with unlimited storage capacity, which can be added seamlessly on top of existing Prometheus deployments.
+
+Thanos is a CNCF Incubating project.
+
+Thanos leverages the Prometheus 2.0 storage format to cost-efficiently store historical metric data in any object storage while retaining fast query latencies. Additionally, it provides a global query view across all Prometheus installations and can merge data from Prometheus HA pairs on the fly.
+
+Concretely the aims of the project are:
+
+* Global query view of metrics.
+* Unlimited retention of metrics.
+* High availability of components, including Prometheus.
+
+![Thanos Architecture](images/thanos-architecture.png)
+
+Thanos can be deployed using prometheus operator. Please refer to [Thanos official repository](https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/thanos.md) for more information.
+
+## FAQ
+
+* For the `kube-proxy` down status do the following,
+
+    Modify the configmap for kube-proxy
+
+    `kubectl edit cm/kube-proxy -n kube-system`
+
+    Change the metricsBindAddress from `127.0.0.110249` to `0.0.0.0:10249`
+
+    ```yaml
+    ...
+    kind: KubeProxyConfiguration
+    metricsBindAddress: 0.0.0.0:10249
+    ...
+    ```
+
+    Restart the pod to take the new configuration
+
+    `kubectl delete pod -l k8s-app=kube-proxy -n kube-system`

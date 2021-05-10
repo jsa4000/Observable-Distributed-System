@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-kube-prometheus-app
+  namespace: monitoring
+spec:
+  endpoints:
+  - path: /metrics
+    port: service
+  namespaceSelector:
+    matchNames:
+    - monitoring
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: prometheus
+      app.kubernetes.io/name: app

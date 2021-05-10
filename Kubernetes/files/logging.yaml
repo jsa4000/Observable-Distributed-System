@@ -26,24 +26,24 @@ metadata:
 spec:
   filters:
     - tag_normaliser: {}
-    - parser:
-        remove_key_name_field: true
-        reserve_data: true
-        parse:
-        ## See available parser default types:
-        ##   https://banzaicloud.com/docs/one-eye/logging-operator/plugins/filters/parser/
-        #  type: nginx
-          type: none
-  match:
-    - select:
-        #labels:
-        #  app.kubernetes.io/name: log-generator
-        #  app.kubernetes.io/instance: log-generator
-        namespaces:
-          - kube-system
-          - logging
-  #localOutputRefs:
-  outputRefs:
+  #  - parser:
+  #      remove_key_name_field: true
+  #      reserve_data: true
+  #      parse:
+  #      ## See available parser default types:
+  #      ##   https://banzaicloud.com/docs/one-eye/logging-operator/plugins/filters/parser/
+  #      # type: nginx
+  #        type: none
+  #match:
+  #  - select: {}
+  #      #labels:
+  #      #  app.kubernetes.io/name: log-generator
+  #      #  app.kubernetes.io/instance: log-generator
+  #      # namespaces:
+  #      #  - kube-system
+  #      #  - logging
+  selectors: {}
+  globalOutputRefs:
     - logging-output-elasticsearch
 ---
 apiVersion: logging.banzaicloud.io/v1beta1
@@ -62,12 +62,16 @@ spec:
       enabled: true
       secretName: logging-fluentbit-tls
       sharedKey: ""
-  allowClusterResourcesFromAllNamespaces: true
+
   ## The operator evaluates clusteroutputs in the controlNamespace only unless allowClusterResourcesFromAllNamespaces is set to true.
+  # allowClusterResourcesFromAllNamespaces: true
   controlNamespace: logging
+  # It is possible to monitor only the desired namespaces
+  #watchNamespaces: ["kube-system", "logging"]
 ---
 apiVersion: logging.banzaicloud.io/v1beta1
-kind: Output
+## The outputs can be either Output (localOutputRefs) or ClusterOutput (globalOutputRefs)
+kind: ClusterOutput
 metadata:
   name: logging-output-elasticsearch
   namespace: logging
