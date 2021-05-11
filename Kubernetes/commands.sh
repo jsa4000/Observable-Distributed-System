@@ -7,6 +7,9 @@
 kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.18.1/crds.yaml
 kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.18.1/olm.yaml
 
+# Install Operator LifeCycle Manager (OLM) via Script
+curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.18.1/install.sh | bash -s v0.18.1
+
 ## Check OLM installation (Wait until all the pod are running. Use '-f' to watch the progress in real-time)
 kubectl get pods -n olm
 
@@ -118,4 +121,33 @@ helm3 repo update
 ## Install `kube-prometheus-stack` Chart into `monitoring` namespace
 
 helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 15.4.4 --set prometheus-node-exporter.hostRootFsMount=false
+
+## This will create the edfault components such as Prometheus, Grafana, NodeExporter, Kubestatemetrics, Prometheus-operator, etc..
+## From now crd manifest will be required such as servicemonitor, thanos, etc.
+
+####################
+# Tracing
+####################
+
+# Install Jaeger Operator
+
+## Add Git Repo to Helm
+
+helm3 repo add jaegertracing https://jaegertracing.github.io/helm-charts
+helm3 repo update
+
+## Install `jaeger-operator` Chart into `tracing` namespace
+
+helm3 install -n tracing --create-namespace jaeger-operator jaegertracing/jaeger-operator --version 2.21.0
+
+## Create inmemry/daemon instence for Jaeeger
+
+cat <<EOF | kubectl apply -n tracing -f -
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: jaeger-all-in-one-inmemory
+  agent:
+    strategy: DaemonSet
+EOF
 

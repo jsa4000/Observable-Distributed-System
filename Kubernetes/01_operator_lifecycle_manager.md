@@ -41,6 +41,10 @@ A quick way to install OLM on a Kubernetes cluster with default settings and app
 
 `kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.18.1/olm.yaml`
 
+Also, it can be used the following script to install the OLM
+
+`curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.18.1/install.sh | bash -s v0.18.1`
+
 This will deploy OLM, which consists of several Operators (catalog-operator, olm-operator, operatorhubio-catalog and packageserver) running in Pods in the `olm` namespace. OLM is now ready to run.  
 
 `kubectl get pods -n olm`

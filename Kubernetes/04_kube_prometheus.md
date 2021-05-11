@@ -38,6 +38,15 @@ This stack is meant for cluster monitoring, so it is pre-configured to collect m
 > Note: This chart was formerly named `prometheus-operator` chart, now renamed to more clearly reflect that it installs the kube-prometheus project stack, within which Prometheus Operator is only one component.
 Prerequisites
 
+This stack is often comprise of several components:
+
+* Prometheus: collect metrics
+* AlertManager: send alerts to various provider based on metrics query
+* Grafana: fancy dashboards
+
+![kube-prometheus-stack.png](images/kube-prometheus-stack.png)
+
+
 **Pre-requisites**
 
 * Kubernetes 1.16+
@@ -97,7 +106,43 @@ Concretely the aims of the project are:
 
 ![Thanos Architecture](images/thanos-architecture.png)
 
-Thanos can be deployed using prometheus operator. Please refer to [Thanos official repository](https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/thanos.md) for more information.
+Thanos can be deployed using prometheus operator. Please refer to [Thanos official repository](https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/thanos.md) for more information. Also it has a [Thanos Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/thanos)
+
+### How does it work ?
+
+Thanos is running alongside Prometheus. It is common to start with a Prometheus only setup and to upgrade to a Thanos one.
+
+Thanos is split into several components. The component communicate with each other through gRPC.
+
+**Thanos Sidecar**
+
+Thanos is running alongside Prometheus (with a sidecar) and export Prometheus metrics every 2h to an object storage. This allow Prometheus to be almost stateless. Prometheus is still keeping 2 hours worth of metrics in memory so you might still loose 2 hours worth of metrics in case of outage (this is problem which should be handle by your Prometheus setup, with HA/Sharding, and not by Thanos).
+
+Thanos sidecar is available out of the box with Prometheus Operator and Kube Prometheus Stack and can be deploy easily. This component act as a store for Thanos Query.
+
+**Thanos Store**
+
+Thanos store acts as a gateway to translate query to remote object storage. It can also cache some information on local storage. Basically this is the component that allows you to query an object store for metrics. This component acts as a store for Thanos Query
+
+**Thanos Compactor**
+
+Thanos compactor is a singleton (it is not scalable) that is responsible for compacting and downsampling the metrics stored inside an object store. Downsampling is the action of loosing granularity on your metrics over time. For example you may want to keep your metrics for 2 or 3 year but you do not need so many data points as your metrics from yesterday. This is what the compactor is for, saving you byte on your object storage and therefore saving you $.
+
+**Thanos Query**
+
+Thanos Query is the main component of Thanos, it is the central point where you send promQL query to. Thanos query exposes a Prometheus compatible endpoints. Then it dispatches query to all of it “stores”. Keep in mind the store may be any other Thanos component that serves metrics. Thanos query can dispatch a query to:
+
+* Another Thanos query (they can be stacked)
+* Thanos store
+* Thanos sidecar
+
+Thanos query is also responsible for deduplicating the metrics if the same metrics come from different stores or Prometheuses. For example if you have a metric which is in a Prometheus and also inside an object store, Thanos query can deduplicate the metrics. Deduplication also works based on Prometheus replicas and shard in the case of a Prometheus HA setup.
+
+**Thanos Query Frontend**
+
+As hinted by its name, Thanos Query Frontend acts a frontend for Thanos Query, its goal is to split large query into multiple smaller queries and also to cache the query result (either in memory or in a memcached)
+
+There are also other components such as Thanos Receive in the case of remote write but this is still not the topic of this article.
 
 ## FAQ
 
