@@ -106,3 +106,6 @@ EOF
 5. Create a Port-forward to test Jaeger UI at http://localhost:16686
 
   `kubectl port-forward -n tracing service/jaeger-all-in-one-inmemory-query 16686:16686`
+
+https://thenewstack.io/best-practices-for-deploying-jaeger-on-kubernetes-in-production/
+https://medium.com/jaegertracing/jaeger-embraces-opentelemetry-collector-90a545cbc24

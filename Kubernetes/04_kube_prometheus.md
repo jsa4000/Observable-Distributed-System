@@ -46,7 +46,6 @@ This stack is often comprise of several components:
 
 ![kube-prometheus-stack.png](images/kube-prometheus-stack.png)
 
-
 **Pre-requisites**
 
 * Kubernetes 1.16+

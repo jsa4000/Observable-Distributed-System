@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: app-service-01
+  profiles:
+    active: local
+
+server:
+  port: 8080
+
+opentracing:
+  jaeger:
+    enabled: true
+    service-name: ${SPRING_APPLICATION_NAME:app1}
+
+management:
+  health:
+    livenessState.enabled: true
+    readinessState.enabled: true
+  endpoint:
+    health:
+      probes.enabled: true
+      show-details: always
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: info,health,prometheus
+      base-path: /management
+      path-mapping:
+        prometheus: /metrics
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    com.example.tracing: DEBUG
+
+---
+spring:
+  profiles: local
+
+opentracing:
+  jaeger:
+    udp-sender:
+      host: localhost
+      port: 6831
+
+---
+spring:
+  profiles: docker
+
+opentracing:
+  jaeger:
+    udp-sender:
+      host: jaeger-agent
+      port: 6831

@@ -28,7 +28,7 @@ Read the upgrade notes first if you are attempting to upgrade an existing ECK de
 * If you are using Amazon EKS, make sure the Kubernetes control plane is allowed to communicate with the Kubernetes nodes on port 443. This is required for communication with the Validating Webhook. For more information, see Recommended inbound traffic.
 * Refer to Install ECK for more information on installation options.
 
-Steps to install ECK Operator:
+Steps to install ECK Operator using **OLM**:
 
 1. Install custom resource definitions and the operator with its RBAC rules:
 
@@ -42,7 +42,27 @@ Steps to install ECK Operator:
 
     `kubectl -n elastic-system logs elastic-operator-0 -f`
 
+Steps to install ECK Operator using **Helm Charts**:
+
+1. Add and update repositories for the ECK helm charts
+
+    `helm3 repo add elastic https://helm.elastic.co`
+
+    `helm3 repo update`
+
+2. Install Helm Chart
+
+    > By using `helm3 search repo` it can be seen all the charts in repos added. IT can be sen the name and current version
+
+    `helm3 install elastic-operator elastic/eck-operator -n elastic-system --create-namespace --version 1.5.0`
+
+    Using `logging` namespace instead
+
+    `helm3 install elastic-operator elastic/eck-operator -n logging --create-namespace --version 1.5.0`
+
 ## Create logging namespace
+
+> If `logging` namespace was not created previously, it is needed to be created onto the cluster.
 
 It is always a good practice to create a custom namespace depending on the system, to maintain the cluster organized.
 
@@ -210,3 +230,10 @@ EOF
 
     `kubectl get secret elastic-cluster-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo`
 
+## Deploy using yaml manifest
+
+> This deployment method is equal to the previous once, however this uses a YAML manifest file instead with all the needed dependencies
+
+Deploy the ECK resources (elastic + kibana) using the following command.
+
+`kubectl apply -n logging -f Kubernetes/files/eck.yaml`

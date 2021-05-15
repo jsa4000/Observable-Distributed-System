@@ -3,6 +3,8 @@
 # Initialize
 ####################
 
+# This initialization is needed in order to install operators that are built using OperatorSDK and OLM.
+
 # Install Operator LifeCycle Manager (OLM)
 kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.18.1/crds.yaml
 kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.18.1/olm.yaml
@@ -18,15 +20,26 @@ kubectl get pods -n olm
 ####################
 
 # Install the ECK Operator (Elastic Cloud on Kubernetes: Elastic + Kibana)
+
+## OLM Method
 kubectl apply -f https://download.elastic.co/downloads/eck/1.5.0/all-in-one.yaml
 
-## Check the operator is currently installed and running
+### Check the operator is currently installed and running
 kubectl get pods -n elastic-system
 
-## Check the logs the pod is generating
+### Check the logs the pod is generating
 kubectl -n elastic-system logs elastic-operator-0 -f
 
-# Create logging namespace and Switch to the current namespace 
+## Helm charts Method(into logging namespace instead)
+
+### Addd ellastic repo to Helm
+helm3 repo add elastic https://helm.elastic.co
+helm3 repo update
+
+### Install Helm Chart using specific version and default values
+helm3 install elastic-operator elastic/eck-operator -n logging --create-namespace --version 1.5.0
+
+# Create logging namespace and Switch to the current namespace (only if not exists)
 kubectl create ns logging
 kubectl config set-context --current --namespace=logging
 
@@ -103,7 +116,7 @@ kubectl get pods
 
 ## Apply flow (ClusterFlow) and output (elasticsearch) manifests to monitor kubernetes cluster entirely (Check manifest yaml file)
 
-kubectl apply -f Kubernetes/files/logging.yaml
+kubectl apply -n logging -f Kubernetes/files/logging.yaml
 
 ## Create an index pattern using `fluentd*` and using `time` as the primary time field
 
@@ -151,3 +164,5 @@ metadata:
     strategy: DaemonSet
 EOF
 
+# Create Jaeger all-in-once inmemory
+kubectl apply -n logging -f Kubernetes/files/jaeger-inmemory.yaml

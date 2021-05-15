@@ -1,0 +1,32 @@
+Configuration:
+  status: error
+
+  Appenders:
+    Console:
+      - name: JSON_LAYOUT_APPENDER
+        target: SYSTEM_OUT
+        JSONLayout:
+          compact: true
+          complete: false
+          properties: true
+          eventEol: true
+          objectMessageAsJsonObject: true
+
+      - name: CONSOLE_ROOT
+        target: SYSTEM_OUT
+        PatternLayout:
+          alwaysWriteExceptions: true
+          pattern: "[%threadName] %-5level %logger{36} - %message{nolookups} %ex{separator(|)} %n"
+
+  Loggers:
+    logger:
+      - name: LOGGER_WITH_JSON_LAYOUT
+        level: info
+        additivity: false
+        AppenderRef:
+          ref: JSON_LAYOUT_APPENDER
+
+    Root:
+      level: info
+      AppenderRef:
+        ref: JSON_LAYOUT_APPENDER
