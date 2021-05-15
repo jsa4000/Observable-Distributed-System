@@ -65,7 +65,7 @@ Logging Operator is installed by using Helm charts, since has not been ported to
 
     > It is a good practice to always specify the version to install or use.
 
-    `helm3 install logging-operator banzaicloud-stable/logging-operator --version 3.9.4 --set createCustomResource=false`
+    `helm3 install logging-operator banzaicloud-stable/logging-operator -n logging --create-namespace --version 3.9.4 --set createCustomResource=false`
 
     > Use `createCustomResource=false` with Helm v3 to avoid trying to create CRDs from the crds folder and from templates at the same time.
 

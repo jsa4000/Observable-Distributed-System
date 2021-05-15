@@ -6,14 +6,13 @@
 # This initialization is needed in order to install operators that are built using OperatorSDK and OLM.
 
 # Install Operator LifeCycle Manager (OLM)
+
+## By using YAML manifest files
 kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.18.1/crds.yaml
 kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.18.1/olm.yaml
 
-# Install Operator LifeCycle Manager (OLM) via Script
+## By using Script file
 curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.18.1/install.sh | bash -s v0.18.1
-
-## Check OLM installation (Wait until all the pod are running. Use '-f' to watch the progress in real-time)
-kubectl get pods -n olm
 
 ####################
 # Logging
@@ -23,12 +22,6 @@ kubectl get pods -n olm
 
 ## OLM Method
 kubectl apply -f https://download.elastic.co/downloads/eck/1.5.0/all-in-one.yaml
-
-### Check the operator is currently installed and running
-kubectl get pods -n elastic-system
-
-### Check the logs the pod is generating
-kubectl -n elastic-system logs elastic-operator-0 -f
 
 ## Helm charts Method(into logging namespace instead)
 
@@ -43,16 +36,13 @@ helm3 install elastic-operator elastic/eck-operator -n logging --create-namespac
 kubectl create ns logging
 kubectl config set-context --current --namespace=logging
 
-## Check if the namespace has been created
-kubectl get namespace
-
 # Deploy Elastic Cloud Cluster
 
 ## Deploy an Elasticsearch instance
 
 ### It can be deployed by using a yaml file with all the manifests.
 
-kubectl apply -f Kubernetes/files/eck.yaml
+kubectl apply -n logging -f Kubernetes/files/eck.yaml
 
 ### or using bash commands to create the manifests
 
@@ -84,22 +74,6 @@ spec:
         name: elastic-cluster
 EOF
 
-## Check Elastic and Kibana are running
-kubectl get pods
-
-## Access to kibana dashboard 
-
-### The the name service
-kubectl get service kibana-cluster-kb-http
-
-### Create a port forward to kibana service at port 5601
-kubectl port-forward service/kibana-cluster-kb-http 5601
-
-### Get the password for 'elastic' user
-kubectl get secret elastic-cluster-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo
-
-### Access to the dashboard at https://localhost:5601 using (user: elastic) and user and password previously mentioned.
-
 # Install Logging Operator
 
 ## Add Logging Operator helm repo from `banzaicloud.com`
@@ -108,11 +82,7 @@ helm3 repo add banzaicloud-stable https://kubernetes-charts.banzaicloud.com
 
 ## Install Logging Operator using helm3 (v3.9.4)
 
-helm3 install logging-operator banzaicloud-stable/logging-operator --version 3.9.4 --set createCustomResource=false
-
-## Verify installation checking all the pods are running (Use -w to wait until all the posd are running)
-
-kubectl get pods
+helm3 install logging-operator banzaicloud-stable/logging-operator -n logging --create-namespace --version 3.9.4 --set createCustomResource=false
 
 ## Apply flow (ClusterFlow) and output (elasticsearch) manifests to monitor kubernetes cluster entirely (Check manifest yaml file)
 
@@ -142,7 +112,7 @@ helm3 install -n monitoring --create-namespace prometheus prometheus-community/k
 # Tracing
 ####################
 
-# Install Jaeger Operator
+# Install Jaeger Operator v 1.X (Without OpenTelemetry support)
 
 ## Add Git Repo to Helm
 
@@ -164,5 +134,5 @@ metadata:
     strategy: DaemonSet
 EOF
 
-# Create Jaeger all-in-once inmemory
-kubectl apply -n logging -f Kubernetes/files/jaeger-inmemory.yaml
+# Create Jaeger all-in-once inmemory instace with agents, collector, querier and backend
+kubectl apply -n tracing -f Kubernetes/files/jaeger-inmemory.yaml

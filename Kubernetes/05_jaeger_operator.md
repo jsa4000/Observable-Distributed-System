@@ -109,3 +109,11 @@ EOF
 
 https://thenewstack.io/best-practices-for-deploying-jaeger-on-kubernetes-in-production/
 https://medium.com/jaegertracing/jaeger-embraces-opentelemetry-collector-90a545cbc24
+
+## Deploy Jaeger using YAML manifest
+
+> This deployment method is equal to the previous once, however this uses a YAML manifest file instead with all the needed dependencies
+
+Deploy the Jaeger resources using the following command.
+
+`kubectl apply -n tracing -f Kubernetes/files/jaeger-inmemory.yaml`
