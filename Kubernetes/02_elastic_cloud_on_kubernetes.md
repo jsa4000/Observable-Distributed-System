@@ -102,7 +102,7 @@ EOF
 
 Get an overview of the current Elasticsearch clusters in the Kubernetes cluster, including health, version and number of nodes:
 
-`kubectl get elasticsearch`
+`kubectl get -n logging elasticsearch`
 
 ```bash
 NAME          HEALTH    NODES     VERSION   PHASE         AGE
@@ -115,7 +115,7 @@ When you create the cluster, there is no `HEALTH` status and the `PHASE` is empt
 
 You can see that one Pod is in the process of being started:
 
-`kubectl get pods --selector='elasticsearch.k8s.elastic.co/cluster-name=elastic-cluster' -w`
+`kubectl get pods -n logging --selector='elasticsearch.k8s.elastic.co/cluster-name=elastic-cluster' -w`
 
 ```bash
 NAME                      READY   STATUS    RESTARTS   AGE
@@ -124,13 +124,13 @@ elastic-cluster-es-default-0   1/1     Running   0          79s
 
 Access the logs for that Pod:
 
-`kubectl logs elastic-cluster-es-default-0 -f`
+`kubectl logs -n logging elastic-cluster-es-default-0 -f`
 
 ## Request Elasticsearch Access
 
 A ClusterIP Service is automatically created for your cluster:
 
-`kubectl get service elastic-cluster-es-http`
+`kubectl get -n logging service elastic-cluster-es-http`
 
 ```bash
 NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
@@ -141,7 +141,7 @@ elastic-cluster-es-http   ClusterIP   10.15.251.145   <none>        9200/TCP   3
 
     A default user named elastic is automatically created with the password stored in a Kubernetes secret:
 
-    `PASSWORD=$(kubectl get secret elastic-cluster-es-elastic-user -o go-template='{{.data.elastic | base64decode}}')`
+    `PASSWORD=$(kubectl get secret -n logging elastic-cluster-es-elastic-user -o go-template='{{.data.elastic | base64decode}}')`
 
 2. Request the Elasticsearch endpoint.
 
@@ -151,7 +151,7 @@ elastic-cluster-es-http   ClusterIP   10.15.251.145   <none>        9200/TCP   3
 
     From your local workstation, use the following command in a separate terminal:
 
-    `kubectl port-forward service/elastic-cluster-es-http 9200`
+    `kubectl port-forward -n logging service/elastic-cluster-es-http 9200`
 
     Then request localhost:
 
@@ -203,11 +203,11 @@ EOF
 
     Similar to Elasticsearch, you can retrieve details about Kibana instances:
 
-    `kubectl get kibana`
+    `kubectl get -n logging kibana`
 
     And the associated Pods:
 
-    `kubectl get pod --selector='kibana.k8s.elastic.co/name=kibana-cluster' -w`
+    `kubectl get pod -n logging --selector='kibana.k8s.elastic.co/name=kibana-cluster' -w`
 
     ```bash
     NAME                                  READY   STATUS    RESTARTS   AGE
@@ -218,17 +218,17 @@ EOF
 
     A ClusterIP Service is automatically created for Kibana:
 
-    `kubectl get service kibana-cluster-kb-http`
+    `kubectl get service -n logging kibana-cluster-kb-http`
 
     Use kubectl port-forward to access Kibana from your local workstation:
 
-    `kubectl port-forward service/kibana-cluster-kb-http 5601`
+    `kubectl port-forward -n logging service/kibana-cluster-kb-http 5601`
 
     Open https://localhost:5601 in your browser. Your browser will show a warning because the self-signed certificate configured by default is not verified by a known certificate authority and not trusted by your browser. You can temporarily acknowledge the warning for the purposes of this quick start but it is highly recommended that you configure valid certificates for any production deployments.
 
     Login as `elastic` user. The password can be obtained with the following command:
 
-    `kubectl get secret elastic-cluster-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo`
+    `kubectl get secret -n logging elastic-cluster-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo`
 
 ## Deploy using yaml manifest
 
