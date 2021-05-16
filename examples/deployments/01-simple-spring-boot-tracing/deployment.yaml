@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: simple-spring-boot-tracing
+  name: simple-spring-boot-tracing
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: simple-spring-boot-tracing
+  template:
+    metadata:
+      labels:
+        app: simple-spring-boot-tracing
+    spec:
+      containers:
+      - image: jsa4000/spring-boot-tracing:0.0.1-SNAPSHOT
+        name: simple-spring-boot-tracing
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        livenessProbe:
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+          periodSeconds: 60
+          failureThreshold: 2
+          httpGet:
+            path: /management/health/liveness
+            port: 8080
+            scheme: HTTP
+        readinessProbe:
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          periodSeconds: 60
+          failureThreshold: 2
+          httpGet:
+            path: /management/health/readiness
+            port: 8080
+            scheme: HTTP
+        # Test Graceful Shutdown
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sh", "-c", "sleep 10"]
