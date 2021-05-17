@@ -16,17 +16,19 @@
 
     ```bash
     helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19.1 \
-    --set 'additionalArguments[0]="--metrics.prometheus=true"' \
-    --set 'additionalArguments[1]="--tracing.jaeger=true"' \
-    --set 'additionalArguments[2]="--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-inmemory-agent.tracing.svc:5778/sampling"' \
-    --set 'additionalArguments[3]="--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-inmemory-agent.tracing.svc:6831"'
+    --set 'additionalArguments[0]=--metrics.prometheus=true' \
+    --set 'additionalArguments[1]=--tracing.jaeger=true' \
+    --set 'additionalArguments[2]=--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-inmemory-agent.tracing.svc:5778/sampling' \
+    --set 'additionalArguments[3]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-inmemory-agent.tracing.svc:6831'
     ```
 
 2. Verify the installation by accessing to Jeager UI via traefik (loadbalancer) at http://localhost/search
 
     `kubectl get svc -n tools`
 
-3. Deploy prometheus-operator ServiceMonitor resource using the following command.
+3. Deploy prometheus-operator `ServiceMonitor` resource using the following command.
+
+    > Note about the label set to match with the prometheus-operator `release: prometheus`
 
     `kubectl apply -n tools -f Kubernetes/files/traefik-service-monitor.yaml`
 
