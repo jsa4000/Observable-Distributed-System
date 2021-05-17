@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name:  simple-spring-boot-tracing
+  #namespace: tools
+  labels:
+    app: simple-spring-boot-tracing
+    # Prometheus operator will look for this label to match up with the prometheus instance to configure
+    release: prometheus
+spec:
+  jobLabel: simple-spring-boot-tracing-metrics
+  endpoints:
+  - interval: 30s
+    port: http
+    path: management/metrics
+  namespaceSelector:
+    matchNames:
+    - micro
+  selector:
+    matchLabels:
+      app: simple-spring-boot-tracing
+ 

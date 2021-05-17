@@ -24,6 +24,7 @@ metadata:
   #namespace: tools
   labels:
     app: traefik
+    # Prometheus operator will look for this label to match up with the prometheus instance to configure
     release: prometheus
 spec:
   jobLabel: traefik-metrics

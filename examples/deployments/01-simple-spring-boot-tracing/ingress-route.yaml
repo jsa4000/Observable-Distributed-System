@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: simple-spring-boot-tracing
+spec:
+  entryPoints:
+    - http
+  routes:
+  - match: PathPrefix(`/tracer`)
+    kind: Rule
+    services:
+    - name: simple-spring-boot-tracing
+      port: 8080
