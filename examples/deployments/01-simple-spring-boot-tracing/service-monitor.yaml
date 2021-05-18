@@ -18,5 +18,6 @@ spec:
     - micro
   selector:
     matchLabels:
-      app: simple-spring-boot-tracing
+      # Name of the service to scrape (endpoints)
+      name: simple-spring-boot-tracing
  

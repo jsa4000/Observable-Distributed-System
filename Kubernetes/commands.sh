@@ -138,7 +138,7 @@ EOF
 kubectl apply -n tracing -f Kubernetes/files/jaeger-inmemory.yaml
 
 ####################
-# Ingress (AI Gateway)
+# Ingress
 ####################
 
 # Install Traefik Controller
@@ -161,3 +161,16 @@ helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19
 
 ## Deploy the prometheus-operator `ServiceMonitor` to monitor trraefik form prometheus
 kubectl apply -n tools -f Kubernetes/files/traefik-service-monitor.yaml
+
+####################
+# Application
+####################
+
+# Create the 'micro' namespace
+kubectl create namespace micro
+
+# Deploy the Application example
+kubectl apply -n micro -f examples/deployments/01-simple-spring-boot-tracing
+
+# Delete the Application example
+kubectl delete -n micro -f examples/deployments/01-simple-spring-boot-tracing
