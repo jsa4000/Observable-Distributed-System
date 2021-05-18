@@ -150,10 +150,14 @@ helm3 repo update
 
 ## Install `traefik` Chart into `tools` namespace
 helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19.1 \
---set 'additionalArguments[0]=--metrics.prometheus=true' \
---set 'additionalArguments[1]=--tracing.jaeger=true' \
---set 'additionalArguments[2]=--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-inmemory-agent.tracing.svc:5778/sampling' \
---set 'additionalArguments[3]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-inmemory-agent.tracing.svc:6831'
+--set 'additionalArguments[0]=--api.insecure' \
+--set 'additionalArguments[1]=--metrics.prometheus=true' \
+--set 'additionalArguments[2]=--tracing.jaeger=true' \
+--set 'additionalArguments[3]=--tracing.serviceName=traefik-service' \
+--set 'additionalArguments[4]=--tracing.jaeger.samplingParam=1.0' \
+--set 'additionalArguments[5]=--tracing.jaeger.samplingType=const' \
+--set 'additionalArguments[6]=--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-inmemory-agent.tracing.svc:5778/sampling' \
+--set 'additionalArguments[7]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-inmemory-agent.tracing.svc:6831'
 
 ## Deploy the prometheus-operator `ServiceMonitor` to monitor trraefik form prometheus
 kubectl apply -n tools -f Kubernetes/files/traefik-service-monitor.yaml

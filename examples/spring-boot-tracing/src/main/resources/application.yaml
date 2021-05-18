@@ -48,7 +48,9 @@ logging:
 
 ---
 spring:
-  profiles: local
+  config:
+    activate:
+      on-profile: local
 
 opentracing:
   jaeger:
@@ -58,8 +60,9 @@ opentracing:
 
 ---
 spring:
-  profiles: docker
-
+  config:
+    activate:
+      on-profile: docker
 opentracing:
   jaeger:
     udp-sender:

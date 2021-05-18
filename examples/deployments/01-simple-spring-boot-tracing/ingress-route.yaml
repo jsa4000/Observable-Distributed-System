@@ -4,10 +4,21 @@ metadata:
   name: simple-spring-boot-tracing
 spec:
   entryPoints:
-    - http
+    - web
   routes:
   - match: PathPrefix(`/tracer`)
     kind: Rule
     services:
     - name: simple-spring-boot-tracing
       port: 8080
+    middlewares:
+    - name: tracer-stripprefix
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: tracer-stripprefix
+spec:
+  stripPrefix:
+    prefixes:
+      - /tracer

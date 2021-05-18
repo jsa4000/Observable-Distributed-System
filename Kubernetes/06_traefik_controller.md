@@ -16,10 +16,14 @@
 
     ```bash
     helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19.1 \
-    --set 'additionalArguments[0]=--metrics.prometheus=true' \
-    --set 'additionalArguments[1]=--tracing.jaeger=true' \
-    --set 'additionalArguments[2]=--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-inmemory-agent.tracing.svc:5778/sampling' \
-    --set 'additionalArguments[3]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-inmemory-agent.tracing.svc:6831'
+    --set 'additionalArguments[0]=--api.insecure' \
+    --set 'additionalArguments[1]=--metrics.prometheus=true' \
+    --set 'additionalArguments[2]=--tracing.jaeger=true' \
+    --set 'additionalArguments[3]=--tracing.serviceName=traefik-service' \
+    --set 'additionalArguments[4]=--tracing.jaeger.samplingParam=1.0' \
+    --set 'additionalArguments[5]=--tracing.jaeger.samplingType=const' \
+    --set 'additionalArguments[6]=--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-inmemory-agent.tracing.svc:5778/sampling' \
+    --set 'additionalArguments[7]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-inmemory-agent.tracing.svc:6831'
     ```
 
 2. Verify the installation by accessing to Jeager UI via traefik (loadbalancer) at http://localhost/search
@@ -28,11 +32,22 @@
 
 3. Deploy prometheus-operator `ServiceMonitor` resource using the following command.
 
-    > Note about the label set to match with the prometheus-operator `release: prometheus`
+    > Note: Prometheus operator is required. Set the label `release` set to match with the prometheus-operator `release: prometheus`
 
     `kubectl apply -n tools -f Kubernetes/files/traefik-service-monitor.yaml`
 
-## References
+4. Access to the *dashboard* and *metrics* exposed by traefik
+
+    `kubectl port-forward -n tools svc/traefik-dashboard 9000`
+
+   * [Dashboard](localhost:9000/dashboard)
+   * [Prometheus Metrics](http://localhost:9000/metrics)
+
+5. Delete Traefik Controller in the cluster
+
+    `helm3 uninstall -n tools traefik`
+
+## References
 
 There are several articles to how configure `traefik` to be used with **Jaeger** and **Prometheus**.
 
