@@ -34,15 +34,14 @@ spec:
   #      ##   https://banzaicloud.com/docs/one-eye/logging-operator/plugins/filters/parser/
   #      # type: nginx
   #        type: none
-  #match:
-  #  - select: {}
+  match:
+    - select: {}
   #      #labels:
   #      #  app.kubernetes.io/name: log-generator
   #      #  app.kubernetes.io/instance: log-generator
   #      # namespaces:
   #      #  - kube-system
   #      #  - logging
-  selectors: {}
   globalOutputRefs:
     - logging-output-elasticsearch
 ---
