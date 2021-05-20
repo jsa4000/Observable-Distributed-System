@@ -27,22 +27,29 @@ spec:
   filters:
     - tag_normaliser: {}
       # format: cluster1.${namespace_name}.${pod_name}.${labels.app}
-    - record_transformer:
-        remove_keys: $.kubernetes.annotations
-    - parser:
-        remove_key_name_field: true
-        reserve_data: true
-        parse:
-          #type: nginx
-          type: none
+    #- record_transformer:
+    #    remove_keys: $.kubernetes.annotations
+    #- parser:
+    #    remove_key_name_field: true
+    #    reserve_data: true
+    #    parse:
+    #      type: multi_format
+    #      patterns:
+    #      - format: json
+    #      - format: none
+    #      #- format: nginx
+    #      #- format: regexp
+    #      #  expression: '/^(?<time>[^\]]*) \[(?<level>[^ ]*)\] (?<source>[^\":]*): (?<message>.*)$/'
+    #      # time_key: logtime
+    #      #  time_format: '%Y-%m-%dT%H:%M:%S.%LZ'
   match:
     - select: {}
-  #      #labels:
-  #      #  app.kubernetes.io/name: log-generator
-  #      #  app.kubernetes.io/instance: log-generator
-  #      # namespaces:
-  #      #  - kube-system
-  #      #  - logging
+  #     labels:
+  #       app.kubernetes.io/name: log-generator
+  #       app.kubernetes.io/instance: log-generator
+  #      namespaces:
+  #      - kube-system
+  #      - logging
   globalOutputRefs:
     - logging-output-elasticsearch
 ---
@@ -56,6 +63,8 @@ spec:
       enabled: true
       secretName: logging-fluentd-tls
       sharedKey: ""
+    metrics:
+      serviceMonitor: true
 
   fluentbit:
     tls:

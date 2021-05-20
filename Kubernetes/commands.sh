@@ -38,9 +38,10 @@ helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19
 --set 'additionalArguments[2]=--tracing.jaeger=true' \
 --set 'additionalArguments[3]=--tracing.serviceName=traefik-service' \
 --set 'additionalArguments[4]=--tracing.jaeger.samplingParam=1.0' \
---set 'additionalArguments[5]=--tracing.jaeger.samplingType=const' \
---set 'additionalArguments[6]=--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-inmemory-agent.tracing.svc:5778/sampling' \
---set 'additionalArguments[7]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-inmemory-agent.tracing.svc:6831'
+--set 'additionalArguments[5]=--tracing.jaeger.disableAttemptReconnecting=false' \
+--set 'additionalArguments[6]=--tracing.jaeger.samplingType=const' \
+--set 'additionalArguments[7]=--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-inmemory-agent.tracing.svc:5778/sampling' \
+--set 'additionalArguments[8]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-inmemory-agent.tracing.svc:6831'
 
 ####################
 # Deployment
