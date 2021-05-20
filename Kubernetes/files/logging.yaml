@@ -26,14 +26,15 @@ metadata:
 spec:
   filters:
     - tag_normaliser: {}
-  #  - parser:
-  #      remove_key_name_field: true
-  #      reserve_data: true
-  #      parse:
-  #      ## See available parser default types:
-  #      ##   https://banzaicloud.com/docs/one-eye/logging-operator/plugins/filters/parser/
-  #      # type: nginx
-  #        type: none
+      # format: cluster1.${namespace_name}.${pod_name}.${labels.app}
+    - record_transformer:
+        remove_keys: $.kubernetes.annotations
+    - parser:
+        remove_key_name_field: true
+        reserve_data: true
+        parse:
+          #type: nginx
+          type: none
   match:
     - select: {}
   #      #labels:
@@ -61,6 +62,13 @@ spec:
       enabled: true
       secretName: logging-fluentbit-tls
       sharedKey: ""
+    metrics:
+      serviceMonitor: true
+    inputTail:
+      Refresh_Interval: "60"
+      Rotate_Wait: "5"
+    bufferStorage:
+      storage.backlog.mem_limit: 256KB
 
   ## The operator evaluates clusteroutputs in the controlNamespace only unless allowClusterResourcesFromAllNamespaces is set to true.
   # allowClusterResourcesFromAllNamespaces: true

@@ -2,7 +2,7 @@ spring:
   application:
     name: spring-boot-tracing
   profiles:
-    active: local
+    active: local,jsonlog
 
 server:
   port: 8080

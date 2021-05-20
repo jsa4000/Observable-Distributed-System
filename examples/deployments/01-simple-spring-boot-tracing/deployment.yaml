@@ -57,7 +57,7 @@ spec:
               command: ["sh", "-c", "sleep 10"]
         env:
         - name: SPRING_PROFILES_ACTIVE
-          value: docker
+          value: docker,jsonlog
         - name: OPENTRACING_JAEGER_UDP_SENDER_HOST
           value: jaeger-all-in-one-inmemory-agent.tracing.svc
         - name: OPENTRACING_JAEGER_UDP_SENDER_PORT
