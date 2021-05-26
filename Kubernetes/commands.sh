@@ -43,8 +43,8 @@ helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19
 --set 'additionalArguments[4]=--tracing.jaeger.samplingParam=1.0' \
 --set 'additionalArguments[5]=--tracing.jaeger.disableAttemptReconnecting=false' \
 --set 'additionalArguments[6]=--tracing.jaeger.samplingType=const' \
---set 'additionalArguments[7]=--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-inmemory-agent.tracing.svc:5778/sampling' \
---set 'additionalArguments[8]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-inmemory-agent.tracing.svc:6831'
+--set 'additionalArguments[7]=--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-agent.tracing.svc:5778/sampling' \
+--set 'additionalArguments[8]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-agent.tracing.svc:6831'
 
 ####################
 # Deployment
@@ -57,9 +57,12 @@ kubectl apply -n logging -f Kubernetes/files/eck.yaml
 kubectl apply -n logging -f Kubernetes/files/logging.yaml
 
 # Create Jaeger all-in-once inmemory instace with agents, collector, querier and backend
-kubectl apply -n tracing -f Kubernetes/files/jaeger-inmemory-sidecar.yaml
-## Configure OPENTRACING_JAEGER_ENABLED (deployment) to true using daemonset
-#kubectl apply -n tracing -f Kubernetes/files/jaeger-inmemory-daemonset.yaml
+
+## Configure OPENTRACING_JAEGER_ENABLED (examples/deployments/01-simple-spring-boot-tracing/deployment.yaml) to false using sidecar
+#kubectl apply -n tracing -f Kubernetes/files/jaeger-sidecar.yaml
+
+## Configure OPENTRACING_JAEGER_ENABLED (examples/deployments/01-simple-spring-boot-tracing/deployment.yaml) to true using daemonset
+kubectl apply -n tracing -f Kubernetes/files/jaeger-daemonset.yaml
 
 ## Deploy the prometheus-operator `ServiceMonitor` to monitor trraefik form prometheus
 kubectl apply -n tools -f Kubernetes/files/traefik-service-monitor.yaml
@@ -73,3 +76,47 @@ kubectl create namespace micro
 
 # Deploy the Application example
 kubectl apply -n micro -f examples/deployments/01-simple-spring-boot-tracing
+
+## Note: Deploying jaeger as a sidecar mode, simple-spring-boot-tracing pod must have 2/2 containers running
+
+####################
+# Test
+####################
+
+# Api Gateway (Traefik)
+kubectl port-forward -n tools svc/traefik-dashboard 9000
+
+# Metrics
+
+## Prometheus dashboarfd
+kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090
+
+## Grafana dashboard
+
+## Microservice 
+
+### Metrics (firstly warm-up endpoints /tracer/**)
+http://localhost/tracer/management/metrics
+
+### Health Checks
+http://localhost/tracer/management/health
+http://localhost/tracer/management/health/readiness
+http://localhost/tracer/management/health/liveness
+
+# Distributed Tracing
+
+## Jaeger dashboard
+http://localhost
+
+## GET /trace
+http://localhost/tracer/trace
+
+## GET /tracee
+http://localhost/tracer/tracee
+
+# Logging
+
+## Kibana
+kubectl get secret -n logging elastic-cluster-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo
+kubectl port-forward -n logging service/kibana-cluster-kb-http 5601
+

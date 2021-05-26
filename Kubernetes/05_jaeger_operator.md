@@ -72,7 +72,7 @@ cat <<EOF | kubectl apply -n tracing -f -
 apiVersion: jaegertracing.io/v1
 kind: Jaeger
 metadata:
-  name: jaeger-all-in-one-inmemory
+  name: jaeger-all-in-one
   agent:
     strategy: DaemonSet
 EOF
@@ -84,28 +84,28 @@ EOF
 
     ```bash
     NAME                                              READY   STATUS    RESTARTS   AGE
-    pod/jaeger-all-in-one-inmemory-6866f898c8-w8nmj   1/1     Running   0          106s
+    pod/jaeger-all-in-one-6866f898c8-w8nmj   1/1     Running   0          106s
     pod/jaeger-operator-95cc95b47-4hkjt               1/1     Running   0          4m55s
 
     NAME                                                    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                  AGE
-    service/jaeger-all-in-one-inmemory-agent                ClusterIP   None             <none>        5775/UDP,5778/TCP,6831/UDP,6832/UDP      106s
-    service/jaeger-all-in-one-inmemory-collector            ClusterIP   10.96.205.94     <none>        9411/TCP,14250/TCP,14267/TCP,14268/TCP   106s
-    service/jaeger-all-in-one-inmemory-collector-headless   ClusterIP   None             <none>        9411/TCP,14250/TCP,14267/TCP,14268/TCP   106s
-    service/jaeger-all-in-one-inmemory-query                ClusterIP   10.100.130.141   <none>        16686/TCP                                106s
+    service/jaeger-all-in-one-agent                ClusterIP   None             <none>        5775/UDP,5778/TCP,6831/UDP,6832/UDP      106s
+    service/jaeger-all-in-one-collector            ClusterIP   10.96.205.94     <none>        9411/TCP,14250/TCP,14267/TCP,14268/TCP   106s
+    service/jaeger-all-in-one-collector-headless   ClusterIP   None             <none>        9411/TCP,14250/TCP,14267/TCP,14268/TCP   106s
+    service/jaeger-all-in-one-query                ClusterIP   10.100.130.141   <none>        16686/TCP                                106s
     service/jaeger-operator-metrics                         ClusterIP   10.108.95.62     <none>        8383/TCP,8686/TCP                        4m55s
 
     NAME                                         READY   UP-TO-DATE   AVAILABLE   AGE
-    deployment.apps/jaeger-all-in-one-inmemory   1/1     1            1           106s
+    deployment.apps/jaeger-all-in-one   1/1     1            1           106s
     deployment.apps/jaeger-operator              1/1     1            1           4m55s
 
     NAME                                                    DESIRED   CURRENT   READY   AGE
-    replicaset.apps/jaeger-all-in-one-inmemory-6866f898c8   1         1         1       106s
+    replicaset.apps/jaeger-all-in-one-6866f898c8   1         1         1       106s
     replicaset.apps/jaeger-operator-95cc95b47               1         1         1       4m55s
     ```
 
 5. Create a Port-forward to test Jaeger UI at http://localhost:16686
 
-  `kubectl port-forward -n tracing service/jaeger-all-in-one-inmemory-query 16686:16686`
+  `kubectl port-forward -n tracing service/jaeger-all-in-one-query 16686:16686`
 
 ## Deploy Jaeger using YAML manifest
 
@@ -113,7 +113,13 @@ EOF
 
 Deploy the Jaeger resources using the following command.
 
-`kubectl apply -n tracing -f Kubernetes/files/jaeger-inmemory-sidecar.yaml`
+> This will deploy jaeger-agent as a `Sidecar` within the pod, similar **OpenTelemetry** does.
+
+`kubectl apply -n tracing -f Kubernetes/files/jaeger-sidecar.yaml`
+
+Also, it can be deployed as a `DaemonSet` or `Streaming` using kafka for example.
+
+`kubectl apply -n tracing -f Kubernetes/files/jaeger-daemonset.yaml`
 
 ## References
 
