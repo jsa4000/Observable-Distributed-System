@@ -57,7 +57,9 @@ kubectl apply -n logging -f Kubernetes/files/eck.yaml
 kubectl apply -n logging -f Kubernetes/files/logging.yaml
 
 # Create Jaeger all-in-once inmemory instace with agents, collector, querier and backend
-kubectl apply -n tracing -f Kubernetes/files/jaeger-inmemory.yaml
+kubectl apply -n tracing -f Kubernetes/files/jaeger-inmemory-sidecar.yaml
+## Configure OPENTRACING_JAEGER_ENABLED (deployment) to true using daemonset
+#kubectl apply -n tracing -f Kubernetes/files/jaeger-inmemory-daemonset.yaml
 
 ## Deploy the prometheus-operator `ServiceMonitor` to monitor trraefik form prometheus
 kubectl apply -n tools -f Kubernetes/files/traefik-service-monitor.yaml

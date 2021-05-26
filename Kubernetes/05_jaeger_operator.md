@@ -113,7 +113,7 @@ EOF
 
 Deploy the Jaeger resources using the following command.
 
-`kubectl apply -n tracing -f Kubernetes/files/jaeger-inmemory.yaml`
+`kubectl apply -n tracing -f Kubernetes/files/jaeger-inmemory-sidecar.yaml`
 
 ## References
 

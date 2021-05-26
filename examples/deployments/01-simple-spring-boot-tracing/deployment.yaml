@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   labels:
     app: simple-spring-boot-tracing
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
   name: simple-spring-boot-tracing
 spec:
   replicas: 1
@@ -58,12 +60,13 @@ spec:
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: docker,jsonlog
+        ## Configuration for OpenTracing using Jaeger
         - name: OPENTRACING_JAEGER_UDP_SENDER_HOST
           value: jaeger-all-in-one-inmemory-agent.tracing.svc
         - name: OPENTRACING_JAEGER_UDP_SENDER_PORT
           value: '6831'
-        # Configure Agent as sidecar
-        #- name: JAEGER_AGENT_HOST
-        #  value: "jaeger-agent.default.svc"
-        #- name: JAEGER_AGENT_PORT
-        #  value: "6831"
+        - name: OPENTRACING_JAEGER_ENABLED
+          ## Configure Agent as DaemonSet
+          #value: 'true'
+          ## Configure Agent as sidecar (OpenTelemetry)
+          value: 'false' 
