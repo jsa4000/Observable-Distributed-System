@@ -13,19 +13,22 @@ helm3 repo add traefik https://helm.traefik.io/traefik
 # Update Repositories
 helm3 repo update
 
+# Get Repository Charts Versions
+helm3 search repo
+
 ####################
 # Installation
 ####################
 
 ## Install `kube-prometheus-stack` Chart into `monitoring` namespace
-helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 15.4.4 \
+helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 16.0.1 \
 --set 'prometheus-node-exporter.hostRootFsMount=false'
 
 # Install the ECK Operator (Elastic Cloud on Kubernetes: Elastic + Kibana)
-helm3 install elastic-operator elastic/eck-operator -n logging --create-namespace --version 1.5.0
+helm3 install elastic-operator elastic/eck-operator -n logging --create-namespace --version 1.6.0
 
-## Install Logging Operator using helm3 (v3.9.4)
-helm3 install logging-operator banzaicloud-stable/logging-operator -n logging --create-namespace --version 3.9.4 \
+## Install Logging Operator using helm3 (v3.9.5)
+helm3 install logging-operator banzaicloud-stable/logging-operator -n logging --create-namespace --version 3.9.5 \
 --set 'createCustomResource=false'
 
 ## Install `jaeger-operator` Chart into `tracing` namespace

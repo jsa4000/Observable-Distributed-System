@@ -67,7 +67,7 @@ In order to install kube Prometheus Stack:
 
     > Use `helm3 show values prometheus-community/kube-prometheus-stack` to get the default values configuration
 
-    `helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 15.4.4 --set prometheus-node-exporter.hostRootFsMount=false`
+    `helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 16.0.1 --set prometheus-node-exporter.hostRootFsMount=false`
 
     > Because an issue in `nodeExporter`, the value for `hostRootFsMount` has been set to false
 
@@ -77,7 +77,7 @@ In order to install kube Prometheus Stack:
 
 5. Verify the installation by accessing to Prometheus Dashboard http://localhost:9090.
 
-    `kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090:9090`
+    `kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090`
 
     > Note: There are several errors in targets: `kube-controller-manager`, `kube-proxy`, `kube-etcd` and `kube-scheduler`. Please follow this issue for more information: https://stackoverflow.com/questions/65901186/kube-prometheus-stack-issue-scraping-metrics
 
