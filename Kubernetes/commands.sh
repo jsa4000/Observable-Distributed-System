@@ -66,6 +66,7 @@ kubectl apply -n tracing -f Kubernetes/files/jaeger-daemonset.yaml
 
 ## Deploy the prometheus-operator `ServiceMonitor` to monitor trraefik form prometheus
 kubectl apply -n tools -f Kubernetes/files/traefik-service-monitor.yaml
+kubectl apply -n tools -f Kubernetes/files/traefik-ingress-route.yaml
 
 ####################
 # Application
@@ -84,14 +85,18 @@ kubectl apply -n micro -f examples/deployments/01-simple-spring-boot-tracing
 ####################
 
 # Api Gateway (Traefik)
+
+## Port-Forward
 kubectl port-forward -n tools svc/traefik-dashboard 9000
 
-# Metrics
+# IngressRoute
+http://traefik.management.com (`admin/pass`)
 
 ## Prometheus dashboarfd
 kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090
 
-## Grafana dashboard
+## Grafana dashboard (`admin/prom-operator`)
+kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
 
 ## Microservice 
 

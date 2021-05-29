@@ -85,9 +85,9 @@ In order to install kube Prometheus Stack:
 
 1. Create a Port forward to access Grafana Dashboard.
 
-    `kubectl port-forward -n monitoring svc/prometheus-grafana 8080:80`
+    `kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80`
 
-2. Access to Grafana using http://localhost:8080 (`admin/prom-operator`)
+2. Access to Grafana using http://localhost:3000 (`admin/prom-operator`)
 
 ## Thanos
 
@@ -142,6 +142,23 @@ Thanos query is also responsible for deduplicating the metrics if the same metri
 As hinted by its name, Thanos Query Frontend acts a frontend for Thanos Query, its goal is to split large query into multiple smaller queries and also to cache the query result (either in memory or in a memcached)
 
 There are also other components such as Thanos Receive in the case of remote write but this is still not the topic of this article.
+
+## Dashboards
+
+Dashobard can be imported using json files or ID.
+
+> Grafana dashboard import can be found at [link](http://localhost:3000/dashboard/import). Do not forget to select the default `DataSource`, in this case `Prometheus(default)`
+
+* [Node Exporter Full - 1860](https://grafana.com/grafana/dashboards/1860)
+* [Traefik - 4475](https://grafana.com/grafana/dashboards/4475)
+* [Spring Boot Statistics - 6756](https://grafana.com/grafana/dashboards/6756)
+
+    ```bash
+    # application (spring-boot-tracing) and instance (10.1.0.60:8080) are necessary to be configured into the dashboard
+    tomcat_sessions_active_max_sessions{application="spring-boot-tracing", container="simple-spring-boot-tracing", endpoint="http", instance="10.1.0.60:8080", job="simple-spring-boot-tracing", namespace="micro", pod="simple-spring-boot-tracing-86c4b5795b-mdnvp", service="simple-spring-boot-tracing"}
+    ```
+
+    ![Grafana Configuration](images/grafana-springboot-config.png)
 
 ## FAQ
 

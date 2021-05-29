@@ -1,0 +1,42 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-basic-auth
+  #namespace: tools
+spec:
+  basicAuth:
+    secret: authsecret
+
+---
+# Example:
+#   htpasswd -nb admin pass | base64
+#   YWRtaW46JGFwcjEkNkl4V1RpcjgkRmZmeDYzOW10TkFhY0NaRFZKR01ZMQoK
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authsecret
+  #namespace: tools
+data:
+  users: |
+    YWRtaW46JGFwcjEkNkl4V1RpcjgkRmZmeDYzOW10TkFhY0NaRFZKR01ZMQoK
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik
+  #namespace: tools
+spec:
+  entryPoints:
+    - web
+  routes:
+    # Add traefik FQDN into hosts file (/etc/hosts)
+    #   127.0.0.1   traefik.management.com
+    - match: PathPrefix(`/dashboard`) || Host(`traefik.management.com`)
+      kind: Rule
+      middlewares:
+        - name: traefik-basic-auth
+      services:
+        - name: traefik-dashboard
+          port: 9000

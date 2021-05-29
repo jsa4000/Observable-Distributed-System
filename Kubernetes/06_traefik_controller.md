@@ -1,6 +1,29 @@
 # Traefik Controller
 
-## Deploy Traefik Controller
+## Traefik Proxy
+
+First, when you start **Traefik**, you define **entrypoints** (in their most basic forms, they are port numbers). Then, connected to these entrypoints, **routers** analyze the incoming requests to see if they match a set of rules. If they do, the router might transform the request using pieces of **middleware** before forwarding them to your **services**.
+
+![Traefik Architecture](images/traefik-architecture.png)
+
+These are the main components:
+
+* **Providers** discover the services that live on your infrastructure (their IP, health, ...)
+* **Entrypoints** are the network entry points into Traefik. They define the **port** which will receive the packets, and whether to listen for TCP or UDP. Default entry points are `web`, `websecure`, etc...
+
+    ![Traefik Entrypoints](images/traefik-entrypoints.png)
+
+* **Routers**  are in charge of connecting incoming requests to the services that can handle them. In the process, routers may use pieces of **middleware** to update the request, or act before forwarding the request to the service. Routers analyse the requests (host, path, headers, SSL, ...). Routers are defined using `IngressRoute` within kubernetes as CRDs.
+
+    ![Traefik Routers](images/traefik-routers.png)
+
+* **Services** forward the request to your services (load balancing, ...).
+
+    ![Traefik Services](images/traefik-services.png)
+
+* **Middlewares** may update the request or make decisions based on the request (authentication, rate limiting, headers, ...). The Services are responsible for configuring how to reach the actual services that will eventually handle the incoming requests.
+
+## Deployment
 
 1. Install Traefik Controller in the cluster
 
@@ -48,6 +71,12 @@
 
     `helm3 uninstall -n tools traefik`
 
+6. Deploy traefik `IngressRoute` to allow external traffic to access to traefik dashboard using basic authentication (`admin/pass`)
+
+    `kubectl apply -n tools -f Kubernetes/files/traefik-ingress-route.yaml`
+
+    http://traefik.management.com (`admin/pass`)
+
 ## References
 
 There are several articles to how configure `traefik` to be used with **Jaeger** and **Prometheus**.
@@ -56,3 +85,7 @@ There are several articles to how configure `traefik` to be used with **Jaeger**
 
   * [Capture Prometheus Metrics](https://traefik.io/blog/capture-traefik-metrics-for-apps-on-kubernetes-with-prometheus/)
   * [Github Example](https://github.com/traefik-tech-blog/traefik-sre-metrics)
+
+* Jaeger
+
+  * [Traefik and Jaeger on Kubernetes](https://traefik.io/blog/application-request-tracing-with-traefik-and-jaeger-on-kubernetes/   )
