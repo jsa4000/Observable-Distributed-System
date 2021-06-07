@@ -9,6 +9,7 @@ helm3 repo add elastic https://helm.elastic.co
 helm3 repo add banzaicloud-stable https://kubernetes-charts.banzaicloud.com
 helm3 repo add jaegertracing https://jaegertracing.github.io/helm-charts
 helm3 repo add traefik https://helm.traefik.io/traefik
+helm3 repo add grafana https://grafana.github.io/helm-charts
 
 # Update Repositories
 helm3 repo update
@@ -21,18 +22,18 @@ helm3 search repo
 ####################
 
 ## Install `kube-prometheus-stack` Chart into `monitoring` namespace
-helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 16.0.1 \
+helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 16.3.1 \
 --set 'prometheus-node-exporter.hostRootFsMount=false'
 
-# Install the ECK Operator (Elastic Cloud on Kubernetes: Elastic + Kibana)
+# Install the ECK Operator (Elastic Cloud on Kubernetes: Elastic + Kibana)      
 helm3 install elastic-operator elastic/eck-operator -n logging --create-namespace --version 1.6.0
 
-## Install Logging Operator using helm3 (v3.9.5)
-helm3 install logging-operator banzaicloud-stable/logging-operator -n logging --create-namespace --version 3.9.5 \
+## Install Logging Operator using helm3 (v3.10.0)
+helm3 install logging-operator banzaicloud-stable/logging-operator -n logging --create-namespace --version 3.10.0 \
 --set 'createCustomResource=false'
 
 ## Install `jaeger-operator` Chart into `tracing` namespace
-helm3 install -n tracing --create-namespace jaeger-operator jaegertracing/jaeger-operator --version 2.21.0
+helm3 install -n tracing --create-namespace jaeger-operator jaegertracing/jaeger-operator --version 2.21.2
 
 ## Install `traefik` Chart into `tools` namespace
 helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19.1 \
@@ -45,6 +46,9 @@ helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19
 --set 'additionalArguments[6]=--tracing.jaeger.samplingType=const' \
 --set 'additionalArguments[7]=--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-agent.tracing.svc:5778/sampling' \
 --set 'additionalArguments[8]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-agent.tracing.svc:6831'
+
+## Install `Grafana Loki Stack` Chart into `logging` namespace
+helm3 upgrade --install loki -n logging --create-namespace grafana/loki-stack --set grafana.enabled=true
 
 ####################
 # Deployment
@@ -84,13 +88,15 @@ kubectl apply -n micro -f examples/deployments/01-simple-spring-boot-tracing
 # Test
 ####################
 
-# Api Gateway (Traefik)
+###### Api Gateway (Traefik)  ######
 
 ## Port-Forward
 kubectl port-forward -n tools svc/traefik-dashboard 9000
 
-# IngressRoute
+## IngressRoute
 http://traefik.management.com (`admin/pass`)
+
+###### Metrics  ######
 
 ## Prometheus dashboarfd
 kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090
@@ -98,7 +104,7 @@ kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 909
 ## Grafana dashboard (`admin/prom-operator`)
 kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
 
-## Microservice 
+###### Microservice ######
 
 ### Metrics (firstly warm-up endpoints /tracer/**)
 http://localhost/tracer/management/metrics
@@ -108,7 +114,7 @@ http://localhost/tracer/management/health
 http://localhost/tracer/management/health/readiness
 http://localhost/tracer/management/health/liveness
 
-# Distributed Tracing
+####### Distributed Tracing ######
 
 ## Jaeger dashboard
 http://localhost
@@ -119,9 +125,13 @@ http://localhost/tracer/trace
 ## GET /tracee
 http://localhost/tracer/tracee
 
-# Logging
+####### Logging ######
 
 ## Kibana
 kubectl get secret -n logging elastic-cluster-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo
 kubectl port-forward -n logging service/kibana-cluster-kb-http 5601
 
+## Grafana Loki
+kubectl get secret -n logging loki-grafana -o=jsonpath='{.data.admin-user}' | base64 --decode; echo
+kubectl get secret -n logging loki-grafana -o=jsonpath='{.data.admin-password}' | base64 --decode; echo
+kubectl port-forward -n logging svc/loki-grafana 3000:80

@@ -24,7 +24,7 @@ Running systems in production involves requirements for high availability, resil
 
 **OpenTracing** uses following ouns and verbs.
 
-![OpenTracing](images/opentracing_tracing.png)
+![OpenTracing](images/opentracing-tracing.png)
 
 * **Trace**: The description of a transaction as it moves through a distributed system.
 * **Span**: A named, timed operation representing a piece of the workflow. Spans accept key:value tags as well as fine-grained, timestamped, structured logs attached to the particular span instance.
@@ -115,7 +115,7 @@ If you monitor many microservices, if you have a high volume of span data, or if
 
     `helm3 repo update`
 
-    `helm3 install -n tracing --create-namespace jaeger-operator jaegertracing/jaeger-operator --version 2.21.0`
+    `helm3 install -n tracing --create-namespace jaeger-operator jaegertracing/jaeger-operator --version 2.21.2`
 
     To uninstall use the following command
 
