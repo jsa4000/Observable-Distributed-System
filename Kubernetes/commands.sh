@@ -48,7 +48,7 @@ helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19
 --set 'additionalArguments[8]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-agent.tracing.svc:6831'
 
 ## Install `Grafana Loki Stack` Chart into `logging` namespace
-helm3 upgrade --install loki -n logging --create-namespace grafana/loki-stack --set grafana.enabled=true
+helm3 upgrade --install loki -n logging --create-namespace grafana/loki-stack --version 2.4.1 --set grafana.enabled=true
 
 ####################
 # Deployment

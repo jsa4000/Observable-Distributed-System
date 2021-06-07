@@ -33,11 +33,11 @@ A Loki-based logging stack consists of 3 components:
 
 - Deploy Loki Stack (Loki, Promtail, Grafana)
 
-    `helm3 upgrade --install loki -n logging --create-namespace grafana/loki-stack --set grafana.enabled=true`
+    `helm3 upgrade --install loki -n logging --create-namespace grafana/loki-stack --version 2.4.1 --set grafana.enabled=true`
 
 - Deploy Loki and Fluent Bit to your cluster
 
-    `helm upgrade --install loki -n logging --create-namespace grafana/loki-stack --set fluent-bit.enabled=true,promtail.enabled=false`
+    `helm upgrade --install loki -n logging --create-namespace grafana/loki-stack --version 2.4.1 --set fluent-bit.enabled=true,promtail.enabled=false`
 
 ## Grafana Explorer
 
