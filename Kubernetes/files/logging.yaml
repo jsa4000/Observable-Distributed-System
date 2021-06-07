@@ -11,6 +11,7 @@ apiVersion: logging.banzaicloud.io/v1beta1
 kind: ClusterFlow
 metadata:
   name: logging-flow
+  namespace: logging
 spec:
   filters:
     - tag_normaliser: {}
@@ -22,6 +23,7 @@ apiVersion: logging.banzaicloud.io/v1beta1
 kind: ClusterOutput
 metadata:
   name: logging-output-elasticsearch
+  namespace: logging
 spec:
   elasticsearch:
     host: elastic-cluster-es-http.logging
