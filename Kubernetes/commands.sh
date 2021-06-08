@@ -37,16 +37,7 @@ helm3 install logging-operator banzaicloud-stable/logging-operator -n logging --
 helm3 install -n tracing --create-namespace jaeger-operator jaegertracing/jaeger-operator --version 2.21.2
 
 ## Install `traefik` Chart into `tools` namespace
-helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19.1 \
---set 'additionalArguments[0]=--api.insecure' \
---set 'additionalArguments[1]=--metrics.prometheus=true' \
---set 'additionalArguments[2]=--tracing.jaeger=true' \
---set 'additionalArguments[3]=--tracing.serviceName=traefik-service' \
---set 'additionalArguments[4]=--tracing.jaeger.samplingParam=1.0' \
---set 'additionalArguments[5]=--tracing.jaeger.disableAttemptReconnecting=false' \
---set 'additionalArguments[6]=--tracing.jaeger.samplingType=const' \
---set 'additionalArguments[7]=--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-agent.tracing.svc:5778/sampling' \
---set 'additionalArguments[8]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-agent.tracing.svc:6831'
+helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19.1 -f Kubernetes/files/traefik-values.yaml
 
 ## Install `Grafana Loki Stack` Chart into `logging` namespace
 helm3 upgrade --install loki -n logging --create-namespace grafana/loki-stack --version 2.4.1 --set grafana.enabled=true
@@ -55,21 +46,33 @@ helm3 upgrade --install loki -n logging --create-namespace grafana/loki-stack --
 helm3 install minio --namespace minio --create-namespace minio/minio-operator --version 4.1.0 -f Kubernetes/files/minio-operator-values.yaml
 
 ####################
+# Initialize
+####################
+
+## Create default minio buckets
+kubectl create -n minio -f Kubernetes/files/minio-create-buckets.yaml
+
+####################
 # Deployment
 ####################
 
-### It can be deployed by using a yaml file with all the manifests.
+## It can be deployed by using a yaml file with all the manifests.
 kubectl apply -n logging -f Kubernetes/files/eck.yaml
 
-## Apply flow (ClusterFlow) and output (elasticsearch) manifests to monitor kubernetes cluster entirely (Check manifest yaml file)
+## Create logging instances to monitor kubernetes cluster entirely
+
+### Apply Clusterflow and ClusterOutput (elasticsearch) manifests
 kubectl apply -n logging -f Kubernetes/files/logging.yaml
 
-# Create Jaeger all-in-once inmemory instace with agents, collector, querier and backend
+### Apply Clusterflow and ClusterOutputs (elasticsearch and s3) using SSL
+#kubectl apply -n logging -f Kubernetes/files/logging-advanced.yaml
 
-## Configure OPENTRACING_JAEGER_ENABLED (examples/deployments/01-simple-spring-boot-tracing/deployment.yaml) to false using sidecar
+## Create Jaeger all-in-once inmemory instace with agents, collector, querier and backend
+
+### Configure OPENTRACING_JAEGER_ENABLED (examples/deployments/01-simple-spring-boot-tracing/deployment.yaml) to false using sidecar
 #kubectl apply -n tracing -f Kubernetes/files/jaeger-sidecar.yaml
 
-## Configure OPENTRACING_JAEGER_ENABLED (examples/deployments/01-simple-spring-boot-tracing/deployment.yaml) to true using daemonset
+### Configure OPENTRACING_JAEGER_ENABLED (examples/deployments/01-simple-spring-boot-tracing/deployment.yaml) to true using daemonset
 kubectl apply -n tracing -f Kubernetes/files/jaeger-daemonset.yaml
 
 ## Deploy the prometheus-operator `ServiceMonitor` to monitor trraefik form prometheus
@@ -139,3 +142,13 @@ kubectl port-forward -n logging service/kibana-cluster-kb-http 5601
 kubectl get secret -n logging loki-grafana -o=jsonpath='{.data.admin-user}' | base64 --decode; echo
 kubectl get secret -n logging loki-grafana -o=jsonpath='{.data.admin-password}' | base64 --decode; echo
 kubectl port-forward -n logging svc/loki-grafana 3000:80
+
+####### Minio ######
+
+# Access to the `default` MinIO Dashboard (`minio/minio123`) at http://localhost:9000
+kubectl --namespace minio port-forward svc/minio 9000:80
+
+#Access to the `default` MinIO Tenant Console (`admin/minio123`) at http://localhost:9090
+kubectl --namespace minio port-forward svc/default-console 9090
+
+    

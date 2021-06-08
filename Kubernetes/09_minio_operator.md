@@ -38,7 +38,7 @@ Administrators of MinIO Tenants can perform a variety of tasks through the Conso
 
     `helm3 install minio --namespace minio --create-namespace minio/minio-operator --version 4.1.0 -f Kubernetes/files/minio-operator-values.yaml`
 
-* Access to the `default` MinIO Dashboard (`admin/minio123`)
+* Access to the `default` MinIO Dashboard (`minio/minio123`)
 
     > The service `svc/minio` will be used to manage buckets and objects using the APi or Web UI.
 

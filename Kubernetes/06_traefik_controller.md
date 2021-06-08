@@ -50,6 +50,10 @@ These are the main components:
     --set 'additionalArguments[8]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-agent.tracing.svc:6831'
     ```
 
+    Installing Traefik using a YAML values file
+
+    `helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19.1 -f Kubernetes/files/traefik-values.yaml`
+
 2. Verify the installation by accessing to Jeager UI via traefik (loadbalancer) at http://localhost/search
 
     `kubectl get svc -n tools`

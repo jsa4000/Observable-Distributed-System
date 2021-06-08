@@ -52,6 +52,7 @@ spec:
   #      - logging
   globalOutputRefs:
     - logging-output-elasticsearch
+    - logging-output-s3
 ---
 apiVersion: logging.banzaicloud.io/v1beta1
 kind: Logging
@@ -109,4 +110,43 @@ spec:
     buffer:
       timekey: 1m
       timekey_wait: 30s
+      timekey_use_utc: true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: logging-s3
+  namespace: logging
+type: Opaque
+data: 
+  # echo minio | base64
+  awsAccessKeyId: bWluaW8K
+  #echo minio123 | base64
+  awsSecretAccessKey: bWluaW8xMjMK
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: logging-output-s3
+  namespace: logging
+spec:
+  s3:
+    aws_key_id:
+      valueFrom:
+        secretKeyRef:
+          name: logging-s3
+          key: awsAccessKeyId
+    aws_sec_key:
+      valueFrom:
+        secretKeyRef:
+          name: logging-s3
+          key: awsSecretAccessKey
+    s3_bucket: archivelogs
+    s3_region: eu-west-1
+    s3_endpoint: 'http://minio.minio.svc.cluster.local:80'
+    force_path_style: 'true'
+    path: logs/${tag}/%Y/%m/%d/
+    buffer:
+      timekey: 10s
+      timekey_wait: 0s
       timekey_use_utc: true

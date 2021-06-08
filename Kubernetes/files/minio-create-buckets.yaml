@@ -1,0 +1,56 @@
+kind: Job
+apiVersion:  batch/v1
+metadata:
+  generateName: mc-create-bucket-
+  namespace: minio
+spec:
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: mc-create-bucket
+          image: minio/mc:RELEASE.2021-06-08T01-29-37Z
+          env:
+            - name: MINIO_ENDPOINT
+              value: http://minio.minio.svc.cluster.local:80
+            - name: BUCKET_NAMES
+              value: archivelogs,default
+            - name: ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-default-secret
+                  key: accesskey
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-default-secret
+                  key: secretkey
+          command: ["/bin/sh", "-c",
+          "set -e ;
+          ATTEMPTS=0 ; LIMIT=30 ;
+          echo \"$MINIO_ENDPOINT\" > ENDPOINT
+          set +e ;
+          echo \"Connecting to Minio server: $MINIO_ENDPOINT\" ;
+          MC_COMMAND=\"mc config host add myminio $MINIO_ENDPOINT $ACCESS_KEY $SECRET_KEY\" ;
+          $MC_COMMAND ;
+          STATUS=$? ;
+          until [ $STATUS ] ;
+          do
+            ATTEMPTS=`expr $ATTEMPTS + 1` ;
+            echo \"Failed attempts: $ATTEMPTS\" ;
+            if [ $ATTEMPTS -gt $LIMIT ]; then
+              exit 1 ;
+            fi ;
+            sleep 1 ;
+            $MC_COMMAND ;
+            STATUS=$? ;
+          done ;
+          for i in $(echo $BUCKET_NAMES | sed \"s/,/ /g\") ;
+          do
+              /usr/bin/mc mb myminio/$i ;
+          done ;
+          sleep 900 ;
+          exit 0 ;"]

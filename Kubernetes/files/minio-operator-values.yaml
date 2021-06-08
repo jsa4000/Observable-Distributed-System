@@ -47,7 +47,7 @@ tenants:
     # pool secrets
     secrets:
       enabled: true
-      name: minio1-secret
+      name: minio-default-secret
       accessKey: minio
       secretKey: minio123
     # pool metrics to be read by Prometheus

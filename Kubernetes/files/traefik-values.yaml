@@ -1,0 +1,10 @@
+additionalArguments:
+  - "--api.insecure"
+  - "--metrics.prometheus=true"
+  - "--tracing.jaeger=true"
+  - "--tracing.serviceName=traefik-service"
+  - "--tracing.jaeger.samplingParam=1.0"
+  - "--tracing.jaeger.disableAttemptReconnecting=false"
+  - "--tracing.jaeger.samplingType=const"
+  - "--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-agent.tracing.svc:5778/sampling"
+  - "--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-agent.tracing.svc:6831"
