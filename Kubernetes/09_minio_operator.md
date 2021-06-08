@@ -38,9 +38,21 @@ Administrators of MinIO Tenants can perform a variety of tasks through the Conso
 
     `helm3 install minio --namespace minio --create-namespace minio/minio-operator --version 4.1.0 -f Kubernetes/files/minio-operator-values.yaml`
 
+* Access to the `default` MinIO Dashboard (`admin/minio123`)
+
+    > The service `svc/minio` will be used to manage buckets and objects using the APi or Web UI.
+
+    `kubectl --namespace minio port-forward svc/minio 9000:80`
+
+    http://localhost:9000
+
 * Access to the `default` MinIO Tenant Console (`admin/minio123`)
 
+    > The tenant console provides additional configuration and management capabilities than standard MinIO dashboard
+
     `kubectl --namespace minio port-forward svc/default-console 9090`
+
+    http://localhost:9090
 
 ## Deploy New MinIO Tenant
 
@@ -71,3 +83,31 @@ The **Operator Console** makes Kubernetes object storage easier still. In this g
 * Access to MinIO Operator console
 
     `kubectl --namespace minio port-forward svc/console 9090`
+
+## MinIO Cient
+
+* Download latest minio client release from its [Web Site](https://min.io/download)
+
+* Create an Alias for the Tenant
+
+    `mc alias set minio-default http://localhost:9000 minio minio123 --api S3v4`
+
+* Use Port-forward if using MinIO client outside the cluster and there is no external endpoint.
+
+    `kubectl --namespace minio port-forward svc/minio 9000:80`
+
+* Create the bucket by using minio client
+
+    `mc mb minio-default/mybucket`
+
+* List all buckets
+
+    `mc ls minio-default`
+
+* Upload a content to a bucket
+
+    `mc cp README.md minio-default/mybucket`
+
+* Download content from a bucket
+
+    `mc cp minio-default/mybucket/README.md README2.md`

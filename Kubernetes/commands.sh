@@ -10,6 +10,7 @@ helm3 repo add banzaicloud-stable https://kubernetes-charts.banzaicloud.com
 helm3 repo add jaegertracing https://jaegertracing.github.io/helm-charts
 helm3 repo add traefik https://helm.traefik.io/traefik
 helm3 repo add grafana https://grafana.github.io/helm-charts
+helm3 repo add minio https://operator.min.io/
 
 # Update Repositories
 helm3 repo update
@@ -49,6 +50,9 @@ helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19
 
 ## Install `Grafana Loki Stack` Chart into `logging` namespace
 helm3 upgrade --install loki -n logging --create-namespace grafana/loki-stack --version 2.4.1 --set grafana.enabled=true
+
+## Install MinIO Operator with 'default' tentant
+helm3 install minio --namespace minio --create-namespace minio/minio-operator --version 4.1.0 -f Kubernetes/files/minio-operator-values.yaml
 
 ####################
 # Deployment

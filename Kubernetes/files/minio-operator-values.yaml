@@ -52,7 +52,7 @@ tenants:
       secretKey: minio123
     # pool metrics to be read by Prometheus
     metrics:
-      enabled: false
+      enabled: true
       port: 9000
     certificate:
       ## Use this field to provide a list of Secrets with external certificates. This can be used to to configure
