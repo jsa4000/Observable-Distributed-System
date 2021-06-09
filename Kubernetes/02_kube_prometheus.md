@@ -67,7 +67,7 @@ In order to install kube Prometheus Stack:
 
     > Use `helm3 show values prometheus-community/kube-prometheus-stack` to get the default values configuration
 
-    `helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 16.3.1 --set prometheus-node-exporter.hostRootFsMount=false`
+    `helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 16.5.0 --set prometheus-node-exporter.hostRootFsMount=false`
 
     > Because an issue in `nodeExporter`, the value for `hostRootFsMount` has been set to false
 

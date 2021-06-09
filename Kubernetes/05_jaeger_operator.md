@@ -183,11 +183,11 @@ Deploy the Jaeger resources using the following command.
 
 > This will deploy jaeger-agent as a `Sidecar` within the pod, similar **OpenTelemetry** does.
 
-`kubectl apply -n tracing -f Kubernetes/files/jaeger-sidecar.yaml`
+`kubectl apply -n tracing -f Kubernetes/manifests/jaeger-sidecar.yaml`
 
 Also, it can be deployed as a `DaemonSet` or `Streaming` using kafka for example.
 
-`kubectl apply -n tracing -f Kubernetes/files/jaeger-daemonset.yaml`
+`kubectl apply -n tracing -f Kubernetes/manifests/jaeger-daemonset.yaml`
 
 ## References
 

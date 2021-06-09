@@ -77,7 +77,7 @@ Logging Operator is installed by using Helm charts, since has not been ported to
 
     > Note to replace `quickstart` to `elastic-cluster` by editing the resource `output/logging-demo-output-elasticsearch`, since it is hardcoded within the example.
 
-    `kubectl apply -n logging -f Kubernetes/files/logging.yaml`
+    `kubectl apply -n logging -f Kubernetes/manifests/logging.yaml`
 
 5. Access to Kibana at https://localhost:5601
 
