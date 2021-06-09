@@ -158,7 +158,15 @@ Dashobard can be imported using json files or ID.
     tomcat_sessions_active_max_sessions{application="spring-boot-tracing", container="simple-spring-boot-tracing", endpoint="http", instance="10.1.0.60:8080", job="simple-spring-boot-tracing", namespace="micro", pod="simple-spring-boot-tracing-86c4b5795b-mdnvp", service="simple-spring-boot-tracing"}
     ```
 
+    Grafana Spring Boot Statistics Configuration 
+
     ![Grafana Configuration](images/grafana-springboot-config.png)
+
+    Using **Grafana Explorer** feature and using Prometheus DataSource
+
+    ![Grafana Configuration](images/grafana-springboot-config-grafana.png)
+
+* [MongoDB Exporter - 2583](https://grafana.com/grafana/dashboards/2583)
 
 ## FAQ
 

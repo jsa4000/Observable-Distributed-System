@@ -11,6 +11,7 @@ helm3 repo add jaegertracing https://jaegertracing.github.io/helm-charts
 helm3 repo add traefik https://helm.traefik.io/traefik
 helm3 repo add grafana https://grafana.github.io/helm-charts
 helm3 repo add minio https://operator.min.io/
+helm3 repo add bitnami https://charts.bitnami.com/bitnami
 
 # Update Repositories
 helm3 repo update
@@ -51,6 +52,17 @@ helm3 install minio --namespace minio --create-namespace minio/minio-operator --
 
 ## Create default minio buckets
 kubectl create -n minio -f Kubernetes/manifests/minio-create-buckets.yaml
+
+####################
+# DataStore
+####################
+
+## Install MongoB into datastore namespace
+helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 --set architecture=standalone
+
+## Instal MongoDB Exporterr into datastore using previous prometheus release installed (kube-prometheus-stack)
+helm3 install prometheus-mongodb-exporter --namespace datastore prometheus-community/prometheus-mongodb-exporter --version 2.8.1 \
+--set mongodb.uri=mongo-mongodb.datastore.svc.cluster.local,serviceMonitor.additionalLabels.release=prometheus
 
 ####################
 # Deployment
@@ -102,10 +114,18 @@ http://traefik.management.com (`admin/pass`)
 
 ###### Metrics  ######
 
-## Prometheus dashboarfd
+## Prometheus dashboard
 kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090
 
 ## Grafana dashboard (`admin/prom-operator`)
+##      Dashboard            |   ID   
+## -----------------------------------
+##   Node Exporter Full      |  1860
+##   Traefik                 |  4475
+##   Spring Boot Statistics  |  6756
+##   MongoDB Exporter        |  2583
+##
+##  Add Loki DataSource http://loki.logging.svc.cluster.local:3100 -> Explore -> Select Loki DataSource
 kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
 
 ###### Microservice ######
@@ -135,7 +155,7 @@ http://localhost/tracer/tracee
 kubectl get secret -n logging elastic-cluster-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo
 kubectl port-forward -n logging service/kibana-cluster-kb-http 5601
 
-## Grafana Loki
+## Grafana Loki (http://loki.logging.svc.cluster.local:3100)
 kubectl get secret -n logging loki-grafana -o=jsonpath='{.data.admin-user}' | base64 --decode; echo
 kubectl get secret -n logging loki-grafana -o=jsonpath='{.data.admin-password}' | base64 --decode; echo
 kubectl port-forward -n logging svc/loki-grafana 3000:80
