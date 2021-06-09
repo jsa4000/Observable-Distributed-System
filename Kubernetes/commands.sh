@@ -58,7 +58,7 @@ kubectl create -n minio -f Kubernetes/manifests/minio-create-buckets.yaml
 ####################
 
 ## Install MongoB into datastore namespace
-helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 --set architecture=standalone
+helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 -f Kubernetes/manifests/mongodb-values.yaml
 
 ## Instal MongoDB Exporterr into datastore using previous prometheus release installed (kube-prometheus-stack)
 helm3 install prometheus-mongodb-exporter --namespace datastore prometheus-community/prometheus-mongodb-exporter --version 2.8.1 \

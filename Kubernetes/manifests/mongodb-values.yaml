@@ -1,0 +1,46 @@
+architecture: standalone
+useStatefulSet: false
+
+auth:
+  enabled: true
+  rootPassword: password
+
+disableJavascript: false
+enableJournal: true
+
+initdbScripts:
+  my_init_script.sh: |
+     #!/bin/bash
+     echo "Do something."
+  init_script.js: |
+    db.createUser({
+      user: 'user',
+      pwd: 'password',
+      roles: [
+          {
+              role: 'readWrite',
+              db: 'default',
+          },
+      ],
+    });
+
+    db = db.getSiblingDB('default')
+
+    db.createCollection('test', { capped: false });
+
+    db.test.insert([
+        { "item": 1 },
+        { "item": 2 },
+        { "item": 3 },  
+        { "item": 4 },
+        { "item": 5 }
+    ]);
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+

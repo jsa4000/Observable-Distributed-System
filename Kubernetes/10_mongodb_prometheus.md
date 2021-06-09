@@ -31,6 +31,14 @@ Following process describes how to deploy Mongodb using Helm charts:
 
     `helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 --set architecture=standalone`
 
+    Deploy MongoDB instance using custom scripts to initialize the database `helm3 show values bitnami/mongodb --version 10.19.0`
+
+    `helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 -f Kubernetes/manifests/mongodb-values.yaml`
+
+* Unnstalling the Chart
+
+    `helm3 uninstall mongo --namespace datastore`
+
 ### MongoDB Exporter
 
 Following process describes how to deploy Mongodb Exporter using Helm charts:
@@ -77,6 +85,28 @@ To connect to your database from outside the cluster execute the following comma
 `mongo --host 127.0.0.1 --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD`
 
 > Instead using terminal tools there are other UI tools such as [Robo 3T](https://robomongo.org/)
+
+Use following commands to check MongoDB database, collections and documents
+
+```bash
+# Print a list of all databases on the server.
+show dbs
+show databases
+
+# Switch current database to <db>. The mongo shell variable db is set to the current database.
+use <db>
+
+#Print a list of all collections for current database.
+show collections
+
+# Set a specific collection in the current database to a variable coll, as in the following example:
+coll = db.<collection>
+
+# Find all documents in the collection and returns a cursor.
+db.<collection>.find()
+coll.find()
+
+```
 
 ### MongoB Exporter test
 
