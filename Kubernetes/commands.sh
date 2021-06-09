@@ -61,11 +61,8 @@ kubectl apply -n logging -f Kubernetes/manifests/eck.yaml
 
 ## Create logging instances to monitor kubernetes cluster entirely
 
-### Apply Clusterflow and ClusterOutput (elasticsearch) manifests
-kubectl apply -n logging -f Kubernetes/manifests/logging.yaml
-
 ### Apply Clusterflow and ClusterOutputs (elasticsearch and s3) using SSL
-#kubectl apply -n logging -f Kubernetes/manifests/logging-advanced.yaml
+kubectl apply -n logging -f Kubernetes/manifests/logging.yaml
 
 ## Create Jaeger all-in-once inmemory instace with agents, collector, querier and backend
 

@@ -1,0 +1,43 @@
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Logging
+metadata:
+  name: logging
+spec:
+  fluentd: {}
+  fluentbit: {}
+  controlNamespace: logging
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterFlow
+metadata:
+  name: logging-flow
+  namespace: logging
+spec:
+  filters:
+    - tag_normaliser: {}
+  selectors: {}
+  globalOutputRefs:
+    - logging-output-elasticsearch
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: ClusterOutput
+metadata:
+  name: logging-output-elasticsearch
+  namespace: logging
+spec:
+  elasticsearch:
+    host: elastic-cluster-es-http.logging
+    port: 9200
+    scheme: https
+    ssl_verify: false
+    ssl_version: TLSv1_2
+    user: elastic
+    password:
+      valueFrom:
+        secretKeyRef:
+          name: elastic-cluster-es-elastic-user
+          key: elastic
+    buffer:
+      timekey: 1m
+      timekey_wait: 30s
+      timekey_use_utc: true

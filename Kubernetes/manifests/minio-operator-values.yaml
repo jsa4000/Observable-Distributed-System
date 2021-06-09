@@ -9,7 +9,8 @@ tenants:
       repository: minio/minio
       tag: RELEASE.2021-04-06T23-11-00Z
       pullPolicy: IfNotPresent
-    imagePullSecrets: []
+    imagePullSecret:
+      name: minio-pull-secret
     ## If a scheduler is specified here, Tenant pods will be dispatched by specified scheduler.
     ## If not specified, the Tenant pods will be dispatched by default scheduler.
     scheduler: {}
