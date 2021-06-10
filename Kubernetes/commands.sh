@@ -62,7 +62,8 @@ helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --v
 
 ## Instal MongoDB Exporterr into datastore using previous prometheus release installed (kube-prometheus-stack)
 helm3 install prometheus-mongodb-exporter --namespace datastore prometheus-community/prometheus-mongodb-exporter --version 2.8.1 \
---set mongodb.uri=mongo-mongodb.datastore.svc.cluster.local,serviceMonitor.additionalLabels.release=prometheus
+--set 'mongodb.uri=mongodb://monitor:password@mongo-mongodb.datastore.svc.cluster.local:27017/admin' \
+--set 'serviceMonitor.additionalLabels.release=prometheus'
 
 ####################
 # Deployment
@@ -118,15 +119,21 @@ http://traefik.management.com (`admin/pass`)
 kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090
 
 ## Grafana dashboard (`admin/prom-operator`)
+kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
+
+## Import Grafana dashboards
 ##      Dashboard            |   ID   
 ## -----------------------------------
 ##   Node Exporter Full      |  1860
 ##   Traefik                 |  4475
 ##   Spring Boot Statistics  |  6756
 ##   MongoDB Exporter        |  2583
-##
-##  Add Loki DataSource http://loki.logging.svc.cluster.local:3100 -> Explore -> Select Loki DataSource
-kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
+
+
+##  Add Grafana DataSources  (Explore -> Select "Loki" DataSource)
+##      DataSource    |                     URL   
+## --------------------------------------------------------------------
+##        Loki        |  http://loki.logging.svc.cluster.local:3100
 
 ###### Microservice ######
 

@@ -9,10 +9,23 @@ disableJavascript: false
 enableJournal: true
 
 initdbScripts:
-  my_init_script.sh: |
-     #!/bin/bash
-     echo "Do something."
-  init_script.js: |
+  init_monitor_script.js: |
+    use admin
+    db.createUser({
+      user: 'monitor',
+      pwd: 'password',
+      roles: [
+          {
+              role: 'clusterMonitor',
+              db: 'admin',
+          },
+          {
+              role: 'read',
+              db: 'local',
+          }
+      ],
+    });
+  init_databases_script.js: |
     db.createUser({
       user: 'user',
       pwd: 'password',
