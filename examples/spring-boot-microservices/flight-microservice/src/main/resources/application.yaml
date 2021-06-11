@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: flight-microservice
+  profiles:
+    active: local
+  data:
+    mongodb:
+      auto-index-creation: true
+      repositories.enabled: true
+
+server:
+  port: 8084
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,health
+
+logging:
+  level:
+    root: info
+    org.springframework: warn
+
+---
+spring:
+  profiles: local
+  data:
+    mongodb:
+      uri: mongodb://booking:password@localhost:27017/booking?replicaSet=rs0
+
+---
+spring:
+  profiles: docker
+  data:
+    mongodb:
+      uri: mongodb://booking:password@mongo:27017/booking?replicaSet=rs0
