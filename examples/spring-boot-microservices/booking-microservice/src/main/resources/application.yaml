@@ -9,7 +9,7 @@ spring:
       repositories.enabled: true
 
 server:
-  port: 8081
+  port: 8080
 
 management:
   endpoints:
@@ -29,6 +29,8 @@ spring:
     mongodb:
       uri: mongodb://booking:password@localhost:27017/booking?replicaSet=rs0
 
+server:
+  port: 8081
 ---
 spring:
   profiles: docker

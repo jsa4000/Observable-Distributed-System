@@ -10,7 +10,6 @@
 	</parent>
 
 	<artifactId>car-microservice</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>car-microservice</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -28,6 +27,11 @@
 			<artifactId>spring-aop</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>${springfox.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mongo-spring</artifactId>
 			<version>${project.version}</version>
@@ -41,6 +45,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

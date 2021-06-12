@@ -10,7 +10,6 @@
 	</parent>
 
 	<artifactId>booking-microservice</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>booking-microservice</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -41,6 +40,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
