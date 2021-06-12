@@ -1,5 +1,6 @@
-package com.example.car.config;
+package com.example.swagger.autoconfigure;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -10,22 +11,24 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
-public class SwaggerConfiguration {
+public class SwaggerAutoConfiguration {
 
     @Bean
-    public Docket api() {
+    public Docket api(ApiInfo apiInfo) {
         return new Docket(DocumentationType.OAS_30)
-                .apiInfo(metadata())
+                .apiInfo(apiInfo)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.example"))
                 .paths(PathSelectors.ant("/api/**"))
                 .build();
     }
 
-    private ApiInfo metadata() {
+    @Bean
+    @ConditionalOnMissingBean
+    public ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title( "Booking API" )
-                .description( "This is a API to manage bookings" )
+                .description( "Microservice API to manage bookings" )
                 .version( "1.0.0" )
                 .build();
     }

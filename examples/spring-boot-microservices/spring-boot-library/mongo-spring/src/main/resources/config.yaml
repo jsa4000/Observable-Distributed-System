@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      auto-index-creation: false
+      repositories.enabled: true
+
+mongock:
+  enabled: false
+  change-logs-scan-package:
+    - com.example
+  changeLogCollectionName: mongockChangeLog
+  lockCollectionName: mongockLock

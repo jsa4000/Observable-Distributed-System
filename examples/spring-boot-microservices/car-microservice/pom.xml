@@ -11,7 +11,7 @@
 
 	<artifactId>car-microservice</artifactId>
 	<name>car-microservice</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Microservice project for Spring Boot</description>
 
 	<dependencies>
 		<dependency>
@@ -27,9 +27,9 @@
 			<artifactId>spring-aop</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-boot-starter</artifactId>
-			<version>${springfox.version}</version>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>swagger-spring</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -41,6 +41,11 @@
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.javafaker</groupId>
+			<artifactId>javafaker</artifactId>
+			<version>${javafaker.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.example.mongo.autoconfigure.ConvertersAutoConfiguration,\
-  com.example.mongo.autoconfigure.MongoAutoConfiguration
+  com.example.mongo.autoconfigure.MongoAutoConfiguration,\
+  com.example.mongo.autoconfigure.MongockAutoConfiguration

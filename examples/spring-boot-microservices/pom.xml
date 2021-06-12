@@ -25,11 +25,14 @@
     <spring-cloud.version>2020.0.2</spring-cloud.version>
 		<opentracing.version>3.3.1</opentracing.version>
     <springfox.version>3.0.0</springfox.version>
+    <mongock.version>4.3.8</mongock.version>
+    <mongodb-sync.version>4.2.3</mongodb-sync.version>
+    <javafaker.version>1.0.2</javafaker.version>
 		<logstash-encoder.version>6.6</logstash-encoder.version>
   </properties>
 
   <modules>
-    <module>mongo-spring</module>
+    <module>spring-boot-library</module>
     <module>booking-microservice</module>
     <module>hotel-microservice</module>
     <module>car-microservice</module>

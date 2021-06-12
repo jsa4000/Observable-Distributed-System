@@ -3,10 +3,11 @@ spring:
     name: car-microservice
   profiles:
     active: local
-  data:
-    mongodb:
-      auto-index-creation: true
-      repositories.enabled: true
+
+mongock:
+  enabled: true
+  change-logs-scan-package:
+    - com.example
 
 server:
   port: 8080

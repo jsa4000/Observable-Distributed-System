@@ -11,7 +11,7 @@
 
 	<artifactId>hotel-microservice</artifactId>
 	<name>hotel-microservice</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Microservice project for Spring Boot</description>
 
 	<dependencies>
 		<dependency>

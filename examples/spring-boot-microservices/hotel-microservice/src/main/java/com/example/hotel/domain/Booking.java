@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Document("hotel_booking")
+@Document("hotel_bookings")
 public class Booking {
 
     @Id
