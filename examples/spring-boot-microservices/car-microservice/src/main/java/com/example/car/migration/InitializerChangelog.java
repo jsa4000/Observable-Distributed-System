@@ -1,7 +1,7 @@
 package com.example.car.migration;
 
 import com.example.car.domain.Booking;
-import com.example.car.repositories.BookingRepository;
+import com.example.car.repositories.ReactiveBookingRepository;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.javafaker.Faker;
@@ -17,7 +17,7 @@ public class InitializerChangelog {
     private static final Faker faker = new Faker();
 
     @ChangeSet(id = "20200627161800-data-initialize", order = "001", author = "Anonymous")
-    public void dataInitializer01(BookingRepository BookingRepository) {
+    public void dataInitializer01(ReactiveBookingRepository BookingRepository) {
         java.lang.reflect.Proxy.getInvocationHandler(BookingRepository);
 
         Flux<Booking> BookingsFlux = Flux.fromStream(Stream.of(

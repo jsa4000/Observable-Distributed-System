@@ -3,6 +3,7 @@ package com.example.car.controller;
 import com.example.car.domain.Booking;
 import com.example.car.exception.BookingNotFoundException;
 import com.example.car.service.BookingService;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
+    @Timed("com.example.car.controller")
     public Mono<ResponseEntity<Booking>> save(@RequestBody Booking booking) {
         return bookingService.save(booking)
                 .map(ResponseEntity::ok)
@@ -26,6 +28,7 @@ public class BookingController {
     }
 
     @DeleteMapping("/{id}")
+    @Timed("com.example.car.controller")
     public Mono<ResponseEntity<Void>> deleteBooking(@PathVariable("id") String id) {
         return bookingService.delete(id)
                 .map(ResponseEntity::ok)
@@ -33,6 +36,7 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
+    @Timed("com.example.car.controller")
     public Mono<ResponseEntity<Booking>> findBookingById(@PathVariable("id") String id) {
         return bookingService.findById(id)
                 .map(ResponseEntity::ok)
@@ -40,6 +44,7 @@ public class BookingController {
     }
 
     @GetMapping
+    @Timed("com.example.car.controller")
     public Mono<ResponseEntity<Flux<Booking>>> findAllBookings() {
         return Mono.just(ResponseEntity.ok(bookingService.findAll()
                 .onErrorMap(this::handleError)));

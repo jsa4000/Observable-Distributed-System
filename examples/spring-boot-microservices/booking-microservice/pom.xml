@@ -28,7 +28,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>mongo-spring</artifactId>
+			<artifactId>mongo-spring-starter</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

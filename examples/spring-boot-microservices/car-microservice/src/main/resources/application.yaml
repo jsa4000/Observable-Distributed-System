@@ -2,30 +2,26 @@ spring:
   application:
     name: car-microservice
   profiles:
-    active: local
-
-mongock:
-  enabled: true
-  change-logs-scan-package:
-    - com.example
+    active: local #,jsonlog
 
 server:
   port: 8080
+  shutdown: graceful
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: info,health
+mongock:
+  enabled: true
 
 logging:
   level:
     root: info
     org.springframework: warn
+    com.example: DEBUG
 
 ---
 spring:
-  profiles: local
+  config:
+    activate:
+      on-profile: local
   data:
     mongodb:
       uri: mongodb://booking:password@localhost:27017/booking?replicaSet=rs0
@@ -34,7 +30,9 @@ server:
   port: 8083
 ---
 spring:
-  profiles: docker
+  config:
+    activate:
+      on-profile: docker
   data:
     mongodb:
       uri: mongodb://booking:password@mongo:27017/booking?replicaSet=rs0

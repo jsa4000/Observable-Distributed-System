@@ -6,21 +6,22 @@
 		<groupId>com.example</groupId>
 		<artifactId>spring-boot-microservices</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
+		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>spring-boot-library</artifactId>
-	<name>spring-boot-library</name>
+	<artifactId>core-spring-starter</artifactId>
+	<name>core-spring-starter</name>
 	<description>Library project for Spring Boot</description>
-	<packaging>pom</packaging>
 
-	<modules>
-		<module>core-spring-starter</module>
-		<module>logging-spring-starter</module>
-		<module>metrics-spring-starter</module>
-		<module>tracing-spring-starter</module>
-		<module>swagger-spring-starter</module>
-		<module>mongo-spring-starter</module>
-	</modules>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+		</dependency>
+	</dependencies>
 
 </project>

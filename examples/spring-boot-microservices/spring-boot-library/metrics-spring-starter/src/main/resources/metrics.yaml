@@ -1,0 +1,26 @@
+# Customize Spring Boot Info actuator
+info:
+  java.vm.vendor: ${java.vm.vendor}
+  java.version: ${java.version}
+  #  application.encoding: @project.build.sourceEncoding@
+  application.name: ${spring.application.name}
+#  spring.boot.version: @spring-boot.version@
+
+management:
+  health:
+    livenessState.enabled: true
+    readinessState.enabled: true
+  endpoint:
+    health:
+      show-components: always
+      probes.enabled: true
+      show-details: always
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: info,health,prometheus
+      base-path: /management
+      path-mapping:
+        prometheus: /metrics

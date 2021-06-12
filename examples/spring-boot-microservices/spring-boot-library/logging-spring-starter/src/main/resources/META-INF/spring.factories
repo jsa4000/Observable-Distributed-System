@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.example.logging.autoconfigure.LoggingAutoConfiguration,\
+  com.example.logging.autoconfigure.LoggingAspectAutoConfiguration
