@@ -1,0 +1,7 @@
+opentracing:
+  jaeger:
+    enabled: false
+    service-name: ${SPRING_APPLICATION_NAME:spring-boot-tracing}
+    udp-sender:
+      host: localhost
+      port: 6831

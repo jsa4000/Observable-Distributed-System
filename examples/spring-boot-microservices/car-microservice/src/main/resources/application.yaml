@@ -11,6 +11,10 @@ server:
 mongock:
   enabled: true
 
+opentracing:
+  jaeger:
+    enabled: true
+
 logging:
   level:
     root: info
@@ -26,6 +30,12 @@ spring:
     mongodb:
       uri: mongodb://booking:password@localhost:27017/booking?replicaSet=rs0
 
+opentracing:
+  jaeger:
+    udp-sender:
+      host: localhost
+      port: 6831
+
 server:
   port: 8083
 ---
@@ -36,3 +46,9 @@ spring:
   data:
     mongodb:
       uri: mongodb://booking:password@mongo:27017/booking?replicaSet=rs0
+
+opentracing:
+  jaeger:
+    udp-sender:
+      host: jaeger-agent
+      port: 6831
