@@ -1,7 +1,7 @@
-package com.example.mongo.autoconfigure;
+package com.example.core.autoconfigure;
 
-import com.example.mongo.converter.OffsetDateTimeReadConverter;
-import com.example.mongo.converter.OffsetDateTimeWriteConverter;
+import com.example.core.converter.OffsetDateTimeReadConverter;
+import com.example.core.converter.OffsetDateTimeWriteConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

@@ -1,4 +1,4 @@
-package com.example.mongo.converter;
+package com.example.core.converter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;

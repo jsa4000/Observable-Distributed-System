@@ -1,4 +1,4 @@
-package com.example.mongo.converter;
+package com.example.core.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;
