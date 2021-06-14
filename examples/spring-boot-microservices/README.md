@@ -1,5 +1,8 @@
 # Spring Boot Microservices
 
+## Booking System
+
+This is an example to demonstrate a Booking System developed with microservices.
 
 ## Swagger UI
 

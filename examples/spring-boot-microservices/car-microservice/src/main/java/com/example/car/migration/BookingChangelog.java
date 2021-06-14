@@ -12,13 +12,13 @@ import java.util.stream.Stream;
 
 @Slf4j
 @ChangeLog(order = "1")
-public class InitializerChangelog {
+public class BookingChangelog {
 
     private static final Faker faker = new Faker();
 
-    @ChangeSet(id = "20200627161800-data-initialize", order = "001", author = "Anonymous")
-    public void dataInitializer01(ReactiveBookingRepository BookingRepository) {
-        java.lang.reflect.Proxy.getInvocationHandler(BookingRepository);
+    @ChangeSet(id = "20210610120001-bookings-data-initialization", order = "001", author = "Anonymous")
+    public void changeSet01(ReactiveBookingRepository bookingRepository) {
+        java.lang.reflect.Proxy.getInvocationHandler(bookingRepository);
 
         Flux<Booking> BookingsFlux = Flux.fromStream(Stream.of(
                 Booking.builder().id("1").resourceId("001").active(false).build(),
@@ -27,7 +27,7 @@ public class InitializerChangelog {
                 Booking.builder().id("4").resourceId("001").active(false).build(),
                 Booking.builder().id("5").resourceId("004").active(false).build()
         ));
-        BookingRepository.saveAll(BookingsFlux)
+        bookingRepository.saveAll(BookingsFlux)
                 .doOnNext(x -> log.trace("Saved booking with id {}", x.getId()))
                 .subscribe();
     }
