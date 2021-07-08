@@ -52,7 +52,7 @@ These are the main components:
 
     Installing Traefik using a YAML values file
 
-    `helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19.1 -f Kubernetes/manifests/traefik-values.yaml`
+    `helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19.1 -f kubernetes/manifests/traefik-values.yaml`
 
 2. Verify the installation by accessing to Jeager UI via traefik (loadbalancer) at http://localhost/search
 
@@ -62,7 +62,7 @@ These are the main components:
 
     > Note: Prometheus operator is required. Set the label `release` set to match with the prometheus-operator `release: prometheus`
 
-    `kubectl apply -n tools -f Kubernetes/manifests/traefik-service-monitor.yaml`
+    `kubectl apply -n tools -f kubernetes/manifests/traefik-service-monitor.yaml`
 
 4. Access to the *dashboard* and *metrics* exposed by traefik
 
@@ -77,7 +77,7 @@ These are the main components:
 
 6. Deploy traefik `IngressRoute` to allow external traffic to access to traefik dashboard using basic authentication (`admin/pass`)
 
-    `kubectl apply -n tools -f Kubernetes/manifests/traefik-ingress-route.yaml`
+    `kubectl apply -n tools -f kubernetes/manifests/traefik-ingress-route.yaml`
 
     http://traefik.management.com (`admin/pass`)
 

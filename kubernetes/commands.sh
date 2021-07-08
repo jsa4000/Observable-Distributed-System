@@ -38,27 +38,27 @@ helm3 install logging-operator banzaicloud-stable/logging-operator -n logging --
 helm3 install -n tracing --create-namespace jaeger-operator jaegertracing/jaeger-operator --version 2.21.2
 
 ## Install `traefik` Chart into `tools` namespace
-helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19.1 -f Kubernetes/manifests/traefik-values.yaml
+helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19.1 -f kubernetes/manifests/traefik-values.yaml
 
 ## Install `Grafana Loki Stack` Chart into `logging` namespace
 helm3 upgrade --install loki -n logging --create-namespace grafana/loki-stack --version 2.4.1 --set grafana.enabled=true
 
 ## Install MinIO Operator with 'default' tentant
-helm3 install minio --namespace minio --create-namespace minio/minio-operator --version 4.1.0 -f Kubernetes/manifests/minio-operator-values.yaml
+helm3 install minio --namespace minio --create-namespace minio/minio-operator --version 4.1.0 -f kubernetes/manifests/minio-operator-values.yaml
 
 ####################
 # Initialize
 ####################
 
 ## Create default minio buckets
-kubectl create -n minio -f Kubernetes/manifests/minio-create-buckets.yaml
+kubectl create -n minio -f kubernetes/manifests/minio-create-buckets.yaml
 
 ####################
 # DataStore
 ####################
 
 ## Install MongoB into datastore namespace
-helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 -f Kubernetes/manifests/mongodb-values.yaml
+helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 -f kubernetes/manifests/mongodb-values.yaml
 
 ## Instal MongoDB Exporterr into datastore using previous prometheus release installed (kube-prometheus-stack)
 helm3 install prometheus-mongodb-exporter --namespace datastore prometheus-community/prometheus-mongodb-exporter --version 2.8.1 \
@@ -70,24 +70,24 @@ helm3 install prometheus-mongodb-exporter --namespace datastore prometheus-commu
 ####################
 
 ## It can be deployed by using a yaml file with all the manifests.
-kubectl apply -n logging -f Kubernetes/manifests/eck.yaml
+kubectl apply -n logging -f kubernetes/manifests/eck.yaml
 
 ## Create logging instances to monitor kubernetes cluster entirely
 
 ### Apply Clusterflow and ClusterOutputs (elasticsearch and s3) using SSL
-kubectl apply -n logging -f Kubernetes/manifests/logging.yaml
+kubectl apply -n logging -f kubernetes/manifests/logging.yaml
 
 ## Create Jaeger all-in-once inmemory instace with agents, collector, querier and backend
 
-### Configure OPENTRACING_JAEGER_ENABLED (examples/deployments/01-simple-spring-boot-tracing/deployment.yaml) to false using sidecar
-#kubectl apply -n tracing -f Kubernetes/manifests/jaeger-sidecar.yaml
+### Configure OPENTRACING_JAEGER_ENABLED (src/deployments/01-simple-spring-boot-tracing/deployment.yaml) to false using sidecar
+#kubectl apply -n tracing -f kubernetes/manifests/jaeger-sidecar.yaml
 
-### Configure OPENTRACING_JAEGER_ENABLED (examples/deployments/01-simple-spring-boot-tracing/deployment.yaml) to true using daemonset
-kubectl apply -n tracing -f Kubernetes/manifests/jaeger-daemonset.yaml
+### Configure OPENTRACING_JAEGER_ENABLED (src/deployments/01-simple-spring-boot-tracing/deployment.yaml) to true using daemonset
+kubectl apply -n tracing -f kubernetes/manifests/jaeger-daemonset.yaml
 
 ## Deploy the prometheus-operator `ServiceMonitor` to monitor trraefik form prometheus
-kubectl apply -n tools -f Kubernetes/manifests/traefik-service-monitor.yaml
-kubectl apply -n tools -f Kubernetes/manifests/traefik-ingress-route.yaml
+kubectl apply -n tools -f kubernetes/manifests/traefik-service-monitor.yaml
+kubectl apply -n tools -f kubernetes/manifests/traefik-ingress-route.yaml
 
 ####################
 # Application
@@ -97,7 +97,7 @@ kubectl apply -n tools -f Kubernetes/manifests/traefik-ingress-route.yaml
 kubectl create namespace micro
 
 # Deploy the Application example
-kubectl apply -n micro -f examples/deployments/01-simple-spring-boot-tracing
+kubectl apply -n micro -f src/deployments/01-simple-spring-boot-tracing
 
 ## Note: Deploying jaeger as a sidecar mode, simple-spring-boot-tracing pod must have 2/2 containers running
 

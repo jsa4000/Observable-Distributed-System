@@ -36,7 +36,7 @@ Administrators of MinIO Tenants can perform a variety of tasks through the Conso
 
     > The command deploys MinIO Operator on the Kubernetes cluster in the default configuration.
 
-    `helm3 install minio --namespace minio --create-namespace minio/minio-operator --version 4.1.0 -f Kubernetes/manifests/minio-operator-values.yaml`
+    `helm3 install minio --namespace minio --create-namespace minio/minio-operator --version 4.1.0 -f kubernetes/manifests/minio-operator-values.yaml`
 
 * Access to the `default` MinIO Dashboard (`minio/minio123`)
 
@@ -64,7 +64,7 @@ Administrators of MinIO Tenants can perform a variety of tasks through the Conso
 
 * Deploy New MinIO Tenant
 
-    `kubectl apply -n minio-tenant -f Kubernetes/manifests/minio-tenant.yaml`
+    `kubectl apply -n minio-tenant -f kubernetes/manifests/minio-tenant.yaml`
 
 * Access to the new MinIO Tenant Console (`YOURCONSOLEACCESS/YOURCONSOLESECRET`)
 

@@ -236,4 +236,4 @@ EOF
 
 Deploy the ECK resources (elastic + kibana) using the following command.
 
-`kubectl apply -n logging -f Kubernetes/manifests/eck.yaml`
+`kubectl apply -n logging -f kubernetes/manifests/eck.yaml`

@@ -33,7 +33,7 @@ Following process describes how to deploy Mongodb using Helm charts:
 
     Deploy MongoDB instance using custom scripts to initialize the database `helm3 show values bitnami/mongodb --version 10.19.0`
 
-    `helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 -f Kubernetes/manifests/mongodb-values.yaml`
+    `helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 -f kubernetes/manifests/mongodb-values.yaml`
 
 * Unnstalling the Chart
 
