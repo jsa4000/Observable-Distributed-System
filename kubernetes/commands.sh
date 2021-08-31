@@ -24,7 +24,7 @@ helm3 search repo
 ####################
 
 ## Install `kube-prometheus-stack` Chart into `monitoring` namespace
-helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 16.5.0 \
+helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 16.12.1 \
 --set 'prometheus-node-exporter.hostRootFsMount=false'
 
 # Install the ECK Operator (Elastic Cloud on Kubernetes: Elastic + Kibana)      
