@@ -1,53 +1,61 @@
 package com.example.car.controller;
 
-import com.example.car.domain.Vehicle;
 import com.example.car.exception.VehicleNotFoundException;
+import com.example.car.mapper.VehicleMapper;
 import com.example.car.service.VehicleService;
+import com.example.controller.VehicleApi;
+import com.example.controller.dto.VehicleDto;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "api/v1/vehicle", headers = "Accept=application/json")
-public class VehicleController {
+public class VehicleController implements VehicleApi {
 
     private final VehicleService vehicleService;
 
-    @PostMapping
-    @Timed("com.example.car.controller")
-    public Mono<ResponseEntity<Vehicle>> save(@RequestBody Vehicle vehicle) {
-        return vehicleService.save(vehicle)
-                .map(ResponseEntity::ok)
-                .onErrorMap(this::handleError);
-    }
+    private final VehicleMapper vehicleMapper;
 
-    @DeleteMapping("/{id}")
+    @Override
     @Timed("com.example.car.controller")
-    public Mono<ResponseEntity<Void>> deleteVehicle(@PathVariable("id") String id) {
+    public Mono<ResponseEntity<Void>> deleteVehicle(String id, ServerWebExchange exchange) {
         return vehicleService.delete(id)
                 .map(ResponseEntity::ok)
                 .onErrorMap(this::handleError);
     }
 
-    @GetMapping("/{id}")
+    @Override
     @Timed("com.example.car.controller")
-    public Mono<ResponseEntity<Vehicle>> findVehicleById(@PathVariable("id") String id) {
+    public Mono<ResponseEntity<Flux<VehicleDto>>> findAllVehicles(ServerWebExchange exchange) {
+        return Mono.just(ResponseEntity.ok(vehicleService.findAll().map(vehicleMapper::fromDomain)
+                .onErrorMap(this::handleError)));
+    }
+
+    @Override
+    @Timed("com.example.car.controller")
+    public Mono<ResponseEntity<VehicleDto>> findVehicleById(String id, ServerWebExchange exchange) {
         return vehicleService.findById(id)
+                .map(vehicleMapper::fromDomain)
                 .map(ResponseEntity::ok)
                 .onErrorMap(this::handleError);
     }
 
-    @GetMapping
+    @Override
     @Timed("com.example.car.controller")
-    public Mono<ResponseEntity<Flux<Vehicle>>> findAllVehicles() {
-        return Mono.just(ResponseEntity.ok(vehicleService.findAll()
-                .onErrorMap(this::handleError)));
+    public Mono<ResponseEntity<VehicleDto>> saveVehicle(VehicleDto vehicleDto, ServerWebExchange exchange) {
+        return vehicleService.save(vehicleMapper.toDomain(vehicleDto))
+                .map(vehicleMapper::fromDomain)
+                .map(ResponseEntity::ok)
+                .onErrorMap(this::handleError);
     }
 
     private Throwable handleError(Throwable ex) {
@@ -55,4 +63,5 @@ public class VehicleController {
             return new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         return new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
+
 }

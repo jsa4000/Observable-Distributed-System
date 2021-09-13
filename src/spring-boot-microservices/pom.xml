@@ -20,6 +20,8 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <java.version>11</java.version>
+    <maven-plugin.version>3.8.1</maven-plugin.version>
+    <maven-remote-resources-plugin.version>1.7.0</maven-remote-resources-plugin.version>
     <lombok.version>1.18.18</lombok.version>
     <spring-mongodb.version>2.4.2</spring-mongodb.version>
     <spring-cloud.version>2020.0.2</spring-cloud.version>
@@ -29,14 +31,163 @@
     <mongodb-sync.version>4.2.3</mongodb-sync.version>
     <javafaker.version>1.0.2</javafaker.version>
     <logstash-encoder.version>6.6</logstash-encoder.version>
+    <openapi-generator>5.1.0</openapi-generator>
+    <jackson-databind-nullable>0.2.1</jackson-databind-nullable>
+    <mapstruct.version>1.4.2.Final</mapstruct.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>logging-spring-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>metrics-spring-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>tracing-spring-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>swagger-spring-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>mongo-spring-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${lombok.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct</artifactId>
+        <version>${mapstruct.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openapitools</groupId>
+        <artifactId>jackson-databind-nullable</artifactId>
+        <version>${jackson-databind-nullable}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.javafaker</groupId>
+        <artifactId>javafaker</artifactId>
+        <version>${javafaker.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>mustache/*.*</exclude>
+          <exclude>openapi/*.*</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/target/extra-resources</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.openapitools</groupId>
+          <artifactId>openapi-generator-maven-plugin</artifactId>
+          <version>${openapi-generator}</version>
+          <executions>
+            <execution>
+              <id>contract-api</id>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+              <configuration>
+                <inputSpec>${project.basedir}/src/main/resources/openapi/contract.yaml</inputSpec>
+                <templateDirectory>${project.basedir}/target/extra-resources/mustache</templateDirectory>
+                <generatorName>spring</generatorName>
+                <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                <modelPackage>${project.groupId}.controller.dto</modelPackage>
+                <apiPackage>${project.groupId}.controller</apiPackage>
+                <modelNameSuffix>Dto</modelNameSuffix>
+                <configOptions>
+                  <reactive>true</reactive>
+                  <dateLibrary>java8</dateLibrary>
+                  <interfaceOnly>true</interfaceOnly>
+                  <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                </configOptions>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <configuration>
+            <layers>
+              <enabled>true</enabled>
+            </layers>
+            <image>
+              <name>jsa4000/${project.artifactId}:${project.version}</name>
+              <env>
+                <BP_JVM_VERSION>11</BP_JVM_VERSION>
+                <BP_OCI_DESCRIPTION>Spring Boot Microservice</BP_OCI_DESCRIPTION>
+                <BP_IMAGE_LABELS>tags="Microservice"</BP_IMAGE_LABELS>
+                <BPE_APPEND_JAVA_TOOL_OPTIONS>-XX:MaxDirectMemorySize=10M</BPE_APPEND_JAVA_TOOL_OPTIONS>
+                <BPE_DELIM_JAVA_TOOL_OPTIONS xml:space="preserve"> </BPE_DELIM_JAVA_TOOL_OPTIONS>
+                <!-- Reduced thread counter because memory issues using resources limits in kubernetes -->
+                <BPE_OVERRIDE_BPL_JVM_THREAD_COUNT>1</BPE_OVERRIDE_BPL_JVM_THREAD_COUNT>
+              </env>
+            </image>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>${maven-remote-resources-plugin.version}</version>
+          <executions>
+            <execution>
+              <id>fetch-openapi-resources</id>
+              <phase>initialize</phase>
+              <goals>
+                <goal>process</goal>
+              </goals>
+              <configuration>
+                <resourceBundles>
+                  <resourceBundle>${project.groupId}:swagger-spring-starter:${project.version}</resourceBundle>
+                </resourceBundles>
+                <outputDirectory>${project.basedir}/target/extra-resources</outputDirectory>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
   <modules>
     <module>spring-boot-library</module>
     <module>booking-microservice</module>
-    <module>hotel-microservice</module>
     <module>car-microservice</module>
-    <module>flight-microservice</module>
   </modules>
 
 </project>

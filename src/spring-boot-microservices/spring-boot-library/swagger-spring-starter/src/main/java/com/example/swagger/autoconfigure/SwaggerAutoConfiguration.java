@@ -19,7 +19,7 @@ public class SwaggerAutoConfiguration {
                 .apiInfo(apiInfo)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.example"))
-                .paths(PathSelectors.ant("/api/**"))
+                //.paths(PathSelectors.ant("/api/**"))
                 .build();
     }
 
