@@ -115,10 +115,10 @@ http://traefik.management.com (`admin/pass`)
 
 ###### Metrics  ######
 
-## Prometheus dashboard
+## Prometheus dashboard (http://localhost:9090)
 kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090
 
-## Grafana dashboard (`admin/prom-operator`)
+## Grafana dashboard (http://localhost:3000) (`admin/prom-operator`)
 kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
 
 ## Import Grafana dashboards
@@ -137,28 +137,35 @@ kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
 
 ###### Microservice ######
 
+# Usinig Port forward (Without LoadBalancer)
+kubectl port-forward -n tools svc/traefik 8080:80
+
+## Spring Boot Application
+
 ### Metrics (firstly warm-up endpoints /tracer/**)
-http://localhost/tracer/management/metrics
+http://localhost:8080/tracer/management/metrics
 
 ### Health Checks
-http://localhost/tracer/management/health
-http://localhost/tracer/management/health/readiness
-http://localhost/tracer/management/health/liveness
+http://localhost:8080/tracer/management/health
+http://localhost:8080/tracer/management/health/readiness
+http://localhost:8080/tracer/management/health/liveness
 
 ####### Distributed Tracing ######
 
 ## Jaeger dashboard
-http://localhost
+http://localhost:8080
 
 ## GET /trace
-http://localhost/tracer/trace
+http://localhost:8080/tracer/trace
 
 ## GET /tracee
-http://localhost/tracer/tracee
+http://localhost:8080/tracer/tracee
+
+## Check Jaeger to Get the different Traces and Spans at http://localhost:8080  
 
 ####### Logging ######
 
-## Kibana
+## Kibana (https://localhost:5601/)
 kubectl get secret -n logging elastic-cluster-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode; echo
 kubectl port-forward -n logging service/kibana-cluster-kb-http 5601
 
