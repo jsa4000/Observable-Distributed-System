@@ -17,6 +17,25 @@ spec:
     app.kubernetes.io/instance: traefik
     app.kubernetes.io/name: traefik
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-metrics
+  #namespace: tools
+  labels:
+    app.kubernetes.io/instance: traefik
+    app.kubernetes.io/name: traefik-metrics
+spec:
+  type: ClusterIP
+  ports:
+  - name: traefik
+    port: 9100
+    targetPort: 9100
+    protocol: TCP
+  selector:
+    app.kubernetes.io/instance: traefik
+    app.kubernetes.io/name: traefik
+---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -37,5 +56,5 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/instance: traefik
-      app.kubernetes.io/name: traefik-dashboard
+      app.kubernetes.io/name: traefik-metrics
  
