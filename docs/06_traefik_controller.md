@@ -38,7 +38,7 @@ These are the main components:
     > Get all the services within tracing namespace to get jaeger services (agent and collector)
 
     ```bash
-    helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19.1 \
+    helm3 install -n tools --create-namespace traefik traefik/traefik --version 10.3.2 \
     --set 'additionalArguments[0]=--api.insecure' \
     --set 'additionalArguments[1]=--metrics.prometheus=true' \
     --set 'additionalArguments[2]=--tracing.jaeger=true' \
@@ -52,7 +52,7 @@ These are the main components:
 
     Installing Traefik using a YAML values file
 
-    `helm3 install -n tools --create-namespace traefik traefik/traefik --version 9.19.1 -f kubernetes/manifests/traefik-values.yaml`
+    `helm3 install -n tools --create-namespace traefik traefik/traefik --version 10.3.2 -f kubernetes/manifests/traefik-values.yaml`
 
 2. Verify the installation by accessing to Jeager UI via traefik (loadbalancer) at http://localhost/search
 

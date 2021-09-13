@@ -115,7 +115,7 @@ If you monitor many microservices, if you have a high volume of span data, or if
 
     `helm3 repo update`
 
-    `helm3 install -n tracing --create-namespace jaeger-operator jaegertracing/jaeger-operator --version 2.21.2`
+    `helm3 install -n tracing --create-namespace jaeger-operator jaegertracing/jaeger-operator --version 2.24.0`
 
     To uninstall use the following command
 

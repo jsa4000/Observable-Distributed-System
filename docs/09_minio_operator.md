@@ -24,6 +24,8 @@ Administrators of MinIO Tenants can perform a variety of tasks through the Conso
 
 [MinIO-Operator](https://github.com/minio/operator/tree/master/helm/minio-operator) Github page.
 
+> Requirement Helm 3.6.2+
+
 * Configure MinIO Helm repo
 
     `helm3 repo add minio https://operator.min.io/`
@@ -36,7 +38,7 @@ Administrators of MinIO Tenants can perform a variety of tasks through the Conso
 
     > The command deploys MinIO Operator on the Kubernetes cluster in the default configuration.
 
-    `helm3 install minio --namespace minio --create-namespace minio/minio-operator --version 4.1.0 -f kubernetes/manifests/minio-operator-values.yaml`
+    `helm3 install minio --namespace minio --create-namespace minio/minio-operator --version 4.2.7 -f kubernetes/manifests/minio-operator-values.yaml`
 
 * Access to the `default` MinIO Dashboard (`minio/minio123`)
 

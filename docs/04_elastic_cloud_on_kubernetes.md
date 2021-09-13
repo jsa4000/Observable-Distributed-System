@@ -32,7 +32,7 @@ Steps to install ECK Operator using **OLM**:
 
 1. Install custom resource definitions and the operator with its RBAC rules:
 
-    `kubectl apply -f https://download.elastic.co/downloads/eck/1.6.0/all-in-one.yaml`
+    `kubectl apply -f https://download.elastic.co/downloads/eck/1.7.1/all-in-one.yaml`
 
 2. Get Operator name deployed:
 
@@ -54,11 +54,11 @@ Steps to install ECK Operator using **Helm Charts**:
 
     > By using `helm3 search repo` it can be seen all the charts in repos added. IT can be sen the name and current version
 
-    `helm3 install elastic-operator elastic/eck-operator -n elastic-system --create-namespace --version 1.6.0`
+    `helm3 install elastic-operator elastic/eck-operator -n elastic-system --create-namespace --version 1.7.1`
 
     Using `logging` namespace instead
 
-    `helm3 install elastic-operator elastic/eck-operator -n logging --create-namespace --version 1.6.0`
+    `helm3 install elastic-operator elastic/eck-operator -n logging --create-namespace --version 1.7.1`
 
 ## Create logging namespace
 
