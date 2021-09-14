@@ -1,0 +1,89 @@
+# Default values for java-chart-helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# GLOBAL
+nameOverride: microservice
+fullnameOverride: microservice-java
+sistema: java
+component: api           # Values [api|domian|data|controller]
+namespace: micro
+serviceAccountName: java-admin
+
+chart:
+  name: microservice
+  version: 1.0.0
+
+replicaCount: 1
+
+# IMAGE
+image:
+  repository: cuc.registry.pe/java-releases
+  name: microservice
+  tag: 1.0.0
+  pullPolicy: IfNotPresent
+
+# DEPLOYMENT
+deployment:
+  containers:
+    containerPort: 8080    
+    readinessProbe:
+      path: /management/health
+      initialDelaySeconds: 30
+      timeoutSeconds: 2
+    livenessProbe:
+      path: /management/health
+      initialDelaySeconds: 45
+      timeoutSeconds: 2
+    requests:
+      memory: "256Mi"
+      cpu: "500m"
+    limits:
+      memory: "512Mi"
+      cpu: "1000m"
+    args: ["--spring.config.additional-location","file:/opt/app/config/application.yml"]
+    env:
+    - name: JAVA_OPTS
+      value: -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80  
+
+# SECRETS
+secrets:
+  enabled: true
+  create: false
+  name: microservice
+
+# CONFIGMAP
+configMap:
+  enabled: true
+  create: false
+  name: microservice-conf
+
+# SERVICE 
+service:
+  type: ClusterIP
+  port: 80
+
+# INGRESS
+ingress: 
+  public:
+    enabled: true
+    hosts:
+    - "*"
+    attempts: 3
+    perTryTimeout: 2s
+    ports:
+    - name: http
+      number: 80
+      protocol: HTTP
+    - name: https
+      number: 443
+      protocol: HTTP
+  private:
+    enabled: false    
+    ## Specify a path
+    #path: /path-redirect
+
+# SERVICE ENTRY 
+serviceEntry:
+  enabled: false
+  

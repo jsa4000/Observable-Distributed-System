@@ -1,0 +1,39 @@
+{{- if .Values.serviceEntry.enabled }}
+{{- $namespace := .Values.namespace }}
+{{- $rName := .Release.Name }}
+{{- $rService := .Release.Service }}
+{{- $component := .Values.component }}
+{{- $sistema := .Values.sistema }}
+{{- $chart := include "java-chart.chart" . }}
+{{- range $service := .Values.serviceEntry.services }}
+# Service entry for {{ $service.name }}
+
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:  
+  name: {{ $service.name }}-srv-ent
+{{- if $namespace }}
+  namespace: {{ $namespace }}
+{{- end }}  
+  annotations:
+    app.kubernetes.io/name: {{ $service.name }}
+    app.kubernetes.io/instance: {{ $rName }}
+    app.kubernetes.io/managed-by: {{ $rService }}
+    app.kubernetes.io/component: {{ $component }}  
+    app.kubernetes.io/part-of: {{ $sistema }}  
+    helm.sh/chart: {{ $chart }}
+spec:
+  hosts:
+{{- with $service.hosts }}          
+    {{- toYaml . | nindent 2 -}}
+{{ end -}}    
+  ports:
+{{- with $service.ports }}          
+    {{- toYaml . | nindent 2 -}}
+{{ end -}}
+  resolution: {{ $service.resolution }}
+  location: {{ $service.location }}
+
+---
+{{- end }}
+{{- end }}

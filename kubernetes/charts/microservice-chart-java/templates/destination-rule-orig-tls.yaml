@@ -1,0 +1,45 @@
+{{- if .Values.serviceEntry.enabled }}
+{{- $namespace := .Values.namespace }}
+{{- $rName := .Release.Name }}
+{{- $rService := .Release.Service }}
+{{- $component := .Values.component }}
+{{- $sistema := .Values.sistema }}
+{{- $chart := include "java-chart.chart" . }}
+{{- range $service := .Values.serviceEntry.services }}
+
+{{- if $service.originateTls }}
+{{- if $service.originateTls.enabled}}
+{{- range $host := $service.hosts }}
+# Destination Rule {{ $service.name }}
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:  
+  name: originate-tls-for-{{ $service.name }}
+{{- if $namespace }}
+  namespace: {{ $namespace }}
+{{- end }}  
+  annotations:
+    app.kubernetes.io/name: {{ $service.name }}
+    app.kubernetes.io/instance: {{ $rName }}
+    app.kubernetes.io/managed-by: {{ $rService }}
+    app.kubernetes.io/component: {{ $component }}  
+    app.kubernetes.io/part-of: {{ $sistema }}  
+    helm.sh/chart: {{ $chart }}
+spec:
+  host: {{ . }}
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+    portLevelSettings:
+{{- range $port := $service.ports }}
+    - port:
+        number: {{ $port.number }}
+      tls:
+        mode: {{ $service.originateTls.mode }}
+{{- end }} 
+---
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

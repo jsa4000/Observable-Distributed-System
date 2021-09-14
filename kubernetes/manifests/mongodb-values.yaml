@@ -26,18 +26,19 @@ initdbScripts:
       ],
     });
   init_databases_script.js: |
+    use db_1
     db.createUser({
       user: 'user',
       pwd: 'password',
       roles: [
           {
               role: 'readWrite',
-              db: 'default',
+              db: 'db_1',
           },
       ],
     });
 
-    db = db.getSiblingDB('default')
+    db = db.getSiblingDB('db_1')
 
     db.createCollection('test', { capped: false });
 

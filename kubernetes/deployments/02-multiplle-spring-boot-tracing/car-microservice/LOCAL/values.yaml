@@ -14,7 +14,7 @@ replicaCount: 1
 
 # IMAGE
 image:  
-  repository: jsantosa
+  repository: jsa4000
   name: car-microservice
   tag: 0.0.1-SNAPSHOT
   pullPolicy: Always #IfNotPresent
@@ -24,11 +24,11 @@ deployment:
   containers:
     containerPort: 8080    
     readinessProbe:
-      path: /management/health
+      path: /management/health/readiness
       initialDelaySeconds: 60
       timeoutSeconds: 2
     livenessProbe:
-      path: /management/health
+      path: /management/health/liveness
       initialDelaySeconds: 80
       timeoutSeconds: 2
     requests:
