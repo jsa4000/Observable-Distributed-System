@@ -11,7 +11,7 @@ tags:
 servers:
   - url: /api/v1
 paths:
-  /booking:
+  /bookings:
     get:
       tags:
         - booking-controller
@@ -57,7 +57,7 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  /booking/{id}:
+  /bookings/{id}:
     get:
       tags:
         - booking-controller
@@ -106,7 +106,7 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
-  /vehicle:
+  /vehicles:
     get:
       tags:
         - vehicle-controller
@@ -152,7 +152,7 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-  /vehicle/{id}:
+  /vehicles/{id}:
     get:
       tags:
         - vehicle-controller

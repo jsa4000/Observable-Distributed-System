@@ -52,7 +52,32 @@ Deploy the application into a local environment using kubernetes and helm 3.
 
 ### Dependencies
 
-Install MongoDB into the cluster
+Install `Traefik` into the cluster
+
+```bash
+export MANIFEST_DIR=kubernetes/manifests
+## Install `traefik` Chart into `tools` namespace
+helm3 install -n tools --create-namespace traefik traefik/traefik --version 10.3.2 -f $MANIFEST_DIR/traefik-values.yaml
+
+## Check the resources and load balancer created
+kubectl get services -n tools
+
+# Uninstall
+helm3 uninstall traefik --namespace tools
+```
+
+Install `Prometheus` into the cluster
+
+```bash
+## Install `kube-prometheus-stack` Chart into `monitoring` namespace
+helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 18.0.6 \
+--set 'prometheus-node-exporter.hostRootFsMount=false'
+
+## Prometheus dashboard (http://localhost:9090)
+kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090
+```
+
+Install `MongoDB` into the cluster
 
 ```bash
 export MANIFEST_DIR=kubernetes/manifests
@@ -92,14 +117,17 @@ Wait until the microservice has been deployed
 # Get all the common resources created from previous chart
 kubectl get all -n micro
 
-# Get the logs from the pod
+# Get the logs from the pod u
 kubectl logs -n micro car-microservice-8ff49d869-xptgp -f
 
-# Test microservice (http://localhost:8080/swagger-ui/)
+# Test microservice by using Port-forward(http://localhost:8080/swagger-ui/)
 kubectl port-forward --namespace micro svc/car-microservice-srv 8080:80
+# Get all the vehicles
+curl "http://localhost:8080/vehicles" | jq .
 
-# Get all the vahicles
-curl "http://localhost:8080/vehicle" | jq .
+# Test microservice by using Traefik Ingress (http://localhost/car/swagger-ui/)
+curl "http://localhost/car/vehicles" | jq .
+
 ```
 
 To delete (uninstall) the chart use the following command

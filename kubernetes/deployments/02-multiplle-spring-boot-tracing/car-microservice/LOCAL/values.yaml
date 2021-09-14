@@ -90,12 +90,25 @@ ingress:
         number: 80
         protocol: HTTP
   private:
-    enabled: true
+    enabled: false
     host: example.com
     path: /car
     dnstarget: traefik-dev.example.com
 
-# SERVICE ENTRY
+# TRAEFIK
+traefik:
+  enabled: true
+  path: /car
 
+# SERVICE MONITOR 
+serviceMonitor:
+  enabled: true
+  release: prometheus
+  endpoints:
+  - interval: 30s
+    port: http
+    path: management/metrics
+
+# SERVICE ENTRY
 serviceEntry:
   enabled: false

@@ -1,0 +1,35 @@
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name:  {{ include "java-chart.fullname" . }}-sm
+{{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+{{- end }}
+  annotations:
+    app.kubernetes.io/name: {{ include "java-chart.name" . }}  
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: {{ .Values.component }}  
+    app.kubernetes.io/part-of: {{ .Values.sistema }}  
+    helm.sh/chart: {{ include "java-chart.chart" . }}
+  labels:
+    app: {{ include "java-chart.fullname" . }}
+    # Prometheus operator will look for this label to match up with the prometheus instance to configure
+    release: {{ .Values.serviceMonitor.release }}
+spec:
+  jobLabel: {{ include "java-chart.fullname" . }}-metrics
+  endpoints:
+{{- range $endpoint := .Values.serviceMonitor.endpoints }}
+  - interval: {{ $endpoint.interval }}
+    port: {{ $endpoint.port }}
+    path: {{ $endpoint.path }}
+{{- end }} 
+  namespaceSelector:
+    matchNames:
+    - {{ .Values.namespace }}
+  selector:
+    matchLabels:
+      # Name of the service to scrape (endpoints)
+      name: {{ include "java-chart.fullname" . }}-srv
+ {{- end }}

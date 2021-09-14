@@ -1,0 +1,40 @@
+{{- if .Values.traefik.enabled }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "java-chart.fullname" . }}-traefik
+  annotations:
+    app.kubernetes.io/name: {{ include "java-chart.name" . }}  
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: {{ .Values.component }}  
+    app.kubernetes.io/part-of: {{ .Values.sistema }}  
+    helm.sh/chart: {{ include "java-chart.chart" . }}
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: PathPrefix(`{{ .Values.traefik.path }}`)
+    kind: Rule
+    services:
+    - name: {{ include "java-chart.fullname" . }}-srv
+      port: {{ .Values.service.port }}
+    middlewares:
+    - name: {{ include "java-chart.fullname" . }}-stripprefix
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "java-chart.fullname" . }}-stripprefix
+  annotations:
+    app.kubernetes.io/name: {{ include "java-chart.name" . }}  
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: {{ .Values.component }}  
+    app.kubernetes.io/part-of: {{ .Values.sistema }}  
+    helm.sh/chart: {{ include "java-chart.chart" . }}
+spec:
+  stripPrefix:
+    prefixes:
+      - {{ .Values.traefik.path }}
+{{- end -}}

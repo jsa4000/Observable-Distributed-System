@@ -3,7 +3,7 @@ package com.example.car.controller;
 import com.example.car.exception.BookingNotFoundException;
 import com.example.car.mapper.BookingMapper;
 import com.example.car.service.BookingService;
-import com.example.controller.BookingApi;
+import com.example.controller.BookingsApi;
 import com.example.controller.dto.BookingDto;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class BookingController implements BookingApi {
+public class BookingController implements BookingsApi {
 
     private final BookingService bookingService;
 

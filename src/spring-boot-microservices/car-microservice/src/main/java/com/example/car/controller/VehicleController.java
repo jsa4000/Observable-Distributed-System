@@ -3,7 +3,7 @@ package com.example.car.controller;
 import com.example.car.exception.VehicleNotFoundException;
 import com.example.car.mapper.VehicleMapper;
 import com.example.car.service.VehicleService;
-import com.example.controller.VehicleApi;
+import com.example.controller.VehiclesApi;
 import com.example.controller.dto.VehicleDto;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class VehicleController implements VehicleApi {
+public class VehicleController implements VehiclesApi {
 
     private final VehicleService vehicleService;
 

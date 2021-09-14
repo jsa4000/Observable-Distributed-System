@@ -83,6 +83,21 @@ ingress:
     ## Specify a path
     #path: /path-redirect
 
+# TRAEFIK
+traefik:
+  enabled: false
+  ## Specify a path
+  #path: /path-redirect
+
+# SERVICE MONITOR 
+serviceMonitor:
+  enabled: false
+  release: prometheus
+  endpoints:
+  - interval: 30s
+    port: http
+    path: management/metrics
+  
 # SERVICE ENTRY 
 serviceEntry:
   enabled: false
