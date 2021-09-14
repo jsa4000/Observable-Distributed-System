@@ -30,6 +30,6 @@ spec:
     - {{ .Values.namespace }}
   selector:
     matchLabels:
-      # Name of the service to scrape (endpoints)
-      name: {{ include "java-chart.fullname" . }}-srv
+      app.kubernetes.io/name: {{ include "java-chart.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }} 
  {{- end }}
