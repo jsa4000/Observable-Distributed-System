@@ -79,10 +79,10 @@ kubectl apply -n logging -f manifests/logging.yaml
 
 ## Create Jaeger all-in-once inmemory instace with agents, collector, querier and backend
 
-### Configure OPENTRACING_JAEGER_ENABLED (deployments/01-simple-spring-boot-tracing/deployment.yaml) to false using sidecar
+### Configure OPENTRACING_JAEGER_ENABLED (deployments/spring-boot-tracing/deployment.yaml) to false using sidecar
 #kubectl apply -n tracing -f manifests/jaeger-sidecar.yaml
 
-### Configure OPENTRACING_JAEGER_ENABLED (deployments/01-simple-spring-boot-tracing/deployment.yaml) to true using daemonset
+### Configure OPENTRACING_JAEGER_ENABLED (deployments/spring-boot-tracing/deployment.yaml) to true using daemonset
 kubectl apply -n tracing -f manifests/jaeger-daemonset.yaml
 
 ## Deploy the prometheus-operator `ServiceMonitor` to monitor trraefik form prometheus
@@ -97,7 +97,7 @@ kubectl apply -n tools -f manifests/traefik-ingress-route.yaml
 kubectl create namespace micro
 
 # Deploy the Application example
-kubectl apply -n micro -f deployments/01-simple-spring-boot-tracing
+kubectl apply -n micro -f deployments/spring-boot-tracing
 
 ## Note: Deploying jaeger as a sidecar mode, simple-spring-boot-tracing pod must have 2/2 containers running
 

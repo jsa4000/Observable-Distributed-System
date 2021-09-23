@@ -99,7 +99,7 @@ helm3 uninstall mongo --namespace datastore
 # Create temporary folder to copy configuration files and charts
 export TEMP_DIR=/tmp/local-deployment
 export CHART_DIR=kubernetes/charts/microservice-chart-java
-export CONFIG_DIR=kubernetes/deployments/02-multiplle-spring-boot-tracing/car-microservice/LOCAL
+export CONFIG_DIR=kubernetes/deployments/spring-boot-microservices/car-microservice/LOCAL
 mkdir -p $TEMP_DIR
 cp -r $CHART_DIR/. $TEMP_DIR
 cp -r $CONFIG_DIR/. $TEMP_DIR

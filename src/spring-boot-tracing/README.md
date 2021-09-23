@@ -31,7 +31,7 @@ Create a default namespace to deploy microservices
 
 Deploy a simple example into kubernetes and `micro` namespace using manifest files
 
-`kubectl apply -n micro -f ../deployments/01-simple-spring-boot-tracing/`
+`kubectl apply -n micro -f ../deployments/spring-boot-tracing/`
 
 Use port forward to test if the application is running at `http://localhost:8081/trace`
 
@@ -39,4 +39,4 @@ Use port forward to test if the application is running at `http://localhost:8081
 
 Delete previous example from kubernetes
 
-`kubectl delete -n micro -f ../deployments/01-simple-spring-boot-tracing/`
+`kubectl delete -n micro -f ../deployments/spring-boot-tracing/`
