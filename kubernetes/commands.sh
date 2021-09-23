@@ -20,6 +20,21 @@ helm3 repo update
 helm3 search repo
 
 ####################
+# Folder
+####################
+
+## SEt the initial root folder
+cd kubernetes
+
+## From this root folder the following folders and files must be seen
+##  .
+##  ├── charts
+##  ├── commands.sh
+##  ├── dashboards
+##  ├── deployments
+##  └── manifests
+
+####################
 # Installation
 ####################
 
@@ -143,25 +158,25 @@ kubectl port-forward -n tools svc/traefik 8080:80
 ## Spring Boot Application
 
 ### Metrics (firstly warm-up endpoints /tracer/**)
-http://localhost:8080/tracer/management/metrics
+http://localhost/tracer/management/metrics
 
 ### Health Checks
-http://localhost:8080/tracer/management/health
-http://localhost:8080/tracer/management/health/readiness
-http://localhost:8080/tracer/management/health/liveness
+http://localhost/tracer/management/health
+http://localhost/tracer/management/health/readiness
+http://localhost/tracer/management/health/liveness
 
 ####### Distributed Tracing ######
 
 ## Jaeger dashboard
-http://localhost:8080
+http://localhost
 
 ## GET /trace
-http://localhost:8080/tracer/trace
+http://localhost/tracer/trace
 
 ## GET /tracee
-http://localhost:8080/tracer/tracee
+http://localhost/tracer/tracee
 
-## Check Jaeger to Get the different Traces and Spans at http://localhost:8080  
+## Check Jaeger to Get the different Traces and Spans at http://localhost
 
 ####### Logging ######
 
