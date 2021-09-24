@@ -1,47 +1,61 @@
 package com.example.booking.controller;
 
-import com.example.booking.domain.Booking;
+import com.example.booking.controller.dto.BookingDto;
 import com.example.booking.exception.BookingNotFoundException;
+import com.example.booking.mapper.BookingMapper;
 import com.example.booking.service.BookingService;
+import io.micrometer.core.annotation.Timed;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
-public class BookingController {
+public class BookingController implements BookingsApi {
 
     private final BookingService bookingService;
 
-    @PostMapping("/booking/")
-    public Mono<ResponseEntity<Booking>> submit(@RequestBody Booking booking) throws Throwable {
-        return bookingService.submit(booking)
-                .map(ResponseEntity::ok)
-                .onErrorMap(this::handleError);
-    }
+    private final BookingMapper bookingMapper;
 
-    @DeleteMapping("/booking/{id}")
-    public Mono<ResponseEntity<Void>> deleteBooking(@PathVariable("id") String id) {
+    @Override
+    @Timed("com.example.booking.controller")
+    public Mono<ResponseEntity<Void>> deleteBooking(String id, ServerWebExchange exchange) {
         return bookingService.delete(id)
                 .map(ResponseEntity::ok)
                 .onErrorMap(this::handleError);
     }
 
-    @GetMapping("/booking/{id}")
-    public Mono<ResponseEntity<Booking>> findBookingById(@PathVariable("id") String id) {
+    @Override
+    @Timed("com.example.booking.controller")
+    public Mono<ResponseEntity<Flux<BookingDto>>> findAllBookings(ServerWebExchange exchange) {
+        return Mono.just(ResponseEntity.ok(bookingService.findAll().map(bookingMapper::fromDomain)
+                .onErrorMap(this::handleError)));
+    }
+
+    @Override
+    @Timed("com.example.booking.controller")
+    public Mono<ResponseEntity<BookingDto>> findBookingById(String id, ServerWebExchange exchange) {
         return bookingService.findById(id)
+                .map(bookingMapper::fromDomain)
                 .map(ResponseEntity::ok)
                 .onErrorMap(this::handleError);
     }
 
-    @GetMapping("/booking/")
-    public Mono<ResponseEntity<Flux<Booking>>> findAllBookings() {
-        return Mono.just(ResponseEntity.ok(bookingService.findAll()
-                .onErrorMap(this::handleError)));
+    @Override
+    @Timed("com.example.booking.controller")
+    public Mono<ResponseEntity<BookingDto>> saveBooking(BookingDto bookingDto, ServerWebExchange exchange) {
+        return bookingService.save(bookingMapper.toDomain(bookingDto))
+                .map(bookingMapper::fromDomain)
+                .map(ResponseEntity::ok)
+                .onErrorMap(this::handleError);
     }
 
     private Throwable handleError(Throwable ex) {
@@ -49,4 +63,5 @@ public class BookingController {
             return new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         return new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
+
 }

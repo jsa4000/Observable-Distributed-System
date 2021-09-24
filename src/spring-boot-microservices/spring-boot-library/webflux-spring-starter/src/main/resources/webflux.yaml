@@ -1,0 +1,19 @@
+spring:
+  webflux:
+    base-path: /
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types:
+      - application/json
+      - application/xml
+      - text/xml
+      - text/css
+      - text/plain
+  http2:
+    enabled: true
+  shutdown: graceful

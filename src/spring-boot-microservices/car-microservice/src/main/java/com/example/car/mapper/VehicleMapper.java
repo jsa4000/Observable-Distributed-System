@@ -1,7 +1,7 @@
 package com.example.car.mapper;
 
+import com.example.car.controller.dto.VehicleDto;
 import com.example.car.domain.Vehicle;
-import com.example.controller.dto.VehicleDto;
 import org.mapstruct.Mapper;
 
 @Mapper

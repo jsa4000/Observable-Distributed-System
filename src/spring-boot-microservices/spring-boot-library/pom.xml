@@ -16,6 +16,7 @@
 
 	<modules>
 		<module>core-spring-starter</module>
+		<module>webflux-spring-starter</module>
 		<module>logging-spring-starter</module>
 		<module>metrics-spring-starter</module>
 		<module>tracing-spring-starter</module>

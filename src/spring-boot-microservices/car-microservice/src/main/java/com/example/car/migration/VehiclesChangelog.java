@@ -16,7 +16,7 @@ public class VehiclesChangelog {
 
     private static final Faker faker = new Faker();
 
-    @ChangeSet(id = "20210614120001-vehicles-data-initialization", order = "001", author = "Anonymous")
+    @ChangeSet(id = "20210614120001-car-vehicles-data-initialization", order = "001", author = "Anonymous")
     public void changeSet01(ReactiveVehicleRepository vehicleRepository) {
         java.lang.reflect.Proxy.getInvocationHandler(vehicleRepository);
 

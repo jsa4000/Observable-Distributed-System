@@ -10,13 +10,17 @@
 	</parent>
 
 	<artifactId>car-microservice</artifactId>
-	<name>car-microservice</name>
+	<name>car</name>
 	<description>Microservice project for Spring Boot</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>webflux-spring-starter</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>

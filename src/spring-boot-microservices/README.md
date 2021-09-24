@@ -2,6 +2,30 @@
 
 This is an example to demonstrate a Booking System developed with microservices.
 
+## Run
+
+In order to run the application in a local environment using Docker
+
+Run docker-compose and all dependencies and tools
+
+```bash
+# Run the following command (from root folder)
+docker-compose -f docker/docker-compose.yml up
+
+# New way used the integration with Docker cli
+docker compose --project-name observable -f docker/docker-compose.yml up
+```
+
+```bash
+# Build and create Far Jar files for the microservices
+mvn clean install
+
+# Run the application (mongodb must be exist; see local envrionment and docker-compose procedure)
+spring-boot:run
+```
+
+[Swagger UI](http://localhost:8080/swagger-ui/)
+
 ## Build
 
 In order to build the container images use tthe following commands

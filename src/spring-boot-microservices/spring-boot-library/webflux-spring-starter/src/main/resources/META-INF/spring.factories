@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.example.webflux.autoconfigure.WebfluxAutoConfiguration,\
+  com.example.webflux.autoconfigure.WebfluxErrorHandlerAutoConfiguration

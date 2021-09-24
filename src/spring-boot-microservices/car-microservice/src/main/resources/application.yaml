@@ -4,10 +4,6 @@ spring:
   profiles:
     active: local #,jsonlog
 
-server:
-  port: 8080
-  shutdown: graceful
-
 mongock:
   enabled: true
 
@@ -30,14 +26,15 @@ spring:
     mongodb:
       uri: mongodb://booking:password@localhost:27017/booking?replicaSet=rs0
 
+server:
+  port: 8081
+
 opentracing:
   jaeger:
     udp-sender:
       host: localhost
       port: 6831
 
-server:
-  port: 8083
 ---
 spring:
   config:

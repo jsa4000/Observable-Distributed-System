@@ -1,7 +1,7 @@
-package com.example.car.mapper;
+package com.example.booking.mapper;
 
-import com.example.car.controller.dto.BookingDto;
-import com.example.car.domain.Booking;
+import com.example.booking.controller.dto.BookingDto;
+import com.example.booking.domain.Booking;
 import org.mapstruct.Mapper;
 
 @Mapper

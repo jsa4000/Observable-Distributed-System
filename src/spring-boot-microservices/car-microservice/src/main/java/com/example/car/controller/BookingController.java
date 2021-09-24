@@ -1,10 +1,9 @@
 package com.example.car.controller;
 
+import com.example.car.controller.dto.BookingDto;
 import com.example.car.exception.BookingNotFoundException;
 import com.example.car.mapper.BookingMapper;
 import com.example.car.service.BookingService;
-import com.example.controller.BookingsApi;
-import com.example.controller.dto.BookingDto;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

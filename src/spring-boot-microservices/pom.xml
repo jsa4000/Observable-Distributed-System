@@ -40,6 +40,11 @@
     <dependencies>
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>webflux-spring-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>logging-spring-starter</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -122,12 +127,12 @@
                 <goal>generate</goal>
               </goals>
               <configuration>
-                <inputSpec>${project.basedir}/src/main/resources/openapi/contract.yaml</inputSpec>
+                <inputSpec>${project.parent.basedir}/contracts/${project.artifactId}.yaml</inputSpec>
                 <templateDirectory>${project.basedir}/target/extra-resources/mustache</templateDirectory>
                 <generatorName>spring</generatorName>
                 <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
-                <modelPackage>${project.groupId}.controller.dto</modelPackage>
-                <apiPackage>${project.groupId}.controller</apiPackage>
+                <modelPackage>${project.groupId}.${project.name}.controller.dto</modelPackage>
+                <apiPackage>${project.groupId}.${project.name}.controller</apiPackage>
                 <modelNameSuffix>Dto</modelNameSuffix>
                 <configOptions>
                   <reactive>true</reactive>

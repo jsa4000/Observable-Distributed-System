@@ -1,20 +1,20 @@
 openapi: 3.0.3
 info:
-  title: Booking API
-  description: Microservice API to manage bookings
+  title: Car Rental API
+  description: Microservice API to manage Car Booking
   version: 1.0.0
 tags:
-  - name: booking-controller
-    description: Booking Controller
-  - name: vehicle-controller
-    description: Vehicle Controller
+  - name: booking
+    description: Booking
+  - name: vehicle
+    description: Vehicle
 servers:
   - url: /api/v1
 paths:
   /bookings:
     get:
       tags:
-        - booking-controller
+        - booking
       summary: findAllBookings
       operationId: findAllBookings
       responses:
@@ -34,7 +34,7 @@ paths:
           description: Not Found
     post:
       tags:
-        - booking-controller
+        - booking
       summary: save
       operationId: saveBooking
       requestBody:
@@ -60,7 +60,7 @@ paths:
   /bookings/{id}:
     get:
       tags:
-        - booking-controller
+        - booking
       summary: findBookingById
       operationId: findBookingById
       parameters:
@@ -86,7 +86,7 @@ paths:
           description: Not Found
     delete:
       tags:
-        - booking-controller
+        - booking
       summary: deleteBooking
       operationId: deleteBooking
       parameters:
@@ -109,7 +109,7 @@ paths:
   /vehicles:
     get:
       tags:
-        - vehicle-controller
+        - vehicle
       summary: findAllVehicles
       operationId: findAllVehicles
       responses:
@@ -129,7 +129,7 @@ paths:
           description: Not Found
     post:
       tags:
-        - vehicle-controller
+        - vehicle
       summary: save
       operationId: saveVehicle
       requestBody:
@@ -155,7 +155,7 @@ paths:
   /vehicles/{id}:
     get:
       tags:
-        - vehicle-controller
+        - vehicle
       summary: findVehicleById
       operationId: findVehicleById
       parameters:
@@ -181,7 +181,7 @@ paths:
           description: Not Found
     delete:
       tags:
-        - vehicle-controller
+        - vehicle
       summary: deleteVehicle
       operationId: deleteVehicle
       parameters:
@@ -246,3 +246,11 @@ components:
           format: int32
         year:
           type: string
+  securitySchemes:
+    jwt:
+      type: http
+      description: JWT Authentication
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - jwt: []

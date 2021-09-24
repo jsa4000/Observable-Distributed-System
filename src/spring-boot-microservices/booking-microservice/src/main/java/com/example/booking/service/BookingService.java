@@ -12,7 +12,7 @@ public interface BookingService {
      * @param booking
      * @return
      */
-    Mono<Booking> submit(Booking booking) throws Throwable;
+    Mono<Booking> save(Booking booking);
 
     /**
      * Delete an existing Booking
