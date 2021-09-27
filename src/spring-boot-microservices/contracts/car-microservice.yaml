@@ -4,112 +4,15 @@ info:
   description: Microservice API to manage Car Booking
   version: 1.0.0
 tags:
-  - name: booking
-    description: Booking
-  - name: vehicle
-    description: Vehicle
+  - name: vehicle-controller
+    description: Vehicle Controller
 servers:
   - url: /api/v1
 paths:
-  /bookings:
-    get:
-      tags:
-        - booking
-      summary: findAllBookings
-      operationId: findAllBookings
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Booking'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-    post:
-      tags:
-        - booking
-      summary: save
-      operationId: saveBooking
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Booking'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Booking'
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-  /bookings/{id}:
-    get:
-      tags:
-        - booking
-      summary: findBookingById
-      operationId: findBookingById
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          style: simple
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Booking'
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-    delete:
-      tags:
-        - booking
-      summary: deleteBooking
-      operationId: deleteBooking
-      parameters:
-        - name: id
-          in: path
-          description: id
-          required: true
-          style: simple
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-        '204':
-          description: No Content
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
   /vehicles:
     get:
       tags:
-        - vehicle
+        - vehicle-controller
       summary: findAllVehicles
       operationId: findAllVehicles
       responses:
@@ -129,7 +32,7 @@ paths:
           description: Not Found
     post:
       tags:
-        - vehicle
+        - vehicle-controller
       summary: save
       operationId: saveVehicle
       requestBody:
@@ -155,7 +58,7 @@ paths:
   /vehicles/{id}:
     get:
       tags:
-        - vehicle
+        - vehicle-controller
       summary: findVehicleById
       operationId: findVehicleById
       parameters:
@@ -181,7 +84,7 @@ paths:
           description: Not Found
     delete:
       tags:
-        - vehicle
+        - vehicle-controller
       summary: deleteVehicle
       operationId: deleteVehicle
       parameters:
@@ -203,24 +106,6 @@ paths:
           description: Forbidden
 components:
   schemas:
-    Booking:
-      title: Booking
-      type: object
-      properties:
-        active:
-          type: boolean
-        clientId:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        fromDate:
-          type: string
-          format: date-time
-        id:
-          type: string
-        resourceId:
-          type: string
     Vehicle:
       title: Vehicle
       type: object

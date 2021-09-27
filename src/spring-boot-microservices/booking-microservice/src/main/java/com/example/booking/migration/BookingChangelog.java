@@ -16,7 +16,7 @@ public class BookingChangelog {
 
     private static final Faker faker = new Faker();
 
-    @ChangeSet(id = "20210610120001-booking-bookings-data-initialization", order = "001", author = "Anonymous")
+    @ChangeSet(id = "20210610120001-bookings-data-initialization", order = "001", author = "Anonymous")
     public void changeSet01(ReactiveBookingRepository bookingRepository) {
         java.lang.reflect.Proxy.getInvocationHandler(bookingRepository);
 

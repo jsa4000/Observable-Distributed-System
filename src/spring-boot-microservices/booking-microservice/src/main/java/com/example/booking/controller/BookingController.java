@@ -2,10 +2,10 @@ package com.example.booking.controller;
 
 import com.example.booking.controller.dto.BookingDto;
 import com.example.booking.exception.BookingNotFoundException;
+import com.example.booking.exception.VehicleNotFoundException;
 import com.example.booking.mapper.BookingMapper;
 import com.example.booking.service.BookingService;
 import io.micrometer.core.annotation.Timed;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -60,6 +60,8 @@ public class BookingController implements BookingsApi {
 
     private Throwable handleError(Throwable ex) {
         if (ex instanceof BookingNotFoundException)
+            return new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        else if (ex instanceof VehicleNotFoundException)
             return new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         return new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }

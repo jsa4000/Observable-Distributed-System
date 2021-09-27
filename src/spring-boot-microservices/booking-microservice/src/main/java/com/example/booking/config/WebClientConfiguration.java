@@ -1,7 +1,7 @@
 package com.example.booking.config;
 
 import com.example.booking.clients.ApiClient;
-import com.example.booking.clients.car.VehicleApi;
+import com.example.booking.clients.car.VehicleControllerApi;
 import com.example.booking.config.properties.WebClientProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,9 +20,9 @@ public class WebClientConfiguration {
     }
 
     @Bean
-    public VehicleApi vehicleApi(@Qualifier("webClientCarProperties") WebClientProperties clientProperties) {
+    public VehicleControllerApi vehicleApi(@Qualifier("webClientCarProperties") WebClientProperties clientProperties) {
         ApiClient client = new ApiClient();
-        VehicleApi api = new VehicleApi(client);
+        VehicleControllerApi api = new VehicleControllerApi(client);
         client.setBasePath(clientProperties.getUrl());
         return api;
     }

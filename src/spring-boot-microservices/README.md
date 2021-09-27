@@ -6,6 +6,15 @@ This is an example to demonstrate a Booking System developed with microservices.
 
 In order to run the application in a local environment using Docker
 
+Firstly, clean all Docker data
+
+```bash
+docker system prune -f
+docker volume prune -f
+docker image prune -f
+docker network prune -f
+```
+
 Run docker-compose and all dependencies and tools
 
 ```bash

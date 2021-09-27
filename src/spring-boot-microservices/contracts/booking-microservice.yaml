@@ -4,15 +4,15 @@ info:
   description: Microservice API to manage bookings
   version: 1.0.0
 tags:
-  - name: booking
-    description: Booking
+  - name: booking-controller
+    description: Booking Controller
 servers:
   - url: /api/v1
 paths:
   /bookings:
     get:
       tags:
-        - booking
+        - booking-controller
       summary: findAllBookings
       operationId: findAllBookings
       responses:
@@ -32,7 +32,7 @@ paths:
           description: Not Found
     post:
       tags:
-        - booking
+        - booking-controller
       summary: save
       operationId: saveBooking
       requestBody:
@@ -58,7 +58,7 @@ paths:
   /bookings/{id}:
     get:
       tags:
-        - booking
+        - booking-controller
       summary: findBookingById
       operationId: findBookingById
       parameters:
@@ -84,7 +84,7 @@ paths:
           description: Not Found
     delete:
       tags:
-        - booking
+        - booking-controller
       summary: deleteBooking
       operationId: deleteBooking
       parameters:
