@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: hotel-microservice
+  profiles:
+    active: local #,jsonlog
+
+mongock:
+  enabled: true
+
+opentracing:
+  jaeger:
+    enabled: true
+
+logging:
+  level:
+    root: info
+    org.springframework: warn
+    com.example: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  data:
+    mongodb:
+      uri: mongodb://booking:password@localhost:27017/booking?replicaSet=rs0
+
+server:
+  port: 8083
+
+opentracing:
+  jaeger:
+    udp-sender:
+      host: localhost
+      port: 6831
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  data:
+    mongodb:
+      uri: mongodb://booking:password@mongo:27017/booking?replicaSet=rs0
+
+opentracing:
+  jaeger:
+    udp-sender:
+      host: jaeger-agent
+      port: 6831

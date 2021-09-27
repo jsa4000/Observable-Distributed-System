@@ -2,7 +2,6 @@ package com.example.booking.service.impl;
 
 import com.example.booking.clients.car.VehicleControllerApi;
 import com.example.booking.clients.car.model.VehicleDto;
-import com.example.booking.exception.BookingNotFoundException;
 import com.example.booking.exception.VehicleNotFoundException;
 import com.example.booking.exception.VehicleServiceException;
 import com.example.booking.service.VehicleService;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @Service

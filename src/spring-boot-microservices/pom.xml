@@ -193,6 +193,8 @@
     <module>spring-boot-library</module>
     <module>booking-microservice</module>
     <module>car-microservice</module>
+    <module>hotel-microservice</module>
+    <module>flight-microservice</module>
   </modules>
 
 </project>

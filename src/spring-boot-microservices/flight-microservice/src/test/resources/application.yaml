@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: test
+
+mongock:
+  enabled: false
+
+opentracing:
+  jaeger:
+    enabled: false
