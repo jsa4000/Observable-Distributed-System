@@ -7,8 +7,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 
 @Data
@@ -21,11 +25,25 @@ import java.time.OffsetDateTime;
 })
 public class Booking {
 
-    @Id
+    @Id @NotNull @NotEmpty @Max(64)
     String id;
+
+    @Indexed @NotNull @NotEmpty @Max(64)
     String clientId;
-    String vehicleId;
+
     OffsetDateTime fromDate;
+
+    OffsetDateTime toDate;
+
+    @Max(64)
+    String vehicleId;
+
+    @Max(64)
+    String flightId;
+
+    @Max(64)
+    String hotelId;
+
     OffsetDateTime createdAt;
     Boolean active;
 

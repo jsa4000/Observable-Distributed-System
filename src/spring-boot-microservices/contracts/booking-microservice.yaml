@@ -109,21 +109,43 @@ components:
     Booking:
       title: Booking
       type: object
+      required:
+        - id
+        - clientId
+        - fromDate
+        - toDate
       properties:
+        id:
+          type: string
+          maxLength: 64
+          example: b9460d0a-248e-11e9-ab14-d663bd873d93
         active:
           type: boolean
         clientId:
           type: string
-        createdAt:
-          type: string
-          format: date-time
+          maxLength: 64
+          example: 8fb3c723-7851-486e-a369-ba0f9b908198
         fromDate:
           type: string
           format: date-time
-        id:
+        toDate:
           type: string
+          format: date-time
         vehicleId:
           type: string
+          maxLength: 64
+          example: 4cc0fa38-533e-46b7-bdf6-0e59b20b0d84
+        flightId:
+          type: string
+          maxLength: 64
+          example: e8a58cfc-71bb-4ea3-aebe-147590a5fc15
+        hotelId:
+          type: string
+          maxLength: 64
+          example: 72ac9ab5-685a-437c-8204-361399f2f65c
+        createdAt:
+          type: string
+          format: date-time
   securitySchemes:
     jwt:
       type: http

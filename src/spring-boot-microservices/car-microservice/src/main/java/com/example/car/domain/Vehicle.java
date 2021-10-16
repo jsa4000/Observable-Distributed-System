@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -14,15 +19,36 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("vehicles")
 public class Vehicle {
 
-    @Id
+    @Id @NotNull @NotEmpty //@Max(64)
     private String id;
-    private String model;
+
+    //@Max(256)
     private String brand;
-    private double engineCapacity;
-    private String fuel;
-    private int seats;
+
+    //@Max(256)
+    private String model;
+
+    //@Max(32)
     private String color;
+
+    //@Max(16)
     private String year;
-    private int kms;
+
+    //@Max(16)
+    private String fuel;
+
+    //@Max(9999)
+    private Double tankCapacity;
+
+    //@Max(Integer.MAX_VALUE)
+    private Integer kms;
+
+    //@Max(16)
+    private Integer seats;
+
+
+
+
+
 
 }

@@ -21,11 +21,11 @@ public class BookingChangelog {
         java.lang.reflect.Proxy.getInvocationHandler(bookingRepository);
 
         Flux<Booking> BookingsFlux = Flux.fromStream(Stream.of(
-                Booking.builder().id("1").vehicleId("001").active(false).build(),
-                Booking.builder().id("2").vehicleId("002").active(false).build(),
-                Booking.builder().id("3").vehicleId("003").active(false).build(),
-                Booking.builder().id("4").vehicleId("001").active(false).build(),
-                Booking.builder().id("5").vehicleId("004").active(false).build()
+                Booking.builder().id("1").clientId("1").vehicleId("001").active(false).build(),
+                Booking.builder().id("2").clientId("2").vehicleId("002").active(false).build(),
+                Booking.builder().id("3").clientId("3").vehicleId("003").active(false).build(),
+                Booking.builder().id("4").clientId("4").vehicleId("001").active(false).build(),
+                Booking.builder().id("5").clientId("5").vehicleId("004").active(false).build()
         ));
         bookingRepository.saveAll(BookingsFlux)
                 .doOnNext(x -> log.trace("Saved booking with id {}", x.getId()))

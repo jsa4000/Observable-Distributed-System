@@ -20,7 +20,7 @@ public class HotelChangelog {
     public void changeSet01(ReactiveHotelRepository hotelRepository) {
         java.lang.reflect.Proxy.getInvocationHandler(hotelRepository);
 
-        Flux<Hotel> hotelFlux = Flux.range(INITIAL_HOTELS, INITIAL_HOTELS)
+        Flux<Hotel> hotelFlux = Flux.range(0, INITIAL_HOTELS)
                 .map(HotelChangelog::getVehicle);
         
         hotelRepository.saveAll(hotelFlux)
@@ -31,13 +31,12 @@ public class HotelChangelog {
     private static Hotel getVehicle(int index) {
         return Hotel.builder()
                 .id(Integer.toString(index))
-                .model(faker.name().name())
-                .brand(faker.company().name())
-                .color(faker.color().name())
-                .engineCapacity(faker.number().randomDouble(2, 0, 1000))
-                .fuel(faker.name().name())
-                .seats(faker.number().numberBetween(2, 8))
-                .year(Integer.toString(faker.number().numberBetween(1991, 2021)))
+                .name(faker.address().streetAddress())
+                .address(faker.address().fullAddress())
+                .postalCode(faker.address().zipCode())
+                .city(faker.address().cityName())
+                .country(faker.address().country())
+                .rooms(faker.number().numberBetween(1, 8))
                 .build();
     }
 

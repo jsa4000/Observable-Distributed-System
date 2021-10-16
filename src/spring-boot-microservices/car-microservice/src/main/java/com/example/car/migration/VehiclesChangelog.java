@@ -20,7 +20,7 @@ public class VehiclesChangelog {
     public void changeSet01(ReactiveVehicleRepository vehicleRepository) {
         java.lang.reflect.Proxy.getInvocationHandler(vehicleRepository);
 
-        Flux<Vehicle> vehicleFlux = Flux.range(INITIAL_VEHICLES, INITIAL_VEHICLES)
+        Flux<Vehicle> vehicleFlux = Flux.range(0, INITIAL_VEHICLES)
                 .map(VehiclesChangelog::getVehicle);
         
         vehicleRepository.saveAll(vehicleFlux)
@@ -34,9 +34,9 @@ public class VehiclesChangelog {
                 .model(faker.name().name())
                 .brand(faker.company().name())
                 .color(faker.color().name())
-                .engineCapacity(faker.number().randomDouble(2, 0, 1000))
+                .tankCapacity(faker.number().randomDouble(2, 0, 1000))
                 .fuel(faker.name().name())
-                .seats(faker.number().numberBetween(2, 8))
+                .seats(faker.number().numberBetween(2, 16))
                 .year(Integer.toString(faker.number().numberBetween(1991, 2021)))
                 .build();
     }

@@ -109,28 +109,44 @@ components:
     Hotel:
       title: hotel
       type: object
+      required:
+        - id
+        - name
+        - address
+        - city
+        - country
+        - rooms
       properties:
-        brand:
-          type: string
-        color:
-          type: string
-        engineCapacity:
-          type: number
-          format: double
-        fuel:
-          type: string
         id:
           type: string
-        kms:
+          maxLength: 64
+          example: b9460d0a-248e-11e9-ab14-d663bd873d93
+        name:
+          type: string
+          maxLength: 256
+          example: Address Dubai Marina
+        address:
+          type: string
+          maxLength: 256
+          example: Al Marsa Street, 66 Dubai Marina, Dubai United Arab Emirates
+        postalCode:
+          type: string
+          maxLength: 32
+          example: 32923
+        city:
+          type: string
+          maxLength: 256
+          example: Dubai
+        country:
+          type: string
+          maxLength: 128
+          example: United Arab Emirates
+        rooms:
           type: integer
           format: int32
-        model:
-          type: string
-        seats:
-          type: integer
-          format: int32
-        year:
-          type: string
+          maximum: 99999
+          minimum: 0
+          example: 3
   securitySchemes:
     jwt:
       type: http

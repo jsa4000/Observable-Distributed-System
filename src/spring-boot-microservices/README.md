@@ -29,15 +29,16 @@ docker compose --project-name observable -f docker/docker-compose.yml up
 # Build and create Far Jar files for the microservices
 mvn clean install
 
-# Run the application (mongodb must be exist; see local envrionment and docker-compose procedure)
-spring-boot:run
+# For each microservice: booking, car, flight and hotel,
+# run the application (mongodb must be running; see local environment and docker-compose procedure)
+mvn spring-boot:run
 ```
 
 [Swagger UI](http://localhost:8080/swagger-ui/)
 
 ## Build
 
-In order to build the container images use tthe following commands
+In order to build the container images use the following commands
 
 ```bash
 # Build and create Far Jar files for the microservices

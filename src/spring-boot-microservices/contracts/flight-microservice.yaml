@@ -109,19 +109,43 @@ components:
     Flight:
       title: flight
       type: object
+      required:
+        - id
+        - number
+        - source
+        - destination
+        - departure
+        - arrival
       properties:
         id:
           type: string
-        from:
+          maxLength: 64
+          example: b9460d0a-248e-11e9-ab14-d663bd873d93
+        number:
+          type: integer
+          format: int32
+          maximum: 2147483647
+          minimum: 0
+          example: 1234
+        source:
           type: string
-        to:
+          maxLength: 256
+          example: Amsterdam, Netherlands (AMS)
+        destination:
           type: string
-        fromDate:
+          maxLength: 256
+          example: Terminal 4 - T4 Madrid Airport (MAD)
+        departure:
           type: string
           format: date-time
-        toDate:
+        arrival:
           type: string
           format: date-time
+        seats:
+          type: integer
+          maximum: 9999
+          minimum: 0
+          example: 853
   securitySchemes:
     jwt:
       type: http

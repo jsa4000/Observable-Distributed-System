@@ -109,28 +109,56 @@ components:
     Vehicle:
       title: Vehicle
       type: object
+      required:
+        - id
+        - brand
+        - model
+        - color
+        - year
+        - fuel
       properties:
-        brand:
-          type: string
-        color:
-          type: string
-        engineCapacity:
-          type: number
-          format: double
-        fuel:
-          type: string
         id:
           type: string
+          maxLength: 64
+          example: b9460d0a-248e-11e9-ab14-d663bd873d93
+        brand:
+          type: string
+          maxLength: 32
+          example: Audi
+        model:
+          type: string
+          maxLength: 32
+          example: A3
+        color:
+          type: string
+          maxLength: 32
+          example: grey
+        year:
+          type: string
+          maxLength: 4
+          example: 1994
+        fuel:
+          type: string
+          maxLength: 16
+          example: 3.0 L V6 diesel
+        tankCapacity:
+          type: number
+          format: double
+          maximum: 9999.0
+          minimum: 0.0
+          example: 60.0
         kms:
           type: integer
           format: int32
-        model:
-          type: string
+          maximum: 2147483647
+          minimum: 0
+          example: 124000
         seats:
           type: integer
           format: int32
-        year:
-          type: string
+          maximum: 16
+          minimum: 0
+          example: 5
   securitySchemes:
     jwt:
       type: http

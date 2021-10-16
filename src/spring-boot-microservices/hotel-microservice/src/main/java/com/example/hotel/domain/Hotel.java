@@ -5,7 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -14,15 +19,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document("hotels")
 public class Hotel {
 
-    @Id
+    @Id @NotNull @NotEmpty @Max(64)
     private String id;
-    private String model;
-    private String brand;
-    private double engineCapacity;
-    private String fuel;
-    private int seats;
-    private String color;
-    private String year;
-    private int kms;
+
+    @Indexed @NotNull @NotEmpty @Max(64)
+    private String name;
+    private String address;
+    private String postalCode;
+    private String city;
+    private String country;
+    private Integer rooms;
 
 }

@@ -24,7 +24,7 @@ public class FlightChangelog {
     public void changeSet01(ReactiveFlightRepository flightRepository) {
         java.lang.reflect.Proxy.getInvocationHandler(flightRepository);
 
-        Flux<Flight> flightFlux = Flux.range(INITIAL_FLIGHTS, INITIAL_FLIGHTS)
+        Flux<Flight> flightFlux = Flux.range(0, INITIAL_FLIGHTS)
                 .map(FlightChangelog::getFlight);
         
         flightRepository.saveAll(flightFlux)
@@ -35,10 +35,11 @@ public class FlightChangelog {
     private static Flight getFlight(int index) {
         return Flight.builder()
                 .id(Integer.toString(index))
-                .from(faker.name().name())
-                .to(faker.company().name())
-                .fromDate(OffsetDateTime.now())
-                .toDate(OffsetDateTime.now().plusDays(faker.number().numberBetween(0,30)))
+                .number(faker.number().numberBetween(10000,90000))
+                .source(faker.address().cityName())
+                .destination(faker.address().cityName())
+                .departure(OffsetDateTime.now())
+                .arrival(OffsetDateTime.now().plusMinutes(faker.number().numberBetween(0,1440)))
                 .build();
     }
 

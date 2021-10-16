@@ -5,8 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 
 @Data
@@ -16,11 +20,16 @@ import java.time.OffsetDateTime;
 @Document("flights")
 public class Flight {
 
-    @Id
+    @Id @NotNull @NotEmpty @Max(64)
     private String id;
-    private String from;
-    private String to;
-    private OffsetDateTime fromDate;
-    private OffsetDateTime toDate;
+
+    @Indexed @NotNull @NotEmpty @Max(Integer.MAX_VALUE)
+    private Integer number;
+
+    private String source;
+    private String destination;
+    private OffsetDateTime departure;
+    private OffsetDateTime arrival;
+    private Integer seats;
 
 }
