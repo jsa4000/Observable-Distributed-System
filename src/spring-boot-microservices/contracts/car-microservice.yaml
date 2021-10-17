@@ -123,11 +123,11 @@ components:
           example: b9460d0a-248e-11e9-ab14-d663bd873d93
         brand:
           type: string
-          maxLength: 32
+          maxLength: 128
           example: Audi
         model:
           type: string
-          maxLength: 32
+          maxLength: 128
           example: A3
         color:
           type: string
@@ -139,7 +139,7 @@ components:
           example: 1994
         fuel:
           type: string
-          maxLength: 16
+          maxLength: 64
           example: 3.0 L V6 diesel
         tankCapacity:
           type: number

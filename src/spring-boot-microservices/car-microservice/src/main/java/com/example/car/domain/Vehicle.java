@@ -19,31 +19,31 @@ import javax.validation.constraints.Size;
 @Document("vehicles")
 public class Vehicle {
 
-    @Id @NotNull @NotEmpty //@Max(64)
+    @Id @NotNull @NotEmpty @Size(max = 64)
     private String id;
 
-    //@Max(256)
+    @NotNull @NotEmpty @Size(max = 128)
     private String brand;
 
-    //@Max(256)
+    @NotNull @NotEmpty @Size(max = 128)
     private String model;
 
-    //@Max(32)
+    @NotNull @NotEmpty @Size(max = 32)
     private String color;
 
-    //@Max(16)
+    @NotNull @NotEmpty @Size(max = 4)
     private String year;
 
-    //@Max(16)
+    @NotNull @NotEmpty @Size(max = 64)
     private String fuel;
 
-    //@Max(9999)
+    @Max(9999)
     private Double tankCapacity;
 
-    //@Max(Integer.MAX_VALUE)
+    @Max(Integer.MAX_VALUE)
     private Integer kms;
 
-    //@Max(16)
+    @Max(16)
     private Integer seats;
 
 

@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.OffsetDateTime;
 
 @Data
@@ -25,26 +26,27 @@ import java.time.OffsetDateTime;
 })
 public class Booking {
 
-    @Id @NotNull @NotEmpty @Max(64)
+    @Id @NotNull @NotEmpty @Size(max = 64)
     String id;
 
-    @Indexed @NotNull @NotEmpty @Max(64)
+    @Indexed @NotNull @NotEmpty @Size(max = 64)
     String clientId;
 
     OffsetDateTime fromDate;
 
     OffsetDateTime toDate;
 
-    @Max(64)
+    @Size(max = 64)
     String vehicleId;
 
-    @Max(64)
+    @Size(max = 64)
     String flightId;
 
-    @Max(64)
+    @Size(max = 64)
     String hotelId;
 
     OffsetDateTime createdAt;
+
     Boolean active;
 
 }
