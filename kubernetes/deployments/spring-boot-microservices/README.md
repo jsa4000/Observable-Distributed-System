@@ -6,7 +6,7 @@
 
 ```bash
 # Export manifest path
-export MANIFEST_DIR=kubernetes/manifests
+export MANIFEST_DIR=../../../kubernetes/manifests
 
 ## Install `traefik` Chart into `tools` namespace
 helm3 install -n tools --create-namespace traefik traefik/traefik --version 10.3.2 -f $MANIFEST_DIR/traefik-values.yaml
@@ -24,6 +24,13 @@ kubectl apply -n tracing -f $MANIFEST_DIR/jaeger-daemonset.yaml
 # Install MongoDB chart into datastore namespace
 helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 -f $MANIFEST_DIR/mongodb-values.yaml
 
+```
+
+Check `LoadBalancer` has been assigned too traefik service
+
+```bash
+# Check EXTERNAL-IP is not in '<pending>' state.
+kubectl get -n tools service
 ```
 
 ### Application
