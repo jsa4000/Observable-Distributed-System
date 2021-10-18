@@ -62,7 +62,7 @@ spec:
           value: docker,jsonlog
         ## Configuration for OpenTracing using Jaeger
         - name: OPENTRACING_JAEGER_UDP_SENDER_HOST
-          value: jaeger-all-in-one-agent.tracing.svc
+          value: jaeger-all-in-one-agent.tracing.svc.cluster.local
         - name: OPENTRACING_JAEGER_UDP_SENDER_PORT
           value: '6831'
         - name: OPENTRACING_JAEGER_ENABLED

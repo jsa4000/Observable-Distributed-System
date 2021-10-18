@@ -46,8 +46,8 @@ These are the main components:
     --set 'additionalArguments[4]=--tracing.jaeger.samplingParam=1.0' \
     --set 'additionalArguments[5]=--tracing.jaeger.disableAttemptReconnecting=false' \
     --set 'additionalArguments[6]=--tracing.jaeger.samplingType=const' \
-    --set 'additionalArguments[7]=--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-agent.tracing.svc:5778/sampling' \
-    --set 'additionalArguments[8]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-agent.tracing.svc:6831'
+    --set 'additionalArguments[7]=--tracing.jaeger.samplingServerURL=http://jaeger-all-in-one-agent.tracing.svc.cluster.local:5778/sampling' \
+    --set 'additionalArguments[8]=--tracing.jaeger.localAgentHostPort=jaeger-all-in-one-agent.tracing.svc.cluster.local:6831'
     ```
 
     Installing Traefik using a YAML values file

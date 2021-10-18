@@ -26,11 +26,11 @@ opentracing:
   jaeger:
     enabled: true
     udp-sender:
-      host: jaeger-all-in-one-agent.tracing.svc
+      host: jaeger-all-in-one-agent.tracing.svc.cluster.local
       port: 6831
 
 logging:
   level:
     root: warn
     org.springframework: warn
-    com.example: info
+    com.example: debug

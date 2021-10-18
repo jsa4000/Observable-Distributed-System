@@ -5,6 +5,9 @@
 ### Pre-Requisites
 
 ```bash
+# Go to deployments folder from root
+cd kubernetes/deployments/spring-boot-microservices
+
 # Export manifest path
 export MANIFEST_DIR=../../../kubernetes/manifests
 
@@ -26,11 +29,16 @@ helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --v
 
 ```
 
-Check `LoadBalancer` has been assigned too traefik service
+Check `LoadBalancer` has been assigned too traefik service.
 
 ```bash
 # Check EXTERNAL-IP is not in '<pending>' state.
 kubectl get -n tools service
+
+# Check all the ports opened listen to 80
+lsof -nP -iTCP -sTCP:LISTEN
+# Kill the process (Docker)
+kill -9 517
 ```
 
 ### Application
@@ -49,9 +57,13 @@ Wait until the microservice has been deployed
 
 ## Test
 
+### Verification
+
+Verify if microservices are currently running
+
 ```bash
 # Get all the common resources created from previous chart
-kubectl get all -n micro
+kubectl get -n micro all 
 
 # Get the logs from the pod u
 kubectl logs -n micro car-microservice-8ff49d869-xptgp -f
@@ -65,6 +77,15 @@ curl "http://localhost:8080/vehicles" | jq .
 curl "http://localhost/car/vehicles" | jq .
 
 ```
+
+Verify database migration in mongodb
+
+```bash
+# Test (mongodb://user:password@localhost:27017/db_1)
+kubectl port-forward --namespace datastore svc/mongo-mongodb 27017:27017
+```
+
+### Examples
 
 Using traefik to propagate the traceId.
 
@@ -80,8 +101,8 @@ export CREATE_ALL_BOOKING_DATA='{
   "clientId": "8fb3c723-7851-486e-a369-ba0f9b908198",
   "createdAt": "2021-10-18T08:06:00.391Z",
   "vehicleId": "1",
-  "flightId": "1",
-  "hotelId": "1",
+  "flightId": "14",
+  "hotelId": "12",
   "fromDate": "2021-10-18T08:06:00.391Z",
   "id": "b9460d0a-248e-11e9-ab14-d663bd873d93",
   "toDate": "2021-10-18T08:06:00.391Z"
@@ -99,7 +120,7 @@ export CREATE_CAR_BOOKING_DATA='{
   "active": false,
   "clientId": "8fb3c723-7851-486e-a369-ba0f9b908198",
   "createdAt": "2021-10-18T08:06:00.391Z",
-  "vehicleId": "41",
+  "vehicleId": "91",
   "fromDate": "2021-10-18T08:06:00.391Z",
   "id": "b9460d0a-248e-11e9-ab14-d663bd873d93",
   "toDate": "2021-10-18T08:06:00.391Z"
@@ -112,4 +133,54 @@ curl -X POST "http://localhost/booking/bookings" \
 -d $CREATE_CAR_BOOKING_DATA \
 | jq .
 
+# Set json data to send into the request
+export CREATE_ERROR_BOOKING_DATA='{
+  "active": false,
+  "clientId": "8fb3c723-7851-486e-a369-ba0f9b908198",
+  "createdAt": "2021-10-18T08:06:00.391Z",
+  "vehicleId": "1",
+  "flightId": "140",
+  "hotelId": "12",
+  "fromDate": "2021-10-18T08:06:00.391Z",
+  "id": "b9460d0a-248e-11e9-ab14-d663bd873d93",
+  "toDate": "2021-10-18T08:06:00.391Z"
+}'
+
+# Perform the Request
+curl -X POST "http://localhost/booking/bookings" \
+-H  "accept: application/json" \
+-H  "Content-Type: application/json" \
+-d $CREATE_ERROR_BOOKING_DATA \
+| jq .
 ```
+
+### Traces
+
+Verify jaeger traces using [http://localhost](http://localhost) and search for:
+
+- Service: `spring-boot-tracing`
+- Operation: `saveBooking`
+
+It could be seen the traces being send by the request depending on the params send into the request: `vehicleId`, `flightId` and `hotelId`.
+
+```bash
+# Using all the services
+traefik-service
+  spring-boot-tracing saveBooking
+    spring-boot-tracing GET
+      spring-boot-tracing findVehicleById
+    spring-boot-tracing GET
+      spring-boot-tracing findFlightById
+    spring-boot-tracing GET
+      spring-boot-tracing findHotelById
+
+# Using only vehicle service
+traefik-service
+  spring-boot-tracing saveBooking
+    spring-boot-tracing GET
+      spring-boot-tracing findVehicleById
+```
+
+### Metrics
+
+### Logs

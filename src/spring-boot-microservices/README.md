@@ -185,8 +185,8 @@ export MANIFEST_DIR=kubernetes/manifests
 # Install MongoDB chart into datastore namespace
 helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 -f $MANIFEST_DIR/mongodb-values.yaml
 
-# Test (mongodb://user:password@localhost:27017/db_1)
-kubectl port-forward --namespace datastore svc/mongo-mongodb 27017:27017
+    # Test (mongodb://user:password@localhost:27017/db_1)
+    kubectl port-forward --namespace datastore svc/mongo-mongodb 27017:27017
 
 # Uninstall
 helm3 uninstall mongo --namespace datastore
