@@ -14,6 +14,10 @@ export MANIFEST_DIR=../../../kubernetes/manifests
 ## Install `traefik` Chart into `tools` namespace
 helm3 install -n tools --create-namespace traefik traefik/traefik --version 10.3.2 -f $MANIFEST_DIR/traefik-values.yaml
 
+## Deploy the prometheus-operator `ServiceMonitor` to monitor trraefik form prometheus
+kubectl apply -n tools -f $MANIFEST_DIR/traefik-service-monitor.yaml
+kubectl apply -n tools -f $MANIFEST_DIR/traefik-ingress-route.yaml
+
 ## Install `kube-prometheus-stack` Chart into `monitoring` namespace
 helm3 install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack --version 18.0.6 \
 --set 'prometheus-node-exporter.hostRootFsMount=false'
@@ -27,6 +31,10 @@ kubectl apply -n tracing -f $MANIFEST_DIR/jaeger-daemonset.yaml
 # Install MongoDB chart into datastore namespace
 helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 -f $MANIFEST_DIR/mongodb-values.yaml
 
+## Instal MongoDB Exporterr into datastore using previous prometheus release installed (kube-prometheus-stack)
+helm3 install prometheus-mongodb-exporter --namespace datastore prometheus-community/prometheus-mongodb-exporter --version 2.8.1 \
+--set 'mongodb.uri=mongodb://monitor:password@mongo-mongodb.datastore.svc.cluster.local:27017/admin' \
+--set 'serviceMonitor.additionalLabels.release=prometheus'
 ```
 
 Check `LoadBalancer` has been assigned too traefik service.
@@ -59,7 +67,7 @@ Wait until the microservice has been deployed
 
 ### Verification
 
-Verify if microservices are currently running
+Verify if microservices are currently running (status)
 
 ```bash
 # Get all the common resources created from previous chart
@@ -73,7 +81,7 @@ kubectl port-forward --namespace micro svc/car-microservice-srv 8080:80
 # Get all the vehicles
 curl "http://localhost:8080/vehicles" | jq .
 
-# Test microservice by using Traefik Ingress (http://localhost/car/swagger-ui/)
+# Test microservice by using Traefik Controller / Ingress (http://localhost/car/swagger-ui/)
 curl "http://localhost/car/vehicles" | jq .
 
 ```
@@ -83,6 +91,13 @@ Verify database migration in mongodb
 ```bash
 # Test (mongodb://user:password@localhost:27017/db_1)
 kubectl port-forward --namespace datastore svc/mongo-mongodb 27017:27017
+```
+
+Verify Traefik dashboard
+
+```bash
+## Port-Forward to traefik dashboard. http://locahost:9000
+kubectl port-forward -n tools svc/traefik-dashboard 9000
 ```
 
 ### Examples
@@ -182,5 +197,33 @@ traefik-service
 ```
 
 ### Metrics
+
+Serve prometheus and Grafana dashboards using port-forweard
+
+```bash
+## Prometheus dashboard (http://localhost:9090)
+kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090
+
+## Grafana dashboard (http://localhost:3000) (`admin/prom-operator`)
+kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
+```
+
+Install following dashboards into Grafana.
+
+- Node Exporter Full: 1860
+- Traefik: 4475
+- Spring Boot Statistics: 6756
+- MongoDB Exporter: 2583
+
+In order to use Spring Boot Statistics, use the following data to show app information:
+
+- **Instance**. the `IP:Port` value from `targets` in Prometheus. i.e. `10.1.0.17:8080`
+- **Application**. the name of the application (`spring.application.name`). i.e. `car-microservice`.
+
+Instance and Application can be gathered from the tags also:
+
+```bash
+com_example_booking_controller_seconds_max{application="booking-microservice", class="com.example.booking.controller.BookingController", container="booking", endpoint="http", exception="none", instance="10.1.0.17:8080", job="booking-microservice-srv", method="findAllBookings", namespace="micro", pod="booking-microservice-65bc7b4694-fdvhl", service="booking-microservice-srv"}
+```
 
 ### Logs
