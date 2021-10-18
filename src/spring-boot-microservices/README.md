@@ -43,12 +43,12 @@ mvn spring-boot:run
 
 ```bash
 # Create the json data to send into the request
-export CREATE_BOOKING_DATA='{
+export CREATE_ALL_BOOKING_DATA='{
   "active": false,
   "clientId": "8fb3c723-7851-486e-a369-ba0f9b908198",
   "createdAt": "2021-10-18T08:06:00.391Z",
-  "flightId": "1",
   "vehicleId": "1",
+  "flightId": "1",
   "hotelId": "1",
   "fromDate": "2021-10-18T08:06:00.391Z",
   "id": "b9460d0a-248e-11e9-ab14-d663bd873d93",
@@ -59,9 +59,33 @@ export CREATE_BOOKING_DATA='{
 curl -X POST "http://localhost:8080/bookings" \
 -H  "accept: application/json" \
 -H  "Content-Type: application/json" \
--d $CREATE_BOOKING_DATA \
+-d $CREATE_ALL_BOOKING_DATA \
 | jq .
 
+# Create the json data to send into the request
+export CREATE_CAR_BOOKING_DATA='{
+  "active": false,
+  "clientId": "8fb3c723-7851-486e-a369-ba0f9b908198",
+  "createdAt": "2021-10-18T08:06:00.391Z",
+  "vehicleId": "1",
+  "fromDate": "2021-10-18T08:06:00.391Z",
+  "id": "b9460d0a-248e-11e9-ab14-d663bd873d93",
+  "toDate": "2021-10-18T08:06:00.391Z"
+}'
+
+# Perform the Request
+curl -X POST "http://localhost:8080/bookings" \
+-H  "accept: application/json" \
+-H  "Content-Type: application/json" \
+-H "x-request-id: 4aba321a-4e60-4b42-b0ca-654c2400d485"   \
+-H "x-b3-traceid: 308eec41-93bd-4584-8efe-2b968284c41e"  \
+-H "x-b3-spanid: 8395e40e-6a79-4a34-b444-18d401f597cb"  \
+-H "x-b3-parentspanid: c55f6cf0-3547-4202-b51e-9eaaa2136a73"  \
+-H "x-b3-sampled: 1948dd81-9e70-4694-95f9-018e3abdbe29"  \
+-H "x-b3-flags: acac5baf-42d2-45d8-84d0-645070a76f2e"  \
+-H "x-ot-span-context: 6ee27e27-45c4-47de-86e4-1d4227bcf638"  \
+-d $CREATE_CAR_BOOKING_DATA \
+| jq .
 ```
 
 Find the traces using jaeger dashboard at [http://localhost:16686](http://localhost:16686)

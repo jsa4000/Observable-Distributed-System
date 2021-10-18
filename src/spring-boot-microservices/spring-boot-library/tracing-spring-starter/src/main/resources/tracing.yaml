@@ -2,6 +2,10 @@ opentracing:
   jaeger:
     enabled: false
     service-name: ${SPRING_APPLICATION_NAME:spring-boot-tracing}
+    #enable-b3-propagation: true
+    #enable128BitTraces: true
+    #probabilistic-sampler:
+    #  sampling-rate: 1.0
     udp-sender:
       host: localhost
       port: 6831

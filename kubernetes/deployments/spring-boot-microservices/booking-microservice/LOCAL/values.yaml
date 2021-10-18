@@ -39,7 +39,7 @@ deployment:
       cpu: "1000m"
     env:
     - name: SPRING_PROFILES_ACTIVE
-      value: docker
+      value: docker,jsonlog
     - name: JAVA_OPTS
       value: -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80  
     - name: SPRING_CONFIG_ADDITIONAL_LOCATION
