@@ -2,7 +2,7 @@
 
 This is an example to demonstrate a Booking System developed with microservices.
 
-## Run
+## Run (Docker-compose)
 
 In order to run the application in a local environment using Docker
 
@@ -29,12 +29,42 @@ docker compose --project-name observable -f docker/docker-compose.yml up
 # Build and create Far Jar files for the microservices
 mvn clean install
 
-# For each microservice: booking, car, flight and hotel,
-# run the application (mongodb must be running; see local environment and docker-compose procedure)
+# Using IntelliJ, from the right Maven Panel:
+# - For each microservice: booking, car, flight and hotel
+# - Right-click {microservice-project}->Plugins->spring-boot->spring-boot:run and select 'Run xx'
+# - Finally tasks will be created at the top. 
+# - Select each and run.
+
+# From command line, run the application (mongodb must be running; see local environment and docker-compose procedure)
 mvn spring-boot:run
 ```
 
 [Swagger UI](http://localhost:8080/swagger-ui/)
+
+```bash
+# Create the json data to send into the request
+export CREATE_BOOKING_DATA='{
+  "active": false,
+  "clientId": "8fb3c723-7851-486e-a369-ba0f9b908198",
+  "createdAt": "2021-10-18T08:06:00.391Z",
+  "flightId": "1",
+  "vehicleId": "1",
+  "hotelId": "1",
+  "fromDate": "2021-10-18T08:06:00.391Z",
+  "id": "b9460d0a-248e-11e9-ab14-d663bd873d93",
+  "toDate": "2021-10-18T08:06:00.391Z"
+}'
+
+# Perform the Request
+curl -X POST "http://localhost:8080/bookings" \
+-H  "accept: application/json" \
+-H  "Content-Type: application/json" \
+-d $CREATE_BOOKING_DATA \
+| jq .
+
+```
+
+Find the traces using jaeger dashboard at [http://localhost:16686](http://localhost:16686)
 
 ## Build
 
@@ -48,7 +78,10 @@ mvn clean install
 mvn spring-boot:build-image
 
 # Publish image to docker hub
+docker push jsa4000/booking-microservice:0.0.1-SNAPSHOT
 docker push jsa4000/car-microservice:0.0.1-SNAPSHOT
+docker push jsa4000/flight-microservice:0.0.1-SNAPSHOT
+docker push jsa4000/hotel-microservice:0.0.1-SNAPSHOT
 ```
 
 To scan for vulnerabilities docker has introduced an option for scanning the image, using **Snyk** provider by default.
@@ -131,15 +164,16 @@ helm3 uninstall mongo --namespace datastore
 
 ```bash
 # Create temporary folder to copy configuration files and charts
+export APP_NAME=car
 export TEMP_DIR=/tmp/local-deployment
 export CHART_DIR=kubernetes/charts/microservice-chart-java
-export CONFIG_DIR=kubernetes/deployments/spring-boot-microservices/car-microservice/LOCAL
+export CONFIG_DIR=kubernetes/deployments/spring-boot-microservices/${APP_NAME}-microservice/LOCAL
 mkdir -p $TEMP_DIR
 cp -r $CHART_DIR/. $TEMP_DIR
 cp -r $CONFIG_DIR/. $TEMP_DIR
 
 # Install the chart
-helm3 install -n micro --create-namespace car-microservice $TEMP_DIR -f $TEMP_DIR/values.yaml
+helm3 install -n micro --create-namespace ${APP_NAME}-microservice $TEMP_DIR -f $TEMP_DIR/values.yaml
  
 # Remove temp files created
 rm -rf $TEMP_DIR
@@ -168,5 +202,5 @@ To delete (uninstall) the chart use the following command
 
 ```bash
 # Uninstall the chart
-helm3 uninstall -n micro car-microservice
+helm3 uninstall -n micro ${APP_NAME}-microservice
 ```

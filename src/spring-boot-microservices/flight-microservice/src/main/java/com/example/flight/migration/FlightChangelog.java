@@ -8,9 +8,7 @@ import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 
-import java.sql.Date;
 import java.time.OffsetDateTime;
-import java.util.Random;
 
 @Slf4j
 @ChangeLog(order = "2")

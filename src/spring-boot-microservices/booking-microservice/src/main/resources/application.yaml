@@ -39,6 +39,10 @@ web:
   clients:
     car:
       url: http://localhost:8081
+    flight:
+      url: http://localhost:8082
+    hotel:
+      url: http://localhost:8083
 
 ---
 spring:
@@ -59,3 +63,7 @@ web:
   clients:
     car:
       url: http://car-microservice:8080
+    flight:
+      url: http://flight-microservice:8080
+    hotel:
+      url: http://hotel-microservice:8080
