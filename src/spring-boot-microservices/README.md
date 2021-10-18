@@ -144,6 +144,23 @@ helm3 install -n monitoring --create-namespace prometheus prometheus-community/k
 kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090
 ```
 
+Install `Jaeger` into the cluster
+
+```bash
+export MANIFEST_DIR=kubernetes/manifests
+## Install `jaeger-operator` Chart into `tracing` namespace
+helm3 install -n tracing --create-namespace jaeger-operator jaegertracing/jaeger-operator --version 2.24.0
+
+### Configure OPENTRACING_JAEGER_ENABLED (deployments/spring-boot-tracing/deployment.yaml) to true using daemonset
+kubectl apply -n tracing -f $MANIFEST_DIR/jaeger-daemonset.yaml
+
+## Jaeger dashboard (http://localhost:16686)
+kubectl port-forward -n tracing svc/jaeger-all-in-one-query 16686
+
+## Jaeger dashboard using traefik (http://localhost)
+
+```
+
 Install `MongoDB` into the cluster
 
 ```bash
@@ -164,7 +181,8 @@ helm3 uninstall mongo --namespace datastore
 
 ```bash
 # Create temporary folder to copy configuration files and charts
-export APP_NAME=car
+# APP_NAME can be booking, car, flight or hotel
+export APP_NAME=booking
 export TEMP_DIR=/tmp/local-deployment
 export CHART_DIR=kubernetes/charts/microservice-chart-java
 export CONFIG_DIR=kubernetes/deployments/spring-boot-microservices/${APP_NAME}-microservice/LOCAL
@@ -172,8 +190,9 @@ mkdir -p $TEMP_DIR
 cp -r $CHART_DIR/. $TEMP_DIR
 cp -r $CONFIG_DIR/. $TEMP_DIR
 
-# Install the chart
+# Install or upgrade tthe chart
 helm3 install -n micro --create-namespace ${APP_NAME}-microservice $TEMP_DIR -f $TEMP_DIR/values.yaml
+# helm3 upgrade -n micro ${APP_NAME}-microservice $TEMP_DIR -f $TEMP_DIR/values.yaml
  
 # Remove temp files created
 rm -rf $TEMP_DIR
@@ -196,6 +215,63 @@ curl "http://localhost:8080/vehicles" | jq .
 # Test microservice by using Traefik Ingress (http://localhost/car/swagger-ui/)
 curl "http://localhost/car/vehicles" | jq .
 
+```
+
+Using traefik to propagate the traceId.
+
+```bash
+# Get all bookings
+curl "http://localhost/booking/bookings" | jq .
+
+# Create Boookiing.
+
+# Set json data to send into the request
+export CREATE_ALL_BOOKING_DATA='{
+  "active": false,
+  "clientId": "8fb3c723-7851-486e-a369-ba0f9b908198",
+  "createdAt": "2021-10-18T08:06:00.391Z",
+  "vehicleId": "1",
+  "flightId": "1",
+  "hotelId": "1",
+  "fromDate": "2021-10-18T08:06:00.391Z",
+  "id": "b9460d0a-248e-11e9-ab14-d663bd873d93",
+  "toDate": "2021-10-18T08:06:00.391Z"
+}'
+
+# Perform the Request
+curl -X POST "http://localhost/booking/bookings" \
+-H  "accept: application/json" \
+-H  "Content-Type: application/json" \
+-d $CREATE_ALL_BOOKING_DATA \
+| jq .
+
+# Set json data to send into the request
+export CREATE_CAR_BOOKING_DATA='{
+  "active": false,
+  "clientId": "8fb3c723-7851-486e-a369-ba0f9b908198",
+  "createdAt": "2021-10-18T08:06:00.391Z",
+  "vehicleId": "41",
+  "fromDate": "2021-10-18T08:06:00.391Z",
+  "id": "b9460d0a-248e-11e9-ab14-d663bd873d93",
+  "toDate": "2021-10-18T08:06:00.391Z"
+}'
+
+# Perform the Request
+curl -X POST "http://localhost/booking/bookings" \
+-H  "accept: application/json" \
+-H  "Content-Type: application/json" \
+-d $CREATE_CAR_BOOKING_DATA \
+| jq .
+
+```
+
+To upgrade the chart use the following command.
+
+> It could be necessary to restart the pod so the app can take new configuration or secrets
+
+```bash
+# Upgrade the chart
+helm3 upgrade -n micro ${APP_NAME}-microservice $TEMP_DIR -f $TEMP_DIR/values.yaml
 ```
 
 To delete (uninstall) the chart use the following command
