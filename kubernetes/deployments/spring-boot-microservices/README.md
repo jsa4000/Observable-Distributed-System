@@ -354,3 +354,21 @@ istioctl install --set profile=demo
 # Get all the services
 kubectl get all -n istio-system
 ```
+
+```bash
+# Export manifest path
+export MANIFEST_DIR=../../../kubernetes/manifests
+
+# Install MongoDB chart into datastore namespace
+helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 -f $MANIFEST_DIR/mongodb-values.yaml
+```
+
+Deploy applications using istio environment.
+
+```bash
+# Deploy each helm chart by providing the initials: booking, car, flight or hotel
+./deploy.sh booking istio
+./deploy.sh car istio
+./deploy.sh flight istio
+./deploy.sh hotel istio
+```
