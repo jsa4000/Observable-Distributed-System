@@ -1,0 +1,27 @@
+spring:
+  config:
+    activate:
+      on-profile: docker
+  data:
+    mongodb:
+      uri: mongodb://${SECRET_DATABASE_USERNAME}:${SECRET_DATABASE_PASSWORD}@mongo-mongodb.datastore.svc.cluster.local:27017/db_1
+
+server:
+  port: 8080
+  max-http-header-size: 20000
+
+mongock:
+  enabled: true
+
+opentracing:
+  jaeger:
+    enabled: true
+    udp-sender:
+      host: jaeger-all-in-one-agent.tracing.svc.cluster.local
+      port: 6831
+
+logging:
+  level:
+    root: warn
+    org.springframework: warn
+    com.example: debug

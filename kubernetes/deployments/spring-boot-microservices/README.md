@@ -77,10 +77,10 @@ kill -9 517
 
 ```bash
 # Deploy each helm chart by providing the initials: booking, car, flight or hotel
-./deploy.sh booking
-./deploy.sh car
-./deploy.sh flight
-./deploy.sh hotel
+./deploy.sh booking local
+./deploy.sh car local
+./deploy.sh flight local
+./deploy.sh hotel local
 ```
 
 Wait until the microservice has been deployed
@@ -325,3 +325,32 @@ Get Logs from microservices:
 - Select the time range to search for the logs on the top.
 - Press `Run Query` to search all results
 - Similar to Kibana with the results filters can be added using + or -, column to view (single), etc... i.e. `{{container="car",namespace="micro"}`
+
+## Istio
+
+Download Istio packages and utils
+  
+> It is a good practice to always specify the version to be installed.
+
+```bash
+# Download and extract Istio using specific version and platform
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.7.3 TARGET_ARCH=x86_64 sh -
+
+# Global Scope. Change the permissions and copy to user's bin folder
+cd istio-1.7.3/bin
+chmod +x istioctl
+sudo cp istioctl /usr/local/bin/istioctl
+
+# Get Istio version
+istioctl version
+```
+
+Installing Istio to support Service Mesh
+
+```bash
+# Install istio with demo profile
+istioctl install --set profile=demo
+
+# Get all the services
+kubectl get all -n istio-system
+```

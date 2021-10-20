@@ -1,0 +1,114 @@
+# Default values for microservice-chart-helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# GLOBAL
+nameOverride: flight
+fullnameOverride: flight-microservice
+sistema: booking
+component: api           # [api|domian|data|controller]
+namespace: micro
+#serviceAccountName: booking-admins
+
+replicaCount: 1
+
+# IMAGE
+image:  
+  repository: jsa4000
+  name: flight-microservice
+  tag: 0.0.1-SNAPSHOT
+  pullPolicy: Always #IfNotPresent
+
+# DEPLOYMENT
+deployment:
+  containers:
+    containerPort: 8080    
+    readinessProbe:
+      path: /management/health/readiness
+      initialDelaySeconds: 60
+      timeoutSeconds: 2
+    livenessProbe:
+      path: /management/health/liveness
+      initialDelaySeconds: 80
+      timeoutSeconds: 2
+    requests:
+      memory: "256Mi"
+      cpu: "50m"
+    limits:
+      memory: "512Mi"
+      cpu: "1000m"
+    env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: docker,jsonlog
+    - name: JAVA_OPTS
+      value: -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80  
+    - name: SPRING_CONFIG_ADDITIONAL_LOCATION
+      value: file:/opt/app/config/application.yml
+    - name: SECRET_JWT_PUBLIC_KEY
+      valueFrom:
+        secretKeyRef:
+          name: flight-secret
+          key: jwt.publicKey
+    - name: SECRET_DATABASE_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: flight-secret
+          key: database.password
+    - name: SECRET_DATABASE_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: flight-secret
+          key: database.username
+
+# SECRETS
+secrets:
+  enabled: true
+  create: true
+  name: flight
+
+# CONFIGMAP
+configMap:
+  enabled: true
+  create: true
+  name: flight-conf
+
+# SERVICE
+service:
+  type: ClusterIP
+  port: 80
+
+# INGRESS
+ingress: 
+  public:
+    enabled: false
+    hosts:
+      - "*"
+    attempts: 3
+    perTryTimeout: 2s
+    ports:
+      - name: http
+        number: 80
+        protocol: HTTP
+  private:
+    enabled: false
+    host: example.com
+    path: /flight
+    dnstarget: traefik-dev.example.com
+
+# TRAEFIK
+traefik:
+  enabled: true
+  path: /flight
+
+# SERVICE MONITOR 
+serviceMonitor:
+  enabled: true
+  release: prometheus
+  endpoints:
+  - interval: 30s
+    port: http
+    path: management/metrics
+
+# SERVICE ENTRY
+serviceEntry:
+  enabled: false

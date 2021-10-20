@@ -3,9 +3,10 @@
 # Create temporary folder to copy configuration files and charts
 # $1 can be booking, car, flight or hotel
 export APP_NAME=$1
-export TEMP_DIR=/tmp/local-deployment
+export ENV_NAME=$2
+export TEMP_DIR=/tmp/${ENV_NAME}-deployment
 export CHART_DIR=../../../kubernetes/charts/microservice-chart-java
-export CONFIG_DIR=../../../kubernetes/deployments/spring-boot-microservices/${APP_NAME}-microservice/LOCAL
+export CONFIG_DIR=../../../kubernetes/deployments/spring-boot-microservices/${APP_NAME}-microservice/${ENV_NAME}
 mkdir -p $TEMP_DIR
 cp -r $CHART_DIR/. $TEMP_DIR
 cp -r $CONFIG_DIR/. $TEMP_DIR
