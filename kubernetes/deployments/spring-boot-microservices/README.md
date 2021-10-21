@@ -251,7 +251,9 @@ traefik-service
   spring-boot-tracing saveBooking
     [ERROR] spring-boot-tracing GET
     spring-boot-tracing GET
+      spring-boot-tracing findFlightById
     spring-boot-tracing GET
+      spring-boot-tracing findHotelById
 
 # Check the errors and logs in the jaeger item with the error '[ERROR] spring-boot-tracing GET'
 ```
@@ -324,7 +326,7 @@ Get Logs from microservices:
 - Click into `Log browser` and select `namespace` -> `micro` -> `Show Logs` button, or using `{namespace="micro"}` directly in the search text.
 - Select the time range to search for the logs on the top.
 - Press `Run Query` to search all results
-- Similar to Kibana with the results filters can be added using + or -, column to view (single), etc... i.e. `{{container="car",namespace="micro"}`
+- Similar to Kibana with the results filters can be added using + or -, column to view (single), etc... i.e. `{app="hotel",namespace="micro"}`
 
 ## Istio
 
