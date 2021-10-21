@@ -357,12 +357,28 @@ istioctl install --set profile=demo
 kubectl get all -n istio-system
 ```
 
+> Check LoadBalancer has been created for `istio-ingressgateway`  and `EXTERNAL-IP` is not `<pending>`
+
+Install add-ons with Prometheus, Grafana, kiali and Jaeger
+
 ```bash
+# Install istio addons
+kubectl apply -f samples/addons
+```
+
+Install pre-requisites for microservices
+
+```bash
+# Go to proper folder
+cd kubernetes/deployments/spring-boot-microservices
 # Export manifest path
 export MANIFEST_DIR=../../../kubernetes/manifests
 
 # Install MongoDB chart into datastore namespace
 helm3 install mongo --namespace datastore --create-namespace bitnami/mongodb --version 10.19.0 -f $MANIFEST_DIR/mongodb-values.yaml
+
+# Wait until MongoDB has been created and running '1/1 Running'
+kubectl get pods -n datastore -w
 ```
 
 Deploy applications using istio environment.
@@ -373,4 +389,77 @@ Deploy applications using istio environment.
 ./deploy.sh car istio
 ./deploy.sh flight istio
 ./deploy.sh hotel istio
+```
+
+Test Istio Gateways (with and without istio proxy)
+
+```bash
+# To get the Routing for an specific microservice check VirtualService created by Helm Charts
+kubectl get -n micro VirtualServices
+kubectl describe -n micro VirtualServices booking-microservice-vsrv
+
+# Wait until all the pods are Running
+kubectl get pods -n micro -w
+
+NAME                                    READY   STATUS    RESTARTS   AGE
+booking-microservice-67f9469ddc-pwlzz   1/1     Running   0          33m
+car-microservice-6985cd69cb-rx987       1/1     Running   0          33m
+flight-microservice-6b5b696d4d-dbbs7    1/1     Running   0          33m
+hotel-microservice-744b9654cb-hcp6g     1/1     Running   0          33m
+
+```
+
+Apply istio proxy auto-injection for namespace
+
+```bash
+# Set the auto injection label so istio knows the namespace to monitor
+kubectl label namespace micro istio-injection=enabled
+
+# Restart all the pods
+kubectl get pods -n micro -o=name | xargs kubectl delete -n micro
+
+# Wait until all the pods are Running
+kubectl get pods -n micro -w
+
+NAME                                    READY   STATUS    RESTARTS   AGE
+booking-microservice-67f9469ddc-7v727   2/2     Running   0          105s
+car-microservice-6985cd69cb-nk749       2/2     Running   0          105s
+flight-microservice-6b5b696d4d-jprbc    2/2     Running   0          105s
+hotel-microservice-744b9654cb-z9f8b     2/2     Running   0          105s
+
+```
+
+Check Add-ons tools installed with Istio
+
+```bash
+# Open kiali dashboard -> Graph -> Empty Graph
+# > Select "microservice" namespace in the combo and select different options
+#   App Graph, Service Graph, Versioned App Graph
+istioctl dashboard kiali
+
+# Open grafana dashboard -> Go to Istio Service Dashboard -> Select productage microservice
+# There is no service yet nor workload
+istioctl dashboard grafana
+
+# Open jaeger dashboard -> Search for productpage
+# Nothing  in services
+istioctl dashboard jaeger
+```
+
+Check the graph by using different tests
+
+```bash
+# Test again using previous GET and POST examples
+# - Test first the GET Operations
+# - Finally Test POST operations, so it can be seen booking calling other microservices
+```
+
+Uninstall applications.
+
+```bash
+# Deploy each helm chart by providing the initials: booking, car, flight or hotel
+helm3 uninstall -n micro booking-microservice
+helm3 uninstall -n micro car-microservice
+helm3 uninstall -n micro flight-microservice
+helm3 uninstall -n micro hotel-microservice
 ```
