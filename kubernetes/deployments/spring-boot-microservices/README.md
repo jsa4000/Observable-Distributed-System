@@ -14,6 +14,9 @@ cd kubernetes/deployments/spring-boot-microservices
 Execute following commands to install Helm Charts
 
 ```bash
+# Remove traefik if it already exists (Rancher Desktop)
+kubectl -n kube-system delete helmcharts.helm.cattle.io traefik
+
 # Run script to create all the pre-requisites using helm charts.
 ./pre-requisites.sh 
 ```
