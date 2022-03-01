@@ -320,6 +320,11 @@ kubectl get secret -n logging loki-grafana -o=jsonpath='{.data.admin-password}' 
 
 ## Access to Grafana Loki (http://localhost:3000)
 kubectl port-forward -n logging svc/loki-grafana 3000:80
+
+## Or
+
+## Add loki data-source to existing grafana
+http://loki-0.loki-headless.logging.svc.cluster.local:3100
 ```
 
 Get Logs from microservices:

@@ -56,7 +56,7 @@ helm3 install -n tracing --create-namespace jaeger-operator jaegertracing/jaeger
 helm3 install -n tools --create-namespace traefik traefik/traefik --version 10.3.2 -f manifests/traefik-values.yaml
 
 ## Install `Grafana Loki Stack` Chart into `logging` namespace
-helm3 upgrade --install loki -n logging --create-namespace grafana/loki-stack --version 2.4.1 --set grafana.enabled=true
+helm3 upgrade --install loki -n logging --create-namespace grafana/loki-stack --version 2.6.1 --set grafana.enabled=true
 
 ## Install MinIO Operator with 'default' tentant
 helm3 install minio --namespace minio --create-namespace minio/minio-operator --version 4.2.7  -f manifests/minio-operator-values.yaml

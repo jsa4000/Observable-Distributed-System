@@ -18,7 +18,7 @@ helm3 install logging-operator banzaicloud-stable/logging-operator -n logging --
 --set 'createCustomResource=false'
 
 ## Install `Grafana Loki Stack` Chart into `logging` namespace
-helm3 upgrade --install loki -n logging --create-namespace grafana/loki-stack --version 2.4.1 --set grafana.enabled=true
+helm3 upgrade --install loki -n logging --create-namespace grafana/loki-stack --version 2.6.1 --set grafana.enabled=true
 
 ## Install `jaeger-operator` Chart into `tracing` namespace
 helm3 install -n tracing --create-namespace jaeger-operator jaegertracing/jaeger-operator --version 2.24.0
