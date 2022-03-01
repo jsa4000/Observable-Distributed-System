@@ -247,18 +247,18 @@ The actual demo uses the default sample application that comes with istio instal
 
   ```bash
   # Download and extract Istio using specific version and platform
-  curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.7.3 TARGET_ARCH=x86_64 sh -
+  curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.11.6 TARGET_ARCH=x86_64 sh -
   ```
 
 8. Move to the Istio package directory and add the istioctl client to your path (Linux or macOS) or copy it to global scope.
 
   ```bash
   # Export variable
-  cd istio-1.7.3
+  cd istio-1.11.6
   export PATH=$PWD/bin:$PATH
 
   # Global Scope. Change the permissions and copy to user's bin folder
-  cd istio-1.7.3/bin
+  cd istio-1.11.6/bin
   chmod +x istioctl
   sudo cp istioctl /usr/local/bin/istioctl
   ```
@@ -269,7 +269,7 @@ The actual demo uses the default sample application that comes with istio instal
   istioctl version
 
   no running Istio pods in "istio-system"
-  1.7.3
+  1.11.6
   ```
 
 10. Install Istio.

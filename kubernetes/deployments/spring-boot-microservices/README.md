@@ -344,10 +344,10 @@ Download Istio packages and utils
 
 ```bash
 # Download and extract Istio using specific version and platform
-curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.7.3 TARGET_ARCH=x86_64 sh -
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.11.6 TARGET_ARCH=x86_64 sh -
 
 # Global Scope. Change the permissions and copy to user's bin folder
-cd istio-1.7.3/bin
+cd istio-1.11.6/bin
 chmod +x istioctl
 sudo cp istioctl /usr/local/bin/istioctl
 
@@ -358,6 +358,9 @@ istioctl version
 Installing Istio to support Service Mesh
 
 ```bash
+# Remove traefik if it already exists (Rancher Desktop)
+kubectl -n kube-system delete helmcharts.helm.cattle.io traefik
+
 # Install istio with demo profile
 istioctl install --set profile=demo
 
@@ -407,7 +410,7 @@ kubectl get -n micro VirtualServices
 kubectl describe -n micro VirtualServices booking-microservice-vsrv
 
 # Wait until all the pods are Running
-kubectl get pods -n micro -w
+c
 
 NAME                                    READY   STATUS    RESTARTS   AGE
 booking-microservice-67f9469ddc-pwlzz   1/1     Running   0          33m
@@ -425,6 +428,12 @@ kubectl label namespace micro istio-injection=enabled
 
 # Restart all the pods
 kubectl get pods -n micro -o=name | xargs kubectl delete -n micro
+
+# Restart all the pods using '--all' flag
+kubectl delete -n micro deployment --all
+
+## [RECOMMENDED] Restart all the pods using rollout strategy
+kubectl rollout -n micro restart deployment
 
 # Wait until all the pods are Running
 kubectl get pods -n micro -w
