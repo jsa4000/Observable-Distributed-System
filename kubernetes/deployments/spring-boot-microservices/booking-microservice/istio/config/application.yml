@@ -27,10 +27,9 @@ opentracing:
     enabled: true
     enable-b3-propagation: true
     enable128-bit-traces: true
-    udp-sender:
-      host: jaeger-all-in-one-agent.tracing.svc.cluster.local
-      port: 6831
-
+    probabilistic-sampler:
+      sampling-rate: 0.0
+  
 logging:
   level:
     root: warn
