@@ -3,7 +3,7 @@ opentracing:
     enabled: false
     service-name: ${SPRING_APPLICATION_NAME:spring-boot-tracing}
     #enable-b3-propagation: true
-    #enable128BitTraces: true
+    #enable128-bit-traces: true
     #probabilistic-sampler:
     #  sampling-rate: 1.0
     udp-sender:

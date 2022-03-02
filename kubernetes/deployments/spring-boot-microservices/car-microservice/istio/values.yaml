@@ -44,8 +44,8 @@ deployment:
       value: -XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80  
     - name: SPRING_CONFIG_ADDITIONAL_LOCATION
       value: file:/opt/app/config/application.yml
-    - name: OPENTRACING_JAEGER_ENABLED
-      value: "false"
+    # - name: OPENTRACING_JAEGER_ENABLED
+    #   value: "false"
     - name: SECRET_JWT_PUBLIC_KEY
       valueFrom:
         secretKeyRef:

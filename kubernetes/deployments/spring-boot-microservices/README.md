@@ -374,7 +374,8 @@ Install add-ons with Prometheus, Grafana, kiali and Jaeger
 
 ```bash
 # Install istio addons
-kubectl apply -f samples/addons
+kubectl apply -f samples/addons  # From istio download
+kubectl apply -f kubernetes/manifests/istio/addons # From current repository
 ```
 
 Install pre-requisites for microservices
